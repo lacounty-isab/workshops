@@ -1,0 +1,125 @@
+---
+title: "R Regex API"
+author: "ISAB Data Science Forum"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Regular Expressions
+There are several regular expression functions in R defined in the
+**base** package.  The most recognizable one is `grep`.
+It takes
+
+1. a pattern
+2. a character vector (or something coercible to one)
+3. options
+
+and returns an vector of indices that matched.
+
+```{r eg01}
+lastNames <- c("Smith", "Jones", "Thomson", "Johnson")
+sonNames <- grep("son", lastNames)
+sonNames
+```
+
+## R `grep` results
+
+The index can be used to select the matching items from the
+original vector.
+
+```{r eg02}
+lastNames[sonNames]
+```
+
+Or the items that did **not** match.
+
+```{r eg03}
+lastNames[-sonNames]
+```
+
+## Grep Options: `value`
+
+By default, `value=FALSE`.  This means return the index
+of each match.  We saw in the last slide how we can use the
+match indices to retrieve the original values.  This can
+be done in one step by passing `value=TRUE`.
+
+```{r value1}
+grep("son", lastNames, value=TRUE)
+```
+
+## Other Grep Options
+
+The following boolean options to `grep` default to `FALSE`.
+They can be activated by setting them to `TRUE`.
+
+* `ignore.case` - case insensitive match
+* `invert` - return the non-matched results
+* `perl` - use PCRE (Perl Compatible Regular Expression) syntax
+* `fixed` - treat the pattern as a plain string (no fancy regular
+   expresion interpretation)
+
+```{r eg04}
+noJo <- grep("Jo", lastNames, invert=TRUE, ignore.case=TRUE)
+noJo
+```
+
+## Logical Indices: `grepl`
+
+This is the "grep logical" function.
+Instead of returning an list of integer indices that matched,
+you can have a logical vector of the same length as the input vector.
+`TRUE` values match; values do not.
+
+```{r eg05}
+hasSon <- grepl("son", lastNames)
+hasSon
+```
+How many matches did we have?
+```{r eg06}
+table(hasSon)
+```
+
+## Substitution
+
+The `sub` function performs substitution on the first match
+for each element of the vector. 
+Use the global version, `gsub`, to substitute for all matches
+on each element of a vector.
+
+```{r eg07}
+sub("John", "David", lastNames)
+```
+
+Changed "Johnson" to "Davidson".  Left non-matching entries alone.
+
+## Character Position
+
+The `regexpr` function returns an vector of integers that represent
+the offset of the first match for each element of the original vector.
+
+```{r eg08, echo=FALSE}
+lastNames
+```
+```{r eg09}
+m <- regexpr("o\\w+son", lastNames)
+m[1:4]
+```
+
+The return value also maintains a vector stored in an attribute
+named `match.lengths`.  It represents the length of each match.
+
+```{r eg10}
+attr(m, "match.length")
+```
+
+## Drawbacks
+
+- There doesn't seem to be support for regular expression groupings.
+
+- Processing a file one line at a time is tedious.  It's possible to
+  read and process a single line at a time.  But this is **very**
+  slow compared to the same task in Python (4 seconds vs 100 seconds).
