@@ -107,7 +107,7 @@ The vertical bar `|` delimits string alternatives.  It's similar to a range;
 but the individual elements can be strings instead of single characters.
 
 
-* `cat|run|go` matches `cat`, `run`, or `go`; but not `catrun`
+* `cat|run|go` matches `cat`, `run`, or `go`
 * `c|r|g` is the same as `[crg]`
 
 String options are more commonly used with gouping (see below)
@@ -140,7 +140,7 @@ Here are some examples.
 | Expression | Match                    | No Match                    |
 |------------|--------------------------|-----------------------------|
 | `\d\d:\d\d:\d\d`  | `18:30:00`     | `6:30:00`, `06:30` |
-| `\d+(\sms)? | `4 ms`, `436 ms`, `12` | `4ms`, `4 s`, `a ms` |
+| `\d+(\sms)?` | `4 ms`, `436 ms`, `12` | `4ms`, `4 s`, `a ms` |
 | `\D+` | `xyz`, `ab%@b?r !!` | `3`, `bv4fe` |
 
 Note the second row has a grouping designated by parenthesis.  The `?`
@@ -154,7 +154,7 @@ modifies the entire group.  The parenthesis characters themselves are
 ## Groups
 
 The last example of the last section demonstrated an application of applying
-an operator to group of characters rather than a single character.  This is
+an operator to a group of characters rather than a single character.  This is
 an example of an *application group*.
 
 ### Application Groups
@@ -241,17 +241,21 @@ This works fine in cases where backslashes don't appear often.  Unfortunately
 backslashes are very common in regular expressions.  Consider the following
 regular expression for the location of a file on a Windows file system.
 ```
-x = "a\\\\b.txt"
+a\b.txt
 ```
-First, each pair of backslashes is escaped to construct the string that contains
+In this case, the backslash is actually a literal, not an escape character.
+So the literal regular expression to match the name would be
 ```
 a\\b.txt
 ```
-Then the regular expression parser converts the remaining pair to construct the
-fixed string
+That's what we'd enter directly into a regular expression tester.
+But if we're writing a progam to create a string to be interpreted
+as a regular expression, we have to escape each of the above backslashes.
 ```
-a\b.txt
+x = "a\\\\b.txt"
 ```
+What a mess!  Some programming languages like Python provide relief in
+the form or "*raw strings*".  We'll cover that later.
 
 ### Basic vs PCRE
 
@@ -260,9 +264,9 @@ expressions which support only a fraction of the features we've introduced above
 The `grep` and `sed` commands are examples.  (Most modern `grep` implementations now
 support a special flag `-e` that provides more features).
 
-Perl Compatible Regular Expressions (PCRE) is the Cadillac of regular expression
+The Perl Compatible Regular Expression (PCRE) is the Cadillac of regular expression
 support.  It contains everything we've discussed above and much more.
 
 The beginning of this article suggested you use an online regular expression tool
-as a learning and coding aid.  Most of them will indicate the subset of regular
+as a learning and coding aid.  Most such tools will indicate the subset of regular
 expressions they support.
