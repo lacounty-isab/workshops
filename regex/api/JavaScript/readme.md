@@ -88,27 +88,28 @@ These aren't used that often.  But they're there.
 
 ```
 > s
-'One animal chased another animal up the tree'
+'one animal chased another animal up a tree'
 > r
-/one (\w+).+other (\w+)/i
-> s.match(r)  /* Result will be an array */
-[ 'One animal chased another animal',
+/one (\w+) chased another (\w+)/
+> s.match(r)
+[ 'one animal chased another animal',
   'animal',
   'animal',
   index: 0,
-  input: 'One animal chased another animal up the tree' ]
+  input: 'one animal chased another animal up a tree' ]
 > s.replace(/animal/, 'cat')
-'One cat chased another animal up the tree'
+'one cat chased another animal up a tree'
 > s
-'One animal chased another animal up the tree'
+'one animal chased another animal up a tree'
 > s.replace(/animal/, 'cat').match(r)
-[ 'One cat chased another animal',
+[ 'one cat chased another animal',
   'cat',
   'animal',
   index: 0,
-  input: 'One cat chased another animal up the tree' ]
+  input: 'one cat chased another animal up a tree' ]
 > "nothing to match here".match(r)
 null
+>
 ```
 
 A couple of other observations are worth noting about the code

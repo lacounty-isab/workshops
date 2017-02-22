@@ -8,6 +8,16 @@ also used in programs where the search criteria is applied to a
 single string.  In data science applications, we apply regular
 expressions to vectors of strings.
 
+## Try It Yourself
+
+Whether you are following this tutorial, validating someone
+else's code, or writing your own code, online regular expression
+testers are helpful.  There are many to choose from.  Simply
+enter `online regular expression tester` into your favorite
+search engine.  One such example is
+
+<https://regex101.com>
+
 ## Basic Operators
 
 The most fundamental regular expression is just a plain string.
@@ -201,3 +211,58 @@ As purely a matching criteria, the added parenthesis do nothing extra.
 But when invoked within a programming environment that supports group captures,
 the return result of each match will be a two-element array.  The first element
 will be the name; the second element will be the start time.
+
+
+## Variants
+
+This would all be too easy if regular expression syntax was consistent
+among all its applications.  Unfortunately one must be mindful of the target
+implementation when crafting a regular expression.
+
+### Escaping
+
+The first concern is not really the fault of regular expressions implementations.
+It has to do with string representation in programming languages.  Consider the
+following statement expressed in no language in particular.
+
+```
+  x = "abc\n123\\xyz"
+```
+The `\n` represents a new line character.  It's an "escaped n".
+A backslash usually means the following character will be treated with a special
+meaning.  But what if you really do want to store a backslash in a string.
+In that case, you use a double-backslash to escape the escape.  So if we print
+the above contents of `x`, we get
+```
+abc
+123\xyz
+```
+This works fine in cases where backslashes don't appear often.  Unfortunately
+backslashes are very common in regular expressions.  Consider the following
+regular expression for the location of a file on a Windows file system.
+```
+x = "a\\\\b.txt"
+```
+First, each pair of backslashes is escaped to construct the string that contains
+```
+a\\b.txt
+```
+Then the regular expression parser converts the remaining pair to construct the
+fixed string
+```
+a\b.txt
+```
+
+### Basic vs PCRE
+
+Regular expressions have evolved over the years.  Some older tools use basic regular
+expressions which support only a fraction of the features we've introduced above.
+The `grep` and `sed` commands are examples.  (Most modern `grep` implementations now
+support a special flag `-e` that provides more features).
+
+Perl Compatible Regular Expressions (PCRE) is the Cadillac of regular expression
+support.  It contains everything we've discussed above and much more.
+
+The beginning of this article suggested you use an online regular expression tool
+as a learning and coding aid.  Most of them will indicate the subset of regular
+expressions they support.
