@@ -18,6 +18,17 @@ search engine.  One such example is
 
 <https://regex101.com>
 
+## Program It Yourself
+
+This page covers general regular expression syntax.
+In practice, regular expressions are applied with programming tools.
+This workshop include several programming examples.
+
+* [APIs](api/readme.md) - Application Programming Interfaces for various
+  programming languages
+* [Commands](commands/readme.md) - Command line utilities that accept
+  regular expressions to perform tasks.
+
 ## Basic Operators
 
 The most fundamental regular expression is just a plain string.

@@ -53,8 +53,8 @@ The `grep` command has the least context and is the simplest to use.
 These utilities are covered in more detail within their own subsections.
 
 * [grep](grep/readme.md)
-* sed
-* awk
+* [sed](sed/readme.md)
+* [awk](awk/readme.md)
 
 Please review the following section on *shell globs* if you are not
 familiar with how a shell parses a command before invoking a utility.
