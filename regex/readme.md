@@ -37,10 +37,7 @@ following line
 ```
 he will say hello when he sees her.
 ```
-because `hello` is in the line.  But searching for a plain string
-is not common with regular expressions because far simpler search
-facilities do that well already.
-
+because `hello` is in the line.
 How about if we want to find all words that begin with `he`.
 Searching for the string `he` in the above sentence will match
 
@@ -60,7 +57,7 @@ of a search.  Here are five good ones to start
 | Operator | Meaning |
 |----------|----------------------------------------------------------|
 | `.`      | An occurrence of any character.                          |
-| `*`      | Any number of occurrences of the previous pattern (including zero) |
+| `*`      | Any number of occurrences of the previous pattern (including zero occurrences) |
 | `?`      | Zero or one occurrences of the previous pattern          |
 | `+`      | One or more occurrences of the previous pattern          |
 | `\`      | Escape the regular expression meaning                    |
@@ -127,15 +124,21 @@ String options are more commonly used with gouping (see below)
 
 Above we saw how the backslash could suppress special interpretation of
 special characters.  `\.` means really match a period.  `\*` means really
-match an asterisk.  There are certain other character with the opposite
-effect.  The backslash takes otherwise benign characters and turns them
-into special classes.  There are many of these.  Here are a few common
-ones.
+match an asterisk.  There are certain other characters with the opposite
+effect: the backslash takes otherwise benign characters and turns them
+into special classes.  For example, a `\d` represents a digit character.
+There are many of these and they are very convenient.  But they are not
+available across all tools.  Some tools only support *bracketed expressions*.
+An equivalent bracket expression for `\d` is `[[:digit:]]`.  Finally, if
+none of these are available, you can always use `[0-9]`.
+Here are a few common ones.
 
-| Class | Description             |
-|-------|-------------------------|
-| `\s`  | space-like (space, tab) |
-| `\d`  | digit (same as [0-9])   |
+| Class | POSIX         | Base          | Description             |
+|-------|---------------|---------------|-------------------------|
+| `\s`  | `[[:space:]]` | `[ \t]`       | space-like (space, tab) |
+| `\d`  | `[[:digit:]]` | `[0-9]`       | digit characters        |
+| `\w`  | `[[:word:]]`  | `[A-Za-z0-9_]`| variable names          |
+
 
 For most character classes, their opposite is specified by a capital.
 
@@ -161,6 +164,11 @@ modifies the entire group.  The parenthesis characters themselves are
 | Expression | Match                    | No Match                    |
 |------------|--------------------------|-----------------------------|
 | `f\(\d+\)` | `f(1)`, `f(4532)` | `f (12)`, `f12`, `f()` |
+
+How do you remember when to escape and when not to?  *You don't.*  It's
+too confusing and it's inconsistent between different implementations.
+When you're about to write a regular expression for a certain context,
+test to see whether parenthesis are escaped.
 
 ## Groups
 
@@ -281,3 +289,10 @@ support.  It contains everything we've discussed above and much more.
 The beginning of this article suggested you use an online regular expression tool
 as a learning and coding aid.  Most such tools will indicate the subset of regular
 expressions they support.
+
+## Reference
+
+A wealth of information about regular expressions and various APIs is available
+at
+
+<http://www.regular-expressions.info/posix.html>

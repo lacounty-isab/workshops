@@ -29,14 +29,27 @@ The distinguishing characteristic among all line oriented utilities
 is that user only has to address the line processing.
 
 
-## Gnu Utilities
+## GNU Utilities
 
 This section will introduce three line oriented utilities that are
 common within operating system environments similar to Linux.
 While often assumed to be *part of the operating system*, they
 are actually produced by the [GNU](https://www.gnu.org/) organization.
 [Binary downloads for Windows](http://gnuwin32.sourceforge.net/packages.html)
-are also available.
+are also available.  If you download these free utilities from the internet,
+be sure to validate their MD5 hashes as published on the package homepage.
+On Windows 7, the MD5 hash of a file can be determined with the following
+command.
+
+```
+certUtil -hashfile <filename> MD5
+```
+
+The screenshot below shows this command being run against a `grep` setup
+program (in black).  The value of the MD5 hash is reconciled with the
+MD5 hash published by the developers on the web site.
+
+![Check MD5](checkMD5.png)
 
 It's helpful to classify these three utilities in terms of their
 increasing range of edit context.

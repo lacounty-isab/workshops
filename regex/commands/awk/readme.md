@@ -115,6 +115,17 @@ END {
 }
 ```
 
+The following diagram shows AWK in action.
+You can see how the text to the left is semi-structured.
+This is output from an application monitor command.
+The format is easy for humans to read; but importing this kind
+of information into a spreadsheet could be difficult.
+AWK is ideally suited for this type of transformation that combines
+information across several lines of input into a single line of
+CSV output.
+
+![AWK in Action](awkRun.png)
+
 Let's write script that demonstrates holding state across lines.
 The script `loginSummary.awk` displays a summary of the logins from
 `logins.txt`.  The input file begins as
