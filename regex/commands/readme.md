@@ -51,6 +51,13 @@ MD5 hash published by the developers on the web site.
 
 ![Check MD5](checkMD5.png)
 
+If you have [docker](https://www.docker.com/what-docker) installed,
+you can download the
+[lacounty/regex image](https://hub.docker.com/r/lacounty/regex/)
+and follow along.
+
+-----------------------------
+
 It's helpful to classify these three utilities in terms of their
 increasing range of edit context.
 
