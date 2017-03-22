@@ -32,27 +32,28 @@ This workshop include several programming examples.
 ## Basic Operators
 
 The most fundamental regular expression is just a plain string.
-For example, the regular expression `hello` will match the
+For example, the regular expression `help` will match the
 following line
 ```
-he will say hello when he sees her.
+he renders the help when he sees her
 ```
-because `hello` is in the line.
+because `help` is in the line.
 How about if we want to find all words that begin with `he`.
 Searching for the string `he` in the above sentence will match
 
 * `he`
-* `hello`
+* `the`
+* `help`
 * `when`
 * `her`
 
 We matched `when` even though the `he` is in the middle of the word,
 not the beginning of the word.  We can try matching ` he` that begins
 with a space.  That omits `when` from the results.  But it also omits
-`he` since that was at the beginning of the line with no leading space.
+the `he` at the beginning of the line since it had no leading space.
 
 Regular expression operators provide special meanings in the context
-of a search.  Here are five good ones to start
+of a search.  Here are five good ones to start.
 
 | Operator | Meaning |
 |----------|----------------------------------------------------------|
@@ -96,7 +97,7 @@ Square brackets denote character selection from among a fixed set.
 * `[brech]at` - matches `bat`, `rat`, `eat`, `cat`, and `hat`
 * `[bc]a[r-t]` - matches `bar`, `car`, `bas`, `cas`, `bat`, and `cat`
 
-The least example shows how the dash signifies a range of characters.
+The last example shows how the dash signifies a range of characters.
 Common range expressions include `[a-z]` for lower case, `[A-Z]` for
 upper case, and `[0-9]` for digits.
 
@@ -109,11 +110,42 @@ characters*.
 |------------|--------------------------|-----------------------------|
 | `[^ab]12`  | `c12`, `d12`, `1 12`     | `a12`, `b12`, `cab12`       |
 
+
+## Begin and End
+
+Sometimes you want to match a pattern *only* if it appears at the beginning
+or end of a line.  Two special characters designate the *beginning* and *end*.
+
+* `^` - The start of a line
+* `$` - The end of a line
+
+The following matches a line only if it *begins* with a number.
+
+| Expression | Match                    | No Match                    |
+|------------|--------------------------|-----------------------------|
+| `^\d+`     | `12ab`, `12 ab`, `1 12`  | `a12`, `b 12`, ` 12ab`      |
+
+Whereas the next example only matches if a number appears at the *end*.
+
+| Expression | Match                    | No Match                    |
+|------------|--------------------------|-----------------------------|
+| `\d+$`     | `ab12`, `ab 12`, `1 12`  | `12a`, `12 b`, `ab12 `      |
+
+Note the dual use of the caret character `^`.  In the previous section
+it was used to negate character ranges.  In this section it indicates
+the beginning of a string or line.
+
+Another notion of beginning and ending deals with words.  The `\b`
+expression indicates a **word boundary**.  It can be at the beginning
+or end of a word.  This helps us match occurrences of `he` in our
+original example.  The expression `\bhe\b` will match `he` at the
+beginning of a line or in the middle.  But it will not match
+`when`.
+
 ## String Options
 
 The vertical bar `|` delimits string alternatives.  It's similar to a range;
 but the individual elements can be strings instead of single characters.
-
 
 * `cat|run|go` matches `cat`, `run`, or `go`
 * `c|r|g` is the same as `[crg]`
@@ -142,14 +174,13 @@ Here are a few common ones.
 
 For most character classes, their opposite is specified by a capital.
 
-
-| Class | Description             |
-|-------|-------------------------|
+| Class | Description                |
+|-------|----------------------------|
 | `\S`  | non-space-like             |
 | `\D`  | non-digit (same as [^0-9]) |
+| `\W`  | non-whitespace             |
 
 Here are some examples.
-
 
 | Expression | Match                    | No Match                    |
 |------------|--------------------------|-----------------------------|
@@ -169,6 +200,9 @@ How do you remember when to escape and when not to?  *You don't.*  It's
 too confusing and it's inconsistent between different implementations.
 When you're about to write a regular expression for a certain context,
 test to see whether parenthesis are escaped.
+
+Now let's revisit our first example.  How do we isolate the `he` with
+getting other words that contain `he`.
 
 ## Groups
 
