@@ -1,0 +1,375 @@
+\documentclass[]{article}
+
+\usepackage{marginnote}
+\usepackage{verbatim}
+\usepackage[letterpaper,left=3cm,right=4cm]{geometry}
+
+\usepackage{graphicx}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{allcolors={blue}}
+\hypersetup{pdftitle={Probability Distribution Workshop}}
+\hypersetup{pdfauthor={Paul Glezen}}
+\hypersetup{pdfcreator={Latex}}
+\hypersetup{pdfkeywords={ISAB, Workshop, Probability, Distributions}}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+\title{Probability Distribution Workshop}
+\author{Los Angeles County\\ISAB}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This workshop is a review of common probability distributions.
+It has two principal goals.
+
+\begin{enumerate}
+
+\item Serve as a review for people that have not studied this material
+   for a while.
+
+\item Provide exercise for people to familiarize themselves with their
+   Python and R distributions.
+
+\end{enumerate}
+
+The exercises themselves are detailed in \emph{Jupyter notebooks} for 
+Python and \emph{R markdown} for R.  
+
+\subsection{Availability}
+
+The source code for this document
+along with the Python and R exercises are available from the ISAB
+GitHub repository.
+
+\href{https://github.com/lacounty-isab/workshops/tree/master/distributions}{https://github.com/lacounty-isab/workshops/tree/master/distributions}
+
+\subsection{Who are We?}
+
+ISAB (Information Systems Advisory Body) is a subcommittee of the 
+CCJCC (Countywide Criminal Justice Coordination Committee)
+of Los Angeles County, California.
+ISAB is a multi-jurisdictional organization serving the justice
+communities within the county. 
+The ISAB Data Science Committee (IDSC) addresses data science issues
+faced by the community. This article addresses skill development.
+It is not intended as an endorsement of any one product
+or technology.
+
+More details on ISAB and CCJCC can be found on their websites.
+
+\begin{itemize}
+\item[ISAB] \href{http://ccjcc.lacounty.gov/Subcommittees-Task-Forces/Information-Systems-Advisory-Board-ISAB}{http://ccjcc.lacounty.gov/Subcommittees-Task-Forces/Information-Systems-Advisory-Board-ISAB}
+\item[CCJCC] \href{http://ccjcc.lacounty.gov/}{http://ccjcc.lacounty.gov/}
+\end{itemize}
+
+\section*{Random Variables}
+
+Since this article is not intended to be a foundational exposition on
+probability theory, we'll jump right in with a review of random variables.
+Recall that an event space $\Omega$ is a set of possible outcomes for an
+experiment.  In the case of flipping a single coin, we would have
+
+$$
+\Omega = \{\mbox{heads}, \mbox{tails}\}
+$$
+
+A random variable $X$ is an assignment from the event space to the real
+numbers.
+
+$$
+X: \Omega \rightarrow {\rm I\!R}
+$$
+
+An example for the case of a coin flip might be
+
+\begin{eqnarray*}
+X(\mbox{tails}) & = & 0\\
+X(\mbox{heads}) & = & 1
+\end{eqnarray*}
+
+A less trivial example would be flipping a coin 100 times where
+the outcome is the number of heads.  There are many random varialbes
+you could define on this event space.
+
+\begin{itemize}
+\item the number of heads,
+\item the number of tails,
+\item 0 if even number of heads, 1 otherwise,
+\item greatest number consecutive heads,
+\item number of heads minus number of tails.
+\end{itemize}
+
+There are many more examples.  Usually the mapping is straight
+forward.  In fact, many times the mapping is so straight forward
+that we forget that the event and the random variable are not the
+same thing!
+
+The goal of the random variable is to convert the experiment
+outcomes from an abstract "set of things" to a set of numbers.
+This isn't hard when the set of things naturally maps to a set
+of numbers in a useful way.  When it's not so natural, we
+sometimes have to go back to the definition the right mapping.
+Ultimately the goal is to get a set of number with which we
+can analyze the experiment quantitatively.
+
+\section{Distributions}
+
+Once we have a random variable defined for an experiment that
+maps outcomes to real numbers, the next question is to ask
+how the values of the random variable are likely to be
+distributed along the real axis after performing the
+experiment many times.  A central concept to answering
+this question is the \emph{distribution}.
+
+$$
+F_X(t) = P(X \le t)
+$$
+
+If we think back to the example in the previous section
+of flipping a coin 100 times where the random variable X
+represented the number of heads, then $F_X(t)$ represents
+the probability that the number of heads is less than or
+equal $t$.  Some obvious values are
+
+\begin{eqnarray*}
+F_X(-1) & = & 0\\
+F_X(100) & = & 1
+\end{eqnarray*}
+
+The first equality follows from the fact we can't have a
+negative count of the number of heads.  The second
+equality follows from the fact that we can't encounter
+more than 100 heads if we only flip the coin 100 times.
+A graph for all values of $t$ is shown below.
+
+  \includegraphics[height=6cm,keepaspectratio]{cdf1.png}
+
+The function $F_X$ is often called the
+\emph{cumulative distribution} since it represents the
+accumulation of probability as $t$ covers more of the
+real axis.  In the figure above for a binomial
+cumulative distribution for 100 trials of a fair coin,
+we can see that probability of observing less than 40
+heads is close to zero.  The probability of observing
+less than 60 is close to one.  That tells us that the
+most likely scenarios are between 40 and 60.
+
+\subsection{Discrete Densities}
+
+\emph{Discrete distributions} describe experiments where the
+random variable takes on discrete values.  These are
+often associated with counts.  Their notation will often
+be written as $P(X \le n)$ to emphasize the discrete character
+of $n$. (Note that $n$ doesn't have to be an integer.)
+
+A \emph{discrete density} $f_X$ corresponding to a discrete
+distribution $F_X$ assigns a probability to each discrete value
+of the random variable.  If the random variable only takes
+integer values, then the density and the distribution
+are related in the following ways.
+
+\begin{eqnarray*}
+f(n) & = & F(n) - F(n-1)\\
+F(n) & = & \sum_{i \le n} f(i)\\
+\sum_{i=-\infty}^{\infty} f(i) & = & 1
+\end{eqnarray*}
+
+The X subscripts were dropped for brevity; but in general
+one writes $F_X$ or $f_X$ to associate them with the random
+variable they represent.
+
+Many useful quantities can be expressed in terms of a density.
+First, there is the \emph{mean}.
+
+\begin{equation} \label{discrete_mean}
+E(X) = \sum_{i = -\infty}^{\infty} i \cdot f_X(i)
+\end{equation}
+
+And the variance.
+
+\begin{equation} \label{discrete_var1}
+\mbox{Var}(X) = \sum_{i = -\infty}^{\infty} (i - E(X))^2 \cdot f_X(i)
+\end{equation}
+
+A popular alternative expression for the variance can be
+obtained by expanding the square.
+
+\begin{eqnarray}
+\mbox{Var}(X) & = & \sum_{i=-\infty}^{\infty} (i - E(X))^2 \cdot f_X(i) \nonumber \\
+   & = & \sum_{i=-\infty}^{\infty} (i^2 - 2iE(X) + E(X)^2) \cdot f_X(i) \nonumber \\
+   & = & \sum_{i=-\infty}^{\infty} i^2 \cdot f_X(i) 
+       - 2E(X) \sum_{i=-\infty}^{\infty} i \cdot f_X(i)
+       - E(X)^2 \sum_{i=-\infty}^{\infty} f_X(i) \nonumber \\
+   & = & E(X^2) - 2E(X) E(X) - E(X)^2 \nonumber \\
+   & = & E(X^2) - E(X)^2   \label{discrete_var2}
+\end{eqnarray}
+
+This is often expressed in words as ``the mean squared minus the
+square of the mean.''  In the special case where the mean is zero,
+the variance is equal the mean squared.
+
+The mean and variance are special cases of \emph{moments}.
+The $n^{\mbox{th}}$ moment is defined as
+
+$$
+\mbox{Var}(X) = \sum_{i = -\infty}^{\infty} (i - E(X))^n \cdot f_X(i)
+$$
+
+We've already seen that the first moment is the mean.
+The second moment is the variance.  Higher moments are not
+discussed as often, but they still come in handy.  The
+third moment is the \emph{skew}.  It describes the degree
+to which a distribution is lopsided with respect to its
+mean.  The fourth moment is the \emph{kurtosis}.  It
+describes the extent to which a distribution avoids its mean.
+
+An important tool used in working with distributions is the
+\emph{moment generating function}.  It's defined as
+
+\begin{equation} \label{discrete_mgf}
+m_X(t) = E(e^{it}) = \sum_{i=-\infty}^{\infty} e^{it} f_X(i)
+\end{equation}
+
+At first glance it looks like way more trouble than it could
+possibly be worth.  But moment generating functions turn out
+to be important both practically and theoretically.
+
+The theoretical importance derives from analytic function
+theory which describes a class of functions that are completely
+determined in some neighborhood by the derivatives of all
+orders at a single point.  Moment generating functions are
+used to show how, in most cases, a distribution is uniquely
+determined by the value of all its moments.  This result
+is encountered in many proofs to show how a particular
+distribution is, in fact, equal to a known distribution.
+
+The practical use is that moment generating functions
+often simplify the symbolic calculation of the mean and
+variance for many distributions.  The results we need
+for the mean and variance are the following.
+
+Given $m_X(t)$ as described in (\ref{discrete_mgf}), the
+first and second moments of X are, respectively,
+
+\begin{eqnarray}
+E(X) & = & m_X'(0) \label{discrete_mgt_d1} \\
+E(X^2) & = & m_X''(0) \label{discrete_mgt_d2}
+\end{eqnarray}
+
+It's not immediately obvious how this makes things any
+easier.  The examples below will bear it out.
+
+\subsubsection{Binomial Distribution}
+
+We've been using the binomial distribution as an example
+for much of the introduction.  Recall that the experiment is that
+we perform a sequence of $n$ independent Bernoulli trials, each
+of which has probability $p$ of being successful.  The outcome is
+the number of successful trials.  Let's consider what the
+binomial density looks like.
+
+Let $i$ be the number of successes.  Since $i$ is a count between
+zero and $n$, $i$ cannot be less than zero or greater than $n$.  So
+
+$$
+p(i) = 0, i \not\in 0, 1, 2, \ldots n
+$$
+
+For $i \in 0 \ldots n$ there are $i$ successes and $n-i$ failures.
+The probability of such a sequence is $i^p \cdot (n-i)^{(1-p)}$
+since each outcome is independent of the one before it.  We then
+have to account for the number of positions the $i$ occurrences
+could have occurred among the $n$ trials.  There are $n$ ways to
+pick the first one.  For each one of these, there are $n-1$ ways
+to pick the next one.  This continues until we have picked $i$
+times down to $n-i+1$.  This leads to the following expression
+with $i$ factors for the $i$ chosen positions.
+
+$$
+n \cdot n-1 \cdots n-i+1
+$$
+
+But this product distinguishes between the order of the successes.
+For example, if the first two are successes, it counts first then
+second separately from second and then first.  The order doesn't
+matter.  So we divide by the number of permutations of $i$ elements,
+which is $i!$: $i$ ways to choose the first one, $i-1$ ways to
+choose the second one, down to 1.  So the number of ways we
+can choose $i$ elements from $n$ elements without replacement
+divided by the number of ways we could have ordered $i$ elements,
+we get 
+
+\begin{eqnarray*}
+\frac{n(n-1) \cdots (n-i+1)}{i!} & = & \frac{n(n-1) \cdots (n-i+1)}{i!} \cdot
+         \frac{n-i}{n-i} \cdot \frac{n-i-1}{n-i-1} \cdots 
+         \frac{2}{2} \cdot \frac{1}{1} \\
+      & = & \frac{n!}{i! (n-i)!} \\
+      & = & {n \choose i}
+\end{eqnarray*}
+
+The notation in the last expression is read ``$n$ choose $i$''.
+
+Whew!
+
+So a particular occurrence of $i$ successes and $n-i$
+failures occurs with probability $p^i \cdot (1-p)^{n-i}$.
+Since there are ${n \choose i}$ ways this can happen, the
+probability this can happen in \emph{some way} 
+(whichever way, we don't care) is
+
+\begin{equation} \label{binomial_density}
+f(i) = {n \choose i} p^i (1-p)^{n-i}, i \in 0, \ldots, n
+\end{equation}
+
+This is a probability, the sum of all possible values
+should add to one.  Using the binomial formula, we have
+
+\begin{eqnarray*}
+\sum_{i=-\infty}^{\infty} f(i) & = & \sum_{i=0}^{n} f(i) \\
+   & = & \sum_{i=0}^{n} {n \choose i} p^i (1-p)^{n-i}  \\
+   & = & [ p + (1-p) ]^2 \\
+   & = & 1^2
+\end{eqnarray*}
+
+Great! The probabilities sum to one.  Now let's evaluate
+the mean and variance of this distribution.  From
+(\ref{discrete_mean}) we have to evaluate
+
+$$
+\sum_{i=0}^n i {n \choose i} p^i (1-p)^{(n-i}
+$$
+
+This is not easy to solve in a closed form.  It's
+one of those times where we appeal to the moment generating
+function.
+
+\begin{eqnarray*}
+m_X(t) & = & E(e^{it}) \\
+   & = & \sum_{i=0}^n e^{it} {n \choose i} p^i (1-p)^{(n-i)} \\
+   & = & \sum_{i=0}^n {n \choose i} (pe^t)^i (1-p)^{(n-i)} \\
+   & = & (pe^t + 1 - p)^n \\
+   & = & (pe^t + q)^n
+\end{eqnarray*}
+
+In the last step, $1-p$ is replaced with $q$.  We just
+remember that $p + q = 1$.  Now
+differentiate the moment generating function twice with
+respect to $t$.
+
+\begin{eqnarray*}
+m_X'(t) & = & n(pe^t + q)^{(n-1)} pe^t \\
+m_X''(t) & = & n(n-1)(pe^t + q)^{(n-2)} pe^t pe^t +
+          n(pe^t + q)^{(n-1)} pe^t \\
+   & = & npe^t(pe^t + q)^{(n-2)}((n-1)pe^t + pe^t + q) \\
+   & = & npe^t(pe^t + q)^{(n-2)}(npe^t + q)
+\end{eqnarray*}
+
+\end{document}

@@ -1,0 +1,48 @@
+---
+title: "Distributions"
+output: pdf_document
+---
+
+# 1. Introduction
+
+This is the R track of the *Distributions* workshop prepared by
+Los Angeles County, ISAB.  Section numbering is intended to be
+consistently referenced from the main workshop document available
+at
+
+<https://github.com/lacounty-isab/workshops/tree/master/distributions>
+
+## 1.1. Preparation
+
+Since R is oriented toward statistics, no special preparation is
+required to work with distributions.
+You can obtain a list of *baked-in* distributions by entering
+
+```{r, eval=FALSE, echo=TRUE}
+?Distributions
+```
+
+These are all part of the **stats** package which is available
+in every R installation.
+
+## 1.2 Conventions
+
+R has a consistent naming convention for functions that work
+with distributions - a single letter followed by the name of
+the distribution.  The four single letters are
+
+* `d` - density function
+* `p` - percent point function (CDF)
+* `q` - inverse of CDF
+* `r` - random sampler
+
+If we take the binomial distribution as an example, then
+`dbinom` is a *binomial density function*.
+
+```{r dbinom1}
+dbinom(4, 10, 0.3)
+```
+
+This gives the probability of getting 4 successes after 10
+attempts where each success has a probability of 0.3;
+which is about `r round(dbinom(4,10,0.3), 3)*100` percent.
