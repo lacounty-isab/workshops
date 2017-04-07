@@ -43,7 +43,7 @@ for helping you through the installation wizard.
   deselect `Associate .sh files to be run with Bash`.  You should
   be able to do all your Git work from your DOS command line.
 
-  ![Git Components](install-win1.png)
+  ![Git Components](images/install-win1.png)
 
 * Under **Adjusting your PATH environment**, select the middle
   option for `Use Git from the Windows Command Prompt`.
@@ -515,7 +515,50 @@ git commit -a -m "A commit without explicit staging."
 
 This command will commit all changes of the working copy.  Notice I add the
 "explicit" qualifier to "staging".  That's because it's still happening.  That's
-just how Git works.  
+just how Git works.
+
+#### Commit Hash
+
+A [hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)
+function takes a string and converts it to a sequence of hexadecimal
+digits.  This string of hexidecimal digits is informally known as
+*a hash*.  (In this context *hash* is a noun.  But the act of calculating
+a hash is sometimes called *hashing*; so it's also a verb.)
+The idea is that if two strings are different, their respective
+hashes will also be different.  While it's theoretically possible to
+have two files hash to the same output, in practical terms, this is
+very difficult to find.  
+A "good hash function" has the property that if you change the input
+string even slightly, the output is completely different.
+A great deal of digital cryptography relies on this difficulty.
+
+When you add a file to the Git staging area, the name of stored
+content (under the `.git` folder) is a
+[SHA-1](https://en.wikipedia.org/wiki/SHA-1) hash of the content.
+The output of a SHA-1 hash is 40 hexadecimal characters.  When you
+commit your changes, all the SHA-1 hashes are collected together,
+along with the text of your commit comment, and used to create a
+*commit hash*.  This commit hash accounts for
+
+* your commit comment,
+* all the files in your commit,
+* the commit hashes of the previous commits from which your commit derives.
+
+This 40-character string is a check on every version of every file
+since the repository was created.  That's why *there is no such thing
+as a Git repository corruption*.  If the hashes don't match the content
+(because of a network error during a transfer or because of someone trying
+to secretly change the record of the past), the Git sync commands will
+immediately detect the inconsistency and fail the operation.  So it
+may fail to reproduce a repository; but it will never reproduce a corrupt one.
+
+As mentioned above, hashes are used to represent many things in Git.  But
+we are mostly concerned only with the **commit hash** that represents the
+state of the entire repository at a given time.  A 40-character hash
+is awkward to type and copy.  But in most cases, just the first few
+digits are needed to uniquely determine a commit.  The need for more digits
+[depends on the number of commits](https://github.com/pglezen/githash).
+
 
 ****
 
@@ -535,11 +578,497 @@ started taking hold about five years ago.  "Staging area" is more
 intuitive; "index" has fewer syllables.
 
 
-## Log and Diff
+## Log
 
-options and range specifications for the log and diff commands;
-helpful macros.
+The [git log](https://git-scm.com/docs/git-log) command displays
+information about commits.
+As simple as this sounds, there is a bewildering number of options
+to customize what you see and what you hide.  Here is a basic
+form of the `git log` command.
+
+```
+isabmbp1:~/idsc/workshops$ git log -2
+commit 3c64c71adef0c0ccd9beabd0ced94d5477f7cff1
+Author: Paul Glezen <pglezen@isab.lacounty.gov>
+Date:   Thu Apr 6 07:30:45 2017 -0700
+
+    Added Basic Lifecycle section to Git workshop.
+
+commit cf5fdf20ee36addd9c40d24fdce1894ef8eee3f7
+Author: Paul Glezen <pglezen@isab.lacounty.gov>
+Date:   Wed Apr 5 07:00:45 2017 -0700
+
+    Added Git-on-Windows installation section.
+```
+
+* The `-2` option is important.  It limits the output to two entries.
+  Without this option (or some other range restriction), the output
+  will list all commits that could scroll your screen for hundreds
+  of lines.
+
+* The entries are listed in **reverse chronological** order.
+
+Another way to restrict the number commits is through a relative
+time.
+
+```
+isabmbp1:~/idsc/workshops$ git log --since 1.day
+commit 3c64c71adef0c0ccd9beabd0ced94d5477f7cff1
+Author: Paul Glezen <pglezen@isab.lacounty.gov>
+Date:   Thu Apr 6 07:30:45 2017 -0700
+
+    Added Basic Lifecycle section to Git workshop.
+isabmbp1:~/idsc/workshops
+```
+
+So far, we've restricted the commit range by time only.
+We can also restrict by space.  We can specify a file or
+a directory so that we only see Git commits affecting
+those components.  The following command lists commits
+that affect files in the `Tables` directory for the
+last two months.
+
+```
+git log --since 2.month -- Tables
+```
+
+The `--` is a safety mechanism so that `Tables` is interpreted
+as a file or directory and not the name of a branch.  It's not
+always required; but when you see it, that's what it does.  It's
+just a separator.
+
+## Diff
+
+The `git diff` command is helpful for checking the differences
+between
+
+* two commits
+* the working copy and the last commit
+* the working copy and the staging area
+* the staging area and the last commit
+
+With no options, `git diff` returns the difference between the
+working copy and the staging area.  That's a common use case
+since it shows you what you're about to stage.
+
+The output of the `diff` command is similar to the classical
+Unix diff.  The first few lines of output is just header.
+Further down, you'll see lines that begin with either a minus
+`-` or a plus `+`.  The way to read these is that the
+`-`-prefix lines are deleted and the `+`-prefix lines are
+added.
+
+```
+diff --git a/git/readme.md b/git/readme.md
+index d04da0b..45bd5c2 100644
+--- a/git/readme.md
++++ b/git/readme.md
+@@ -535,7 +535,77 @@ started taking hold about five years ago.  "Staging area" is more
+ intuitive; "index" has fewer syllables.
+
+
+-## Log and Diff
++## Log
++
++The [git log](https://git-scm.com/docs/git-log) command displays
++information about commits.
+```
+
+In the case above, you can see that
+```
+## Log and Diff
+```
+was replaced with
+```
+## Log
+
+The [git log](https://git-scm.com/docs/git-log) command displays
+information about commits.
+```
 
 ## Branches
 
-list, change, create, and delete branches
+Branches are a very common phenomenon with Git, much more so than
+with other source control tools.  This is pragmatic with Git because
+a branch is nothing more than a pointer to the commit tree.  The key
+to understanding branches is to understand the commit trees.  
+
+### DAG
+
+A commit tree is a directed acyclic graph (DAG).  
+An example of a DAG is shown below.
+
+![Directed Acyclic Graph](images/dag1.png)
+
+* It's a *graph* in that it has vertices and edges
+  (or points and lines if you prefer).
+* It's *directed* in that each edge has a direction
+  (indicated by an arrow).
+* It's *acyclic* in that you can't traverse a cycle (or loop)
+  by following the edges in their prescribed direction.
+
+A Git tree is a DAG where the vertices are commits and the lines
+represent changes from one commit to the next.  The direction of
+the Git arrows are reverse of what one typically sees in a source
+control tree: *Git arrows point to the past, not the future*.
+In the figure above, `A` is the initial commit.  `B` is a commit
+from which two branches emanate.  `D` is a merge commit.
+
+It's good to draw the DAGs on paper as you initially work through
+branch and merge scenarios.  After a while you start to see them in
+your head and there is less need to write them down.
+Since a branch is simply a pointer into our DAG commit tree,
+it's helpful to work through a branch/merge scenario and observe
+how the structure of the DAG and branch pointers change.
+But first, a quick note on branch names.
+
+### Branch Names
+
+There is no "special branch" in Git from a technical standpoint.
+But there is a very popular convention of using a branch named
+`master` for the main branch.  When a repository is initialized,
+a `master` branch is created by default.
+
+**HEAD** is technically a branch pointer (whereas branches are
+commit pointers).  So `HEAD` is a pointer to a pointer.  In
+practical terms, `HEAD` determines "which branch you're on".
+We can also see this in implementation terms by peeking
+directly into the Git repository (inside the `.git` folder).
+
+```
+$ cat .git/HEAD
+ref: refs/heads/master
+$ cat .git/refs/heads/master
+5567a3e7b3724d116a9d7344d412aaf7ff2aba4c
+isabmbp1:~/pix/cloverleaf/git/site$
+```
+
+The file `HEAD` contains a reference to a branch, in this
+case `master`.  The file `.git/refs/heads/master` points
+to a commit.
+
+### Basic Scenario
+
+Let's say we have the following commit tree.
+The green circles represent commits.  I've used capital
+letters instead of commit hashes to label them.
+There are two commit so far, `A` and `B`.
+
+![workflow1](images/workflow01.png)
+
+Branches are represented by blue boxes.  In the
+present case, there is only the `master` branch
+which is represented by `M`.  `master` is the active
+branch because `HEAD` is pointing to it.
+
+```
+isabmbp1:~/somewhere/workflow$ git logdate
+* 89e5100 2017-04-07 [Paul Glezen] Added introduction.
+* b668882 2017-04-07 [Paul Glezen] Initial version
+isabmbp1:~/somewhere/workflow$ git branch
+* master
+```
+
+In this example
+
+* commit `B` corresponds to `89e5100`
+* commit `A` corresponds to `b668882`
+
+Let's create a new branch named `B1` in order to begin
+some new work.
+
+```
+isabmbp1:~/somewhere/workflow$ git checkout -b B1
+Switched to a new branch 'B1'
+isabmbp1:~/somewhere/workflow$ git status
+On branch B1
+nothing to commit, working tree clean
+```
+
+![New branch](images/workflow02.png)
+
+No changes of commits occurred, just pointers.
+This is actually shorthand for two commands:
+
+```
+git branch B1
+git checkout B1
+```
+
+The first created the `B1` square.  The second moved
+`HEAD` to point to `B1`.  The `-b` in the short-cut
+caused the branch creation; otherwise it is an error
+to `checkout` a branch that doesn't exist.
+
+Now I'll edit the document and commit again.
+
+```
+isabmbp1:~/somewhere/workflow$ git branch
+* B1
+  master
+isabmbp1:~/somewhere/workflow$ vi readme.md
+isabmbp1:~/somewhere/workflow$ git add readme.md
+isabmbp1:~/somewhere/workflow$ git commit -m "Added design section."
+[B1 4e9d53e] Added design section.
+ 1 file changed, 4 insertions(+)
+```
+
+The response from the commit message indicates the commit was added
+to `B1` and that its hash starts with `4e9d53e`.  This corresponds
+to commit `X` on the diagram.
+
+![First branch commit](images/workflow03.png)
+
+I drew the `X` commit at an angle to express my intention that
+this commit is a branch separate from `master`.  But there is nothing
+in the graph that makes this so.  I just drew it this way.
+Let's reconcile the logs and the branch pointers.
+
+```
+isabmbp1:~/somewhere/workflow$ git logdate
+* 4e9d53e 2017-04-07 [Paul Glezen] Added design section.
+* 89e5100 2017-04-07 [Paul Glezen] Added introduction.
+* b668882 2017-04-07 [Paul Glezen] Initial version
+isabmbp1:~/somewhere/workflow$ git branch -v
+* B1     4e9d53e Added design section.
+  master 89e5100 Added introduction.
+```
+
+The asterisk next to `B1` in the `git branch -v` output shows that
+`B1` is still our current branch.  `master` is still pointing to
+`B`; but `B1` has advanced to `X`.
+
+I make one more change to fix typos and commit.
+
+![Second branch commit](images/workflow04.png)
+
+I'm done and ready to merge this to the `master` branch.
+Merging is *always* done relative to the target branch.
+In this case, the target is `master`.  So I need to
+change to the `master` branch.
+
+```
+$ git checkout master
+Switched to branch 'master'
+$ git branch
+  B1
+* master
+```
+
+When we changed to the `master` branch, all the files in the
+working copy changed, too.  If we peek into our files, all
+the changes we added on the `B1` branch are no longer visible.
+
+![Switch to back to master](images/workflow05.png)
+
+Now merge the `B1` changes to `master`.
+
+```
+$ git merge B1
+Updating 89e5100..32b8636
+Fast-forward
+ readme.md | 4 ++++
+ 1 file changed, 4 insertions(+)
+```
+
+Notice the phrase `Fast-forward`.  This means it was a
+"trivial" merge.  Instead of merging one set of changes
+into another set of changes, we only had one set of changes
+to begin with.  This amounts to simply advancing the
+`master` pointer.
+
+![Fast-forward](images/workflow06.png)
+
+This is fairly common.  You create a branch on which to undertake
+a change to prepare for the *possibility* other work might occur
+concurrently.  But when it comes time to merge, you learn that no
+other commits have been made on `master`.  So at the end of the
+day, it doesn't look like a merge at all.
+
+But what if there had been a commit to `master` before the
+attempt to merge.  The picture below is very nice.  But what
+if we con't have a nice picture and we want to determine what
+has happened on each fork?
+
+![Non-trivial merge](images/workflow07.png)
+
+The `git log` command supports a "double-dot" syntax that specifies
+set difference.
+
+```
+$ git logdate master..B1
+* 32b8636 2017-04-07 [Paul Glezen] Fixed typos.
+* 4e9d53e 2017-04-07 [Paul Glezen] Added design section.
+```
+
+The expression `master..B1` means the following.
+
+1. Start with the commit at `B1`, follow the arrows all the way to
+   the end, and consider this the "B1 set".
+2. Start with the commit at `master`, follow the arrows all the way
+   to the end, and consider this the "master set".
+3. Perform set subtraction: remove all elements in `master` from `B1`.
+4. Print log entries for whatever elements are left.
+
+Looking up at the diagram, we see this amounts to precisely those commits
+that are part of the `B1` branch, but not the `master` branch.  These are
+the changes to be **merged from**.  We can see from the output there are
+two commits on `B1` since the branch from `master`.
+
+What about the **merged to**?  We just flip the arguments.
+
+```
+$ git logdate B1..master
+* f092565 2017-04-07 [Paul Glezen] Added Favorite to title.
+```
+
+This is consistent with the diagram.  There has been one commit to `master`
+since `B1` branched off.  Because this set is **not empty**, there will be
+no possibility of a fast-forward merge.
+
+```
+isabmbp1:~/somewhere/workflow$ git merge B1
+Auto-merging readme.md
+Merge made by the 'recursive' strategy.
+ readme.md | 4 ++++
+ 1 file changed, 4 insertions(+)
+```
+
+This merged the changed lines in `B1` to the lines that changed
+in `master`.
+
+![merge done](images/workflow08.png)
+
+This was painless because the changed lines from `B1` were **different**
+from the changed lines in `master`.  If both branches had changed the
+same line, that would have introduced a *merge conflict*.  These have to
+be resolved manually.  But that's a topic for next week.
+
+The log command gives us the following picture.
+
+```
+isabmbp1:~/somewhere/workflow$ git logdate
+*   f77e769 2017-04-07 [Paul Glezen] Merge branch 'B1'
+|\  
+| * 32b8636 2017-04-07 [Paul Glezen] Fixed typos.
+| * 4e9d53e 2017-04-07 [Paul Glezen] Added design section.
+* | f092565 2017-04-07 [Paul Glezen] Added Favorite to title.
+|/  
+* 89e5100 2017-04-07 [Paul Glezen] Added introduction.
+* b668882 2017-04-07 [Paul Glezen] Initial version
+```
+
+Not bad for the command line. From a coding perspective, we're done.
+But from a house cleaning perspective, we still have that `B1` pointer
+hanging around, even though we don't need it anymore.  Just remove it.
+
+```
+isabmbp1:~/somewhere/workflow$ git branch
+  B1
+* master
+isabmbp1:~/somewhere/workflow$ git branch -d B1
+Deleted branch B1 (was 32b8636).
+isabmbp1:~/somewhere/workflow$ git branch
+* master
+```
+
+Deleting branches makes people nervous.  But we're not really
+deleting the branch; we're deleting the pointer that created
+the branch.  We can still reach either branch from commit `D`.
+And we *do* have a pointer to commit `D`; namely `master`.
+If we removed the `master` pointer, we'd be in trouble.
+According to the diagram, there would be no way to find
+the end of the branch.  It would sure be unfortunate if that
+happened by accident because a Git presentation told you that
+it's OK to delete branches on a whim.  Let's see what happens.
+
+```
+git branch -d master
+error: Cannot delete branch 'master' checked out.
+```
+
+So it won't let me delete a branch that I've got checked out.
+That's good.
+But what if it was another branch on which I had worked but
+not merged and don't have checked out.
+
+```
+isabmbp1:~/somewhere/workflow$ git checkout -b B2
+Switched to a new branch 'B2'
+isabmbp1:~/somewhere/workflow$ vi readme.md
+isabmbp1:~/somewhere/workflow$ git add readme.md
+isabmbp1:~/somewhere/workflow$ git commit -m "Work done."
+[B2 c74fb9b] Work done.
+ 1 file changed, 2 insertions(+)
+isabmbp1:~/somewhere/workflow$ git checkout master
+Switched to branch 'master'
+isabmbp1:~/somewhere/workflow$ git branch -v
+  B2     c74fb9b Work done.
+* master f77e769 Merge branch 'B1'
+```
+
+Now we have
+
+![Branch B2](images/workflow09.png)
+
+We thought we merged `B2`; but we didn't (and didn't bother to
+to perform the easy check of `git log master..B2`).
+
+```
+isabmbp1:~/somewhere/workflow$ git logdate master..B2
+* c74fb9b 2017-04-07 [Paul Glezen] Work done.
+isabmbp1:~/somewhere/workflow$ git branch -d B2
+error: The branch 'B2' is not fully merged.
+If you are sure you want to delete it, run 'git branch -D B2'.
+```
+
+There you have it.  Git will warn you that the branch is not
+fully merged.  If you still insist, you can use the `-D`
+delete option instead of just `-d`.  One reason to force a
+delete is because you accidentally committed a huge file to
+the repository and you don't want it to be part of the permanent
+commit history.  Avoid merging the commit and remove its branch
+pointer.  That will leave a dangling commit in the repository that
+still exists, but has no pointers.  Eventually Git will clean this
+up (delete unreferenced commits from disk).  It waits about 60 days
+in case you feel compelled to get it back
+(see [git reflog](https://git-scm.com/docs/git-reflog)).
+
+
+### Cautionary Note on Hierarchical Branch Names
+
+Some times forward slashes are used
+to organize branches hierarchically (e.g. `da/issue23` or
+`pubdef/issue45`).  Using hierachical branch names works fine
+so long as you observe the following **cautionary note**.
+Under the covers (i.e. in the `.git/refs/heads` folder), each
+branch pointer name is also a file name.  This file simply
+contains the SHA1 hash of the commit it references.  If your
+branch name contains a slash, then the file name is really a path
+name containing directories relative to `.git/refs/heads`.
+
+```
+$ git branch --list lasd/*
+  lasd/gards
+  lasd/juvwrnt
+$ cat .git/refs/heads/lasd/gards
+143449187ae79e04122045b38353b13fae3fbb4b
+```
+
+In the example above, I listed only branches related to `lasd`.
+We can see that under the covers, it's a very small file containing
+the SHA1 hash of the commit (i.e. it's commit pointer).
+
+The problem that can happen is if someone later decides to create
+a branch named `probation` to do all probation work.  That becomes
+a **file** named `.git/refs/heads/probation`.  Then later, they
+try to create a `probation/issue28`.  This attempts to create a
+**directory** named `probation` with a file named `issue28` inside
+it.  This results in an error because there is already a file
+named `probation`.
+
+As long as you keep this restriction in mind, hierarchical branch
+names work fine.
+
+***
+End of Workshop 1
