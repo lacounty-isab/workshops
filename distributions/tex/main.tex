@@ -41,7 +41,9 @@ It has two principal goals.
 \end{enumerate}
 
 The exercises themselves are detailed in \emph{Jupyter notebooks} for 
-Python and \emph{R markdown} for R.  
+Python and \emph{R markdown} for R.  This mathematical supplement
+serves to provide some theoretical motivation for functions encountered
+in the Python and R libraries.
 
 \subsection{Availability}
 
@@ -371,5 +373,30 @@ m_X''(t) & = & n(n-1)(pe^t + q)^{(n-2)} pe^t pe^t +
    & = & npe^t(pe^t + q)^{(n-2)}((n-1)pe^t + pe^t + q) \\
    & = & npe^t(pe^t + q)^{(n-2)}(npe^t + q)
 \end{eqnarray*}
+
+Now evaluate each of the derivatives at $t=0$ for the
+required moments.
+
+\begin{eqnarray*}
+E(X) & = & m_X'(0) \\
+   & = & n(pe^0 + q)^{n-1} pe^0 \\
+   & = & n(p+q)^{n-1}p \\
+   & = & n1^{n-1}p \\
+   & = & np  \\
+E(X^2) & = & m_X''(0) \\
+   & = & npe^0(pe^0 + q)^{(n-2)}(npe^0 + q) \\
+   & = & np(p+q)^{n-2} (np + q) \\
+   & = & np (np+q) \\
+   & = & (np)^2 + npq
+\end{eqnarray*}
+
+The mean is $np$ like we would expect.  For the variance,
+substitute these values into (\ref{discrete_var2}).
+
+\begin{eqnarray}
+\mbox{Var}(X) & = & E(X^2) - E(X)^2 \nonumber \\
+   & = & (np)^2 + npq - (np)^2 \nonumber \\
+   & = & npq \label{binomial_var}
+\end{eqnarray}
 
 \end{document}
