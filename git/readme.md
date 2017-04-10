@@ -1,8 +1,8 @@
 # Git
 
-This workshop is intended to introduce the Git source control tool
-to new users.  Because there are so many excellent freely available
-Git references, there is not much point attempting another one from
+This workshop introduces the Git source control tool to new users
+at Los Angeles County.  Because there are many excellent freely available
+Git references, there is little point attempting another one from
 scratch. Rather, this is intended as a guide through the available
 references along with descriptions of how we apply these concepts
 for certain Git repositories managed by ISAB.
@@ -17,15 +17,24 @@ For Git, a great place to start for information is
 
 <https://git-scm.com/doc>
 
-In particular, the book [Pro Git](https://git-scm.com/book/en/v2) is
-freely available to download or browse on the web.  Updated command
-references are also available here.
+In particular, the book [Pro Git](https://git-scm.com/book/en/v2)
+is freely available to download or browse on the web.  Updated
+[command references](https://git-scm.com/docs)
+are also available there.
+
+This document is an outline used to guide a pair of workshops.
+
+**Week 1**
 
 * [Installation](#installation)
 * [Initialization](#initialization)
 * [Basic Lifecycle](#basic-lifecycle)
 * [Log and Diff](#log-and-diff)
 * [Branches](#branches)
+
+**Week 2**
+
+
 
 ## Installation
 
@@ -54,8 +63,9 @@ for helping you through the installation wizard.
   server we're likely to use with HTTPS is GitHub.  The
   `ca-bundle.crt` file should be sufficient for that.
 
-* The **Configurating line ending conversions** is a tricky
-  decision.  A common problem with source controlling text files
+* The **Configurating line ending conversions** can be a tricky
+  decision.  For most cases, the first option is appropriate.
+  A common problem with source controlling text files
   is that one user with a Linux or OS X workstation will check in
   a file with LF endings.  Then a Windows user will check out the
   file, change a single line, and commit the change.  But the
@@ -78,7 +88,7 @@ for helping you through the installation wizard.
 * For terminal emulate, choose `Use Windows default console window`.
   The other one may be OK, too, if you wish to experiment.
 
-* For **extra options** leave the defaults.
+* For **extra options**, leave the defaults.
 
 After installation, check that the `C:\Program Files\Git\cmd`
 directory is in your `PATH` variable.  You can add it manually
@@ -124,15 +134,17 @@ configuration file.
 
 By default, Git on Windows uses its own version of **vi** to
 edit commit comments.  If this doesn't sit well with you, then
-you might want to change it to something else.  Note that it
-needs to be something that works with Git, like `vi`, `emacs`,
-or `Notepad++`.  Editors that do **not** work are
+you might want to change it to something else.  Note that your
+choice needs to work with Git, like `vi`, `emacs`,
+or `Notepad++`.  Editors that do **not** work with Git are
 `notepad` and `write`.  It's also possible to provide a one-line
 commit message on the command line.
 
 ### GUI Git
 
-There are a number of Git GUI programs available.  Some of
+There are a number of
+[Git GUI programs](https://git-scm.com/downloads/guis)
+available.  Some of
 them are standalone; others are part of IDEs (Integrated
 Development Environments) like Eclipse (Java), Visual Studio
 (.Net), RStudio (R), and others.
@@ -141,8 +153,8 @@ to understand the Git command line.
 
 1. Most actions of any GUI tool can be understood in terms
    of the command line.  
-2. The definitive (not always the best) documentation is
-   expresses Git operation in terms of command line options.
+2. The definitive Git documentation expresses Git operation
+   in terms of Git commands and command line options.
 3. You may have to change between various GUI tools; but
    the command line stays the same.
 4. When searching for help in public forums (such as
@@ -150,16 +162,16 @@ to understand the Git command line.
    most easily expressed in terms of the command line.
 
 Once you are well grounded in the command line, most GUI Git
-tools should be easy for you to understand.
+tools are easy to understand.
 
 
 ## Initialization
 
 There are two ways to create a Git repository:
 
-1. Create a new repository to track files on your workstation
+1. *Init* a new repository to track files on your workstation
    that are not currently under source control.
-2. Clone an existing repository from somewhere else to your
+2. *Clone* an existing repository from somewhere else to your
    workstation.
 
 ### init
@@ -242,15 +254,15 @@ In such a configuration, the `.git` folder is the repository proper.
 The other files are collectively known as *the working copy*.  It's
 tempting to identify the working copy with the repository.  This is
 often harmless; but we should keep in mind that the working copy is
-just that, a **copy**.  Every version of every file in repository
-is stored in the `.git` folder (though it's not obvious how).  The
+just that, a **copy**.  Every version of every file in a repository
+is stored in the `.git` folder in some way.  The
 working copy is for the convenience of the developer.
 
 
 ## Basic Lifecycle
 
 Most of us have worked with some sort of *centralized* version control
-system (CVCS) in the past.  Examples include tools such as **CVS**, **SVN**, and
+system (CVCS) in the past.  Tools such as **CVS**, **SVN**, and
 **ClearCase** have a basic lifecycle of
 
 1. checkout - copy a version to local workspace
@@ -267,7 +279,7 @@ of files in terms of
 * creating branches
 * conflict resolution
 
-requires a connection with the server.  This is inefficient even when we
+requires a connection to the server.  This is inefficient even when we
 do have good network connectivity.  Git is an example of a
 [distributed](https://git-scm.com/about/distributed)
 version control system (DVCS).  Every copy of the repository is the full
@@ -285,9 +297,9 @@ it using your workstation file manager.
 Once you have a local copy of the repository the basic lifecycle goes
 like this.
 
-1. checkout - change branch; often create a new one
-2. edit - edit working copy
-3. stage - add the changes to a staging area
+1. checkout - change to a branch; often create a new one.
+2. edit - edit working copy.
+3. stage - add the changes to a staging area.
 4. commit - commit changes.
 5. repeat steps 2 - 4.
 6. push commits to a server copy of the repository.
@@ -301,7 +313,7 @@ the place in the commit tree where the next commit will be applied.
 
 The `git checkout` command has two modes.  If the argument is the name
 of a branch, then the HEAD pointer is moved to that branch and your
-working copy files are updated withe version associated with the branch.
+working copy files are replaced with the branch's latest version.
 If the argument is a working copy file name, it means replace the existing
 working copy with the committed copy associated with the HEAD commit.
 
@@ -309,8 +321,8 @@ working copy with the committed copy associated with the HEAD commit.
 git checkout i40
 ```
 
-will move HEAD to the `i40` branch and replace the working copy files
-with the version associated with `i40`.
+will make `i40` the current branch (i.e. point HEAD to `i40`) and replace
+the working copy files with the version associated with `i40`.
 
 ```
 git checkout i40 -- readme.md
@@ -391,7 +403,7 @@ The Git **add** command is how we cherry-pick exactly what we want to commit
 and exclude what we don't.  The `git add` command adds **changes** to the
 [staging area](https://git-scm.com/about/staging-area).
 Wake up, because this is subtle.  It does **not** place *the file*
-in the staging area.  It copied the contents of the file into the staging area.
+in the staging area.  It copies the contents of the file into the staging area.
 If you make another change to the file and run `commit`, you commit what you
 added earlier, not new changes to the file.  You have to run `git add` again
 to commit the new changes.
@@ -441,7 +453,7 @@ Untracked files:
 The `readme.md` file appears twice!  Once as a file to be committed (i.e. the
 staged contents) and once as changes not staged for commit (the contents I typed
 later).  If I only want to commit the first change, I could run `git commit`.
-If I want to commit the later change, I must run `git add` again before the
+If I want to commit the later change, I must run `git add` again before running
 commit.
 
 ### git commit
@@ -452,14 +464,14 @@ there are a few things to keep in mind.
 
 #### Commit Comments
 
-Each commit should have a comment describing the commit.  It may be brief
-and benign, like "Initial commit."  Or it might go on for several paragraphs.
+Each commit should have a comment describing the commit.  It may be as brief
+as "Initial commit."  Or it might go on for several paragraphs.
 The following conventions apply to Git comments.
 
 1. The first line should be a brief summary with fewer than 50 characters
    and end with a period.  That's because many reporting tools summarize
    Git commit comments using the first line only.  These reports look
-   nicer if the summary is shorter.
+   nicer if the summary is short.
 2. If there are more details to provide, start the details on the third
    line.  The second line should be blank.
 3. Comment lines starting with line 3 have no convention for length.
@@ -504,7 +516,7 @@ provided.
 #### Short Circuit
 
 If the whole staging area idea doesn't sit well with you, it is possible
-to commit changes to file straight from the working copy without (explicitly)
+to commit changes to files straight from the working copy without (explicitly)
 passing them through a staging area.  You should do this when working on
 repositories you share with others.  But it may be fine for Git repositories
 you use privately.  Just provide the `-a` flag.
@@ -527,12 +539,12 @@ a hash is sometimes called *hashing*; so it's also a verb.)
 The idea is that if two strings are different, their respective
 hashes will also be different.  While it's theoretically possible to
 have two files hash to the same output, in practical terms, this is
-very difficult to find.  
+very difficult to find.
+A great deal of digital cryptography relies on this difficulty.
 A "good hash function" has the property that if you change the input
 string even slightly, the output is completely different.
-A great deal of digital cryptography relies on this difficulty.
 
-When you add a file to the Git staging area, the name of stored
+When you add a file to the Git staging area, the name of the stored
 content (under the `.git` folder) is a
 [SHA-1](https://en.wikipedia.org/wiki/SHA-1) hash of the content.
 The output of a SHA-1 hash is 40 hexadecimal characters.  When you
@@ -542,7 +554,7 @@ along with the text of your commit comment, and used to create a
 
 * your commit comment,
 * all the files in your commit,
-* the commit hashes of the previous commits from which your commit derives.
+* the commit hash of the previous commit from which your new commit derives.
 
 This 40-character string is a check on every version of every file
 since the repository was created.  That's why *there is no such thing
@@ -601,9 +613,9 @@ Date:   Wed Apr 5 07:00:45 2017 -0700
     Added Git-on-Windows installation section.
 ```
 
-* The `-2` option is important.  It limits the output to two entries.
+* The `-2` option is important.  It limits the output to two commits.
   Without this option (or some other range restriction), the output
-  will list all commits that could scroll your screen for hundreds
+  will list all commits which could scroll your screen for hundreds
   of lines.
 
 * The entries are listed in **reverse chronological** order.
@@ -622,7 +634,7 @@ isabmbp1:~/idsc/workshops
 ```
 
 So far, we've restricted the commit range by time only.
-We can also restrict by space.  We can specify a file or
+We can also restrict by files.  We can specify a file or
 a directory so that we only see Git commits affecting
 those components.  The following command lists commits
 that affect files in the `Tables` directory for the
@@ -691,11 +703,11 @@ information about commits.
 Branches are a very common phenomenon with Git, much more so than
 with other source control tools.  This is pragmatic with Git because
 a branch is nothing more than a pointer to the commit tree.  The key
-to understanding branches is to understand the commit trees.  
+to understanding branches is to understand commit trees.  
 
 ### DAG
 
-A commit tree is a directed acyclic graph (DAG).  
+A commit tree is a directed acyclic graph (DAG).
 An example of a DAG is shown below.
 
 ![Directed Acyclic Graph](images/dag1.png)
@@ -836,7 +848,7 @@ isabmbp1:~/somewhere/workflow$ git branch -v
 
 The asterisk next to `B1` in the `git branch -v` output shows that
 `B1` is still our current branch.  `master` is still pointing to
-`B`; but `B1` has advanced to `X`.
+commit `B`; but `B1` has advanced to commit `X`.
 
 I make one more change to fix typos and commit.
 
@@ -886,9 +898,9 @@ other commits have been made on `master`.  So at the end of the
 day, it doesn't look like a merge at all.
 
 But what if there had been a commit to `master` before the
-attempt to merge.  The picture below is very nice.  But what
-if we con't have a nice picture and we want to determine what
-has happened on each fork?
+attempt to merge.  The picture below shows this scenario.  
+Of course, we don't usually have such a picture beforehand.
+How do we determine what has happened on each fork?
 
 ![Non-trivial merge](images/workflow07.png)
 
@@ -1057,7 +1069,7 @@ $ cat .git/refs/heads/lasd/gards
 
 In the example above, I listed only branches related to `lasd`.
 We can see that under the covers, it's a very small file containing
-the SHA1 hash of the commit (i.e. it's commit pointer).
+the SHA1 hash of the commit (i.e. its commit pointer).
 
 The problem that can happen is if someone later decides to create
 a branch named `probation` to do all probation work.  That becomes
