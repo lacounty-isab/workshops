@@ -34,7 +34,7 @@ This document is an outline used to guide a pair of workshops.
 
 **Week 2**
 
-
+* [Merge Conflicts](#merge-conflicts)
 
 ## Installation
 
@@ -1084,3 +1084,243 @@ names work fine.
 
 ***
 End of Workshop 1
+***
+
+## Merge Conflicts
+
+Workshop 1 ended with the topic of [branches](#branches).
+We saw how easy it was to create a branch.  A good analogy
+would be the difficulty associated with jumping out the window
+of a building.  The "jumping out" part would be analogous to
+"creating a branch."  Most people achieve that much without
+much pain.  Landing is a different thing altogether.  Without
+a certain amount of planning, landing can go very badly.  In
+fact, most people avoid jumping out windows of buildings
+solely based on the complications involved with landing,
+even though the jumping and falling part is easy and even fun.
+
+A **merge** is to a **branch** as *landing* is to a *jump*.
+Without some amount of planning, it can be messy and go badly.
+Many people wish to avoid merges altogether and thus avoid
+branches altogether.  It doesn't have to be this way.  Git
+encourages simple short-lived branches that are usually easy
+to merge (like jumping out a first floor window).  We saw
+the simplest case in Workshop 1 with the fast-forward merge.
+In that case, a branch was created, completed, and merged
+before any other commits were made to the `master` branch.
+
+The next level of complexity is when two branches edit
+
+* different files, or
+* the same file, but in different places.
+
+In this case, the Git `merge` command will handle this
+automatically.  It will create a *merge commit* vertex in
+the DAG that points back in to the two source vertices.
+We saw this at the end of Workshop 1.  In this section, we're
+going to examine the case where the same line of the same file
+is changed by both branches.  This is a *merge conflict*.
+It can't be resolved automatically (except by specifically indicating
+to the command that one side or the other is always right).
+Rather, we must edit the conflicted files and manually determine
+how to resolve each conflict.  This seems nasty.  But it's not
+so bad once you dig in to understand what's going on.
+
+***
+
+Enough chit-chat.  Let's dig in.  We have the scenario in the
+diagram below with two files.
+
+* `file1.txt` - a set of mapping entries
+* `file2.py` - a simple Python script
+
+![Merge Start](images/merge1.png)
+
+The `B3` branch makes some mapping changes to codes that start
+with `c` and `e`.  The `master` branch makes changes to codes
+that start with `a` and `c`.  We can expect conflicts with
+codes that start with `c`.
+
+Meanwhile, for the Python file, only `master` is suppose to change
+it by replacing a triple quote mechanism multiple prints.  The `B3`
+branch is suppose to leave `file2.py` alone.  But `B3` inadvertently
+added spaces to the indention (a common problem with collaborative
+Python programming).
+
+Since we want to merge `B3` into the `master` branch, we made
+`master` the current branch.  We then run the `git merge` command.
+
+```
+$ git branch
+  B3
+* master
+$ git merge B3
+Auto-merging file2.py
+CONFLICT (content): Merge conflict in file2.py
+Auto-merging file1.txt
+CONFLICT (content): Merge conflict in file1.txt
+Automatic merge failed; fix conflicts and then commit the result.
+isabmbp1:~/somewhere/c2$ git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+
+	both modified:   file1.txt
+	both modified:   file2.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+Cancel lunch, it's going to be a loooooong day!
+Not necessarily.  Let's assess the damage.  First of all, note the
+message that "no changes added to commit".  So we haven't screwed
+anything up yet (though we still have some potential for that.)
+Under **Unmerged paths:** it tells us that two files were modified.
+That's Git's way of informing you that it added merge markers.
+Let's take a look at those in `file1.txt`.
+
+```
+     1	# This file contains mappings.
+     2	#
+     3	aa - 30
+     4	ab - 53
+
+     5	<<<<<<< HEAD
+     6	ca - 39, 40
+     7	cb - 35
+     8	cc -   44
+     9	=======
+    10	ca - 39, 41
+    11	cb - 36
+    12	cc - 44
+    13	>>>>>>> B3
+
+    14	ea - 55
+    15	eb - 29
+```
+
+First the good news: the first and third sections look fine.  The
+auto-merge worked since there were no conflicts.  The only trouble
+is with the middle lines that were changed by both branches.
+Lines 5 and 13 delineate the conflict zone.  In a large file they
+won't be so obvious.  But you can find them by searching for lines
+that begin with `<<<<<<<` and `>>>>>>>`.  This delineated section
+of the file relates the he-said-she-said of the merge conflict.
+The `HEAD` section refers to `master` since we're on `master`.
+The bottom section is labeled `B3` because that's the source branch
+of the merge.  Our task is to resolve the conflicts.
+
+1. In lines 6 and 10, we see that `master` added `40` while `B3`
+   added `41`.  We determine that they are both necessary.  So
+   we add 41 to line 6 and delete line 10.
+2. In lines 7 and 11, `master` changed the `cb` code to 35 while
+   the `B3` branch changed it to 36.  After conferring with the
+   business, we determine that 36 is the proper code.  So I
+   delete line 7 and keep line 11.
+3. Line 8 looks like accidental spaces added.  Delete line 8
+   and keep line 12.
+
+Now the conflict portion of the file looks like this.
+
+```
+<<<<<<< HEAD
+ca - 39, 40, 41
+=======
+cb - 36
+cc - 44
+>>>>>>> B3
+```
+
+We are done resolving the conflicts for this section.
+Since these conflicts have been resolved, we should
+delete the three conflict markers (otherwise they would
+be committed as part of the file).
+
+This fixes `file1.txt`.  In real life there might be
+many more of these inside the file.  But it's the same
+process for each conflict - choose the right option
+and delete the wrong one.  Now let's move to `file2.py`.
+
+```
+     1	def print_usage():
+     2	<<<<<<< HEAD
+     3	   print("Usage: addAudit.py [-f] [-v] <filename ...>")
+     4	   print("  -f - overwrite when duplicate key encountered")
+     5	   print("  -v - verbose")
+     6	   print("  <filename ..> the name of at least one audit file.")
+     7	=======
+     8	    usage = """"Usage: addAudit.py [-f] [-v] <filename ...>"
+     9	     -f - overwrite when duplicate key encountered
+    10	     -v - verbose
+    11	     <filename ..> the name of at least one audit file."""
+
+    12	    print(usage)
+    13	>>>>>>> B3
+
+    14	print_usage()
+```
+
+This is a *degenerate* case where the `HEAD` branch was the only
+branch that should have changed the file.  The `B3` change was an
+accident made by an over-zealous text editor.  This makes the conflict
+resolution easy.
+
+1. Delete the `B3` section.
+2. Delete the three conflict markers.
+
+If we run `git status` again, we still see the same message about
+"Unmerged paths."  We have indeed resolved the conflicts.  But
+we need to explicitly inform Git that we have resolved the conflicts
+to our satisfaction.  **Resolved conflicts are communicated to Git
+through the `git add` command**.
+
+```
+isabmbp1:~/somewhere/c2$ git add file1.txt file2.py
+isabmbp1:~/somewhere/c2$ git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+All conflicts fixed but you are still merging.
+  (use "git commit" to conclude merge)
+
+Changes to be committed:
+
+	modified:   file1.txt
+
+isabmbp1:~/somewhere/c2$
+```
+
+Note that in our initial `git status` (before conflict resolution)
+both `file1.txt` and `file2.py` were listed as modified.  The
+status message above indicates that only `file1.txt` has changed.
+Technically this is true since we opted to incorporate all of
+`file2.py` from `master` and none from `B3.`  From the `master`
+perspective, the `file2.py` changes already belong to the staging
+area.  But it was still necessary to specify `file2.py` in the
+`git add` command to indicate its merge conflict had been resolved.
+
+When we run `git commit`, the default commit comment is shown below.
+Remember that lines beginning with `#` are comments (not added to
+the comment; just provided by Git as information).
+```
+Merge branch 'B3'
+
+# Conflicts:
+#       file1.txt
+#       file2.py
+#
+# It looks like you may be committing a merge.
+# If this is not correct, please remove the file
+#       .git/MERGE_HEAD
+# and try again.
+```
+
+This might be a sensible default.  But if the merge
+required picking one side over another, this would
+be a good place to explain those decisions.
