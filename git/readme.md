@@ -35,6 +35,7 @@ This document is an outline used to guide a pair of workshops.
 **Week 2**
 
 * [Merge Conflicts](#merge-conflicts)
+* [Remotes](#remotes)
 
 ## Installation
 
@@ -1324,3 +1325,355 @@ Merge branch 'B3'
 This might be a sensible default.  But if the merge
 required picking one side over another, this would
 be a good place to explain those decisions.
+
+## Remotes
+
+You've been learning a lot about how to work with Git and you
+still haven't seen how you share your work with a server.  This
+is because you generally do more harm than good unless you
+understand commits, branches, and the commit graphs that
+we have been discussing.
+
+A Git **remote** is an alias for the location of another
+Git repository.  The *other* repository can be
+
+* in another folder on your workstation,
+* on an external drive, or
+* a network location.
+
+When Git, on your workstation, communicates over a network to
+another Git instance on another workstation, it uses a standard
+transport such as SSH or HTTPS (HTTP/SSL).  This is a huge benefit
+over other source control tools that usually communicate via
+proprietary network protocols that raise the eyebrows of firewall
+admins.  Git uses the same secure transport that one uses for
+browsing secure web sites or securely connecting to administrate
+server infrastructure - making it **very firewall friendly**.
+
+
+### Clone
+
+If you clone a repository from another location, Git automatically
+defines a remote named `origin` that points to the source of the
+clone.  It does so under the premise that if you cloned from
+somewhere, it's likely you'll want to communicate with the source
+again later, either to push back your changes or fetch updates
+from the source.
+
+```
+$ git remote -v
+origin	https://github.com/lacounty-isab/workshops.git (fetch)
+origin	https://github.com/lacounty-isab/workshops.git (push)
+```
+
+There are several things worth observing here.
+
+* A single remote can have two entries: one for push (output) and
+  one for fetch (inbound).  Usually these are the same.
+* The protocol is https.
+* The repository URL ends with `.git`.  This is another
+  Git-specific convention to denote a *bare repository*.
+
+A *bare repository* is a repository with no associated working
+copy.  Recall at the beginning of Workshop I that on our workstations,
+the repository files we see and edit are part of the working copy.
+The repository itself is inside the `.git` folder.  A bare
+repository is just that: a `.git` folder and nothing else.
+That's typical for a server copy of the repository since no one
+should be editing files on a server.
+
+***
+
+**Exercise**: Clone one of your local repositories to a bare
+repository using the following syntax.
+
+       git clone --bare  <source> <target>
+
+Peek into the <target> directory.  You should see the guts of a
+Git repository rather than your familiar working copy files.
+
+****
+
+Now you may remember that we didn't furnish the `.git` suffix
+when we originally cloned the repository from GitHub.  I believe
+it works because GitHub is configured to append the `.git` when
+it's missing (i.e. their web server hooks that broker the HTTPS
+requests to Git will add this if it's missing).
+
+
+### Remote DAG
+
+In Git Workshop 1 we covered how the Git commit set is a DAG
+(Directed Acyclic Graph) and *branches* were just pointers into
+this graph.  When working with a remote repository, we have to
+be mindful of *two* DAGs, one for the local and one for the
+remote.  Ideally they are the same set of commits.  But as
+commits are made to one repository, it becomes out of sync
+with the other.  To track this disparity, Git maintains a set
+of remote pointers for a repository.  A *remote pointer*
+**attempts** to track corresponding pointers on a remote
+repository.  Because most pointers are branches, such
+remote pointers are called *remote tracking branches*,
+or simply **tracking branches**.
+Tracking branches are designated as such through a special
+naming convention: their names always begin with the name
+of the remote to which they are associated.  So if we have
+a remote named `origin` and the remote repository has a
+branch named `master`, then the remote tracking branch is
+named `origin/master`.
+
+Of course, a tracking branch can't always be accurate.  There
+is no notification that a commit occurs on a remote
+repository.  When a commit is made to a remote repository,
+the tracking branch is necessarily out of date until it is
+explicitly refreshed.  It's important to understand
+conceptually that `origin/master` is **not** a pointer
+to `master` in the remote repository.  It's a pointer into our local
+repository recording the **last known position** of `master`
+in the remote.  But it could have been changed.
+
+So far, this explanation has been abstract.
+Let's review the concepts with pictures.
+
+The following figure shows the initial scenario with three
+copies of a repository.
+
+* __R__ represents a "server copy" that would be shared
+  among participants.  It is bare (no working copy).
+* __L17__ represents a local copy used by a developer to
+  work on chapter 17 of a book.
+* __L21__ represents a local copy used by a developer to
+  work on chapter 21 of a book.
+
+![Start Work](images/workflow20.png)
+
+As before in previous sections, the green circles represent
+commits and the blue rectangles represent branches (which
+are just pointers to commits).  The concept introduced in
+this diagram is the tracking branches in orange.  They've
+been there all along, but by default, the
+`git branch` command does not list them.  You need to use
+the `-a` option for "all branches".
+
+```
+dal17$ git branch -av
+* master                6c835a4 Initial version.
+  remotes/origin/HEAD   -> origin/master
+  remotes/origin/master 6c835a4 Initial version.
+dal17$
+```
+
+We see from the output above that it shows
+
+* the `master` branch with an asterisk indicating it is
+  the current branch
+* the `origin/HEAD` pointer provides a default branch to
+  use for remote operations.
+* the `origin/master` tracking branch that tracks the `master`
+  branch on the `origin` repository.  The commit hashes show
+  that the remote and local `master` currently point to the
+  same place.
+
+A few notes about these.  You can safely ignore the second entry.
+It's used by Git to provide a default branch for when remote
+operations are performed without specifying a branch.  I believe
+this is foolhardy; we'll be explicitly specifying a branch for
+all remote operations.
+
+The list prefixes all remote branches with `remote`.  Git doesn't
+require this except in some esoteric circumstances; so we usually
+leave it off.
+
+The next figure shows two developers working in their respective
+workspaces.  Each one has added a commit to their local `master`
+branch.  We can already see trouble brewing.  Note how the
+`master` pointers have moved while `origin/master` pointers have
+not.
+
+![Trouble brewing](images/workflow21.png)
+
+Now L17 executes the `git push` command to push the `C` commit
+to the shared repository.
+
+![L17 is first](images/workflow22.png)
+
+Commands like `git push` impact **two** repositories.  It
+successfully added commit `C` to the shared repository and
+updated the `master` pointer on the shared repository.
+Meanwhile, L17's local repository tracking branch
+`origin/master` was updated to reflect the update.
+
+Now L21's `origin/master` is out of date.  This is not
+usually a problem, except that the diagram above shows
+L21 is about to attempt to add `D` on to the end of
+the shared repository `master`.  This `git push` (by L21)
+will fail because `D` cannot be added to the end of the
+shared `master` consistently.  The L21's only option is to
+
+1. Curse L17 for being first.
+2. Fetch the `C` commit into local repository.
+3. Merge `C` with `D` in local repository, producing a new
+   merged commit representing a consistent combination of both.
+4. Attempt another `git push`.
+
+But what if during that time L17 has pushed another change?
+L21's push will again fail and possible result in an act
+of workplace violence.
+
+Let's back-up, impose some discipline and the use of branches.
+This time an agreement is reached that only L17 is allowed
+to commit to `master`.  Anyone else must create a new branch
+to contribute commits.  With this agreement in place, both
+L17 and L21 developers do their work.  L21 has created branch
+`i42` to represent her changes.
+
+Before anyone attempts remote operations, the repositories
+look like this.
+
+![Before push](images/workflow23.png)
+
+Now each developer pushes their change to the shared repository.
+L17 pushes `master`; L21 pushes `i42`.
+
+![After push](images/workflow24.png)
+
+Note the following impacts.
+
+* the shared repository has all changes.
+* the L21 repository has a new tracking branch `origin/i42`
+  to track `i42` on the shared repository.
+* both parties can continue in this manner without
+  affecting the other.
+* there are three different sets of contents for the same
+  repository.
+
+At some point, the L17 developer decides to merge the L21
+changes into the master branch.  L17 and L21 developers
+have communicated about this.  The first step is for
+L17 to fetch the `i42` branch from the shared repository.
+This is the result of L17 running
+
+```
+git fetch origin i42
+```
+
+![After fetch](images/workflow25.png)
+
+We see that L17 now has a tracking branch `origin/i42`.
+L17 could also create a local branch for `i42`.
+
+```
+git branch i42 origin/i42
+```
+
+But this is unnecessary and not shown here.  What is
+far more important about the figure above is what did
+**not** happen.  Namely
+
+* The `HEAD` pointer did not change.  L17's current
+  branch is still `master`.
+* L17's working copy was not affected.
+
+There was absolutely no impact of this fetch on L17's
+workflow.  The only evidence to L17 that anything occurred
+is the presence of the tracking branch.  **This is a big
+deal!**.  Fetching commits from others does **not** disrupt
+anything you're currently doing.
+
+The L17 developer prepares for the merge of L21's work
+by completing and committing current work.  This is commit
+`E`.
+
+![Before merge](images/workflow26.png)
+
+L17 merges L21's changes and resoles any conflicts
+that might have occurred. This creates a merge commit `F`.
+No pushing or fetching has been done; so none of
+the tracking branches have changed.
+
+![After merge](images/workflow27.png)
+
+L17 pushes its `master` branch to the shared server.
+
+```
+git push origin master
+```
+
+Since L17's `master` points to `F`, this pushes
+`F` to the shared repository along with every commit
+traceable from `F` that isn't already in the shared
+repository.  In this case this amounts to pushing
+`F` and `E`.  This push updates L17's tracking branch
+`origin/master`.  It also updates the shared repository
+`master`.
+
+![After push](images/workflow28.png)
+
+The L17 developer notifies the L21 developer that the
+merge is complete and available.  L21 updates her
+repository with the last commit from the shared `master`.
+
+```
+git fetch origin master
+```
+
+![After fetch](images/workflow29.png)
+
+As explained before, a `git fetch` does not disrupt
+anything for L21.  Her local `master` pointer still
+points to the `B` as before.  Her current branch is
+still `i42` and her working copy is in the same state
+as when she pushed her `i42` updates.  The updates
+that are so obvious on this diagram are hidden in
+the `.git` folder and only referenced by the tracking
+branch `origin/master`.
+
+In order to update her working copy with the latest
+merged copy, L21 changes to her `master` branch and
+updates it from the tracking branch.
+
+```
+git checkout master
+git merge origin/master
+```
+
+The first command points `HEAD` to `master` and replaces
+her working copy with repository at commit `B` (because
+that's where `master` points).  If L21 views her working
+copy after the first command but before the second command,
+she'll see none of the work committed in `D`, `E`, and `F`.
+
+The second command "merges" the tracking branch into the
+local branch.  But this should always be a "fast-forward"
+merge (basically just advances the pointer).
+
+![After merge ](images/workflow30.png)
+
+At the point L17 and L21 have the same working copy.
+The `i42` branch pointers are no longer required.
+To clean things up, they are deleted.
+
+---
+
+This was a concurrent development scenario examined in
+excruciating detail.  The most common mistakes Git newcomers
+make when working across multiple repositories are
+
+* to confuse branches (pointers) with the same name
+  across multiple repositories.
+* think only in terms of their own commit tree instead
+  of trees in other repositories.
+* forget that local branch pointers only move during
+  a commit; tracking branch pointers only move during
+  a push or fetch.
+
+It's a good idea to draw your Git DAG on scratch paper
+as you branch and merge to establish an intuition for
+the impact of Git commands.  After enough practice you
+begin to dream in terms of DAGs; writing them down is
+no longer necessary.
+
+### Fetch
+
+The `git fetch` command fetches updates from a remote repository
+to your local repository.  
