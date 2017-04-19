@@ -7,6 +7,12 @@ Certain workshops may be repeated from time to time.  So there is an
 interest in incorporating feedback to improve these materials.
 If you have an idea for improvement, feel free to open an issue.
 
+| Directory | Workshop Description                               |
+|-----------|----------------------------------------------------|
+| [regex](regex/readme.md)| Introduction to regular expressions and their use in APIs |
+| [git](git/readme.md)| Introduction to Git and GitHub |
+| [distributions](distributions/readme.md)| Gaining familiarity with Python and/or R via a review of elementary probability distributions|
+
 ## Background
 
 ISAB (Information Systems Advisory Body) is a sub-committee of the

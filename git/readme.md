@@ -36,6 +36,7 @@ This document is an outline used to guide a pair of workshops.
 
 * [Merge Conflicts](#merge-conflicts)
 * [Remotes](#remotes)
+* [Tags](#tags)
 
 ## Installation
 
@@ -1659,11 +1660,11 @@ This was a concurrent development scenario examined in
 excruciating detail.  The most common mistakes Git newcomers
 make when working across multiple repositories are
 
-* to confuse branches (pointers) with the same name
-  across multiple repositories.
-* think only in terms of their own commit tree instead
-  of trees in other repositories.
-* forget that local branch pointers only move during
+* to confuse the position branches (pointers) with the
+  same name across multiple repositories.
+* to think only in terms of their own commit tree instead
+  of how it relates to other repositories trees.
+* to forget that local branch pointers only move during
   a commit; tracking branch pointers only move during
   a push or fetch.
 
@@ -1676,4 +1677,143 @@ no longer necessary.
 ### Fetch
 
 The `git fetch` command fetches updates from a remote repository
-to your local repository.  
+to your local repository.  We saw it in action in the previous
+section.  It fetched the commits tree associated with the given
+branch in the remote repository.  This is rarely amounts to sending
+the entire tree across the network in practice because in most cases
+we have all but the last few commits locally already.  Git will
+recognize this and only send the missing commits.
+
+The format of the command is
+
+     git fetch <remote> <branch>
+
+As we saw, this command does **not** discrupt anything present
+working directory or any of your local branches.  It stores the
+commits in your repository and references the lastest one with a
+tracking branch.  The example we saw in the scenario was
+
+     git fetch origin master
+
+This moved the tracking branch `origin/master` to point to the
+latest fetched commit.  It did nothing to the local `master` branch.
+But eventually we probably do want to see the goodies we downloaded.
+To do this, merge from the tracking branch; it should be a fast-forward
+merge unless you've had a communication breakdown among your colleagues.
+
+```
+git checkout master
+git merge origin/master
+```
+
+Now your working copy is up to date.
+
+### Pull
+
+The `git pull` command is a short-cut for running `git fetch` and
+then `git merge`.  I don't like it because it can attempt a merge
+before you're ready.  But many people like this command; so it's
+good to be aware of what it does.
+
+### Push
+
+The `git push` command pushes commits from your local repository
+to a remote repository.  We saw this used in the scenario as
+
+    git push origin master
+
+This pushes the entire tree from `master` to the remote aliased
+by `origin`.  As with the `fetch` command, this usually only pushes
+a few commits in practice since most commits probably exist in
+the remote already.
+
+People are often a bit too eager to use `push`.  This is certainly
+a requirement if people are waiting on the changes you've committed
+locally.  If not, it's often good to hold off.  That's because Git
+allows us to modify commits on our local repository that have
+**not yet been pushed**.  Once the commits have been pushed and then
+fetched by others, altering commits causes an inconsistency in the
+commit hashes that will corrupt the remote repository for others.
+This gets really ugly really fast.
+
+The upshot of all this to only push when you have something that
+needs to be shared.  Pushing to a remote everytime you commit
+locally is usually too much.
+
+
+## Tags
+
+We've been discussing branch points quite a bit.  Usually branch
+pointers move with each commit.  A **tag** is pointer much like
+a branch.  The difference is that tags don't often move.  They
+serve as *bookmarks into the repository*.  A common use is to
+reference commits that were deployed to production.
+
+Because tags are not part of the commit hash calculations, they
+can be created, moved, and deleted without impacting other parts
+of the repository.
+
+### Tag list
+
+To list all the tags in the current repository:
+
+    git tag -l -n
+
+The `-l` tells Git to list the tags.  The `-n` tells Git to
+display a line from the tag's annotation.
+
+You can use wildcards to restrict to certain tags if you
+follow a certain naming convention.
+
+    git tag -l deploy/*
+
+will list all tags that begin with `deploy/`.
+
+### Tag Creation
+
+To create a new tag at the current location of the `master` branch:
+
+    git tag -a MyTag master -m "My first tag."
+
+The `-a` flag tells Git that we wish to annotate the tag (i.e. add
+a comment).  This is usually a good idea and it's what we do in
+the sample with the `-m` option.  Without `-m`, an editor is
+summoned in which we may craft an annotation (often multiple lines).
+Once again, unless you have customized your Git settings, this editor
+will be **vi**.
+
+### Tag Pushing
+
+Tags are not pushed to other remote repositories by default.  If
+you wish to push tags, there are several options.
+
+1. Include the `--tags` option in your `git push` command.  This
+   will push all the tags.
+2. Push individual tags with a separate push command: `git push origin MyTag`.
+3. Push a collection of tags: `git push origin refs/tags/deploy/*`
+
+The last option is a bit more advanced.
+
+### Tag Deletion
+
+A tag is deleted with the `-d` option.
+
+```
+$ git tag -l -n
+MyTag           Our first tag.
+$ git tag -d MyTag
+Deleted tag 'MyTag' (was 8cb5b89)
+$ git tag -l -n
+$
+```
+
+Just remember that his **only** deletes the tag in your local repository.
+If you want to delete a tag in a remote repository, you have to dig deeper
+into the dark side.
+
+    git push origin :tags/MyTag
+
+This a more advanced form of the `git push` command.  It says, "push to origin
+everything from the left of the colon to the right of the colon.""  Notice how
+there is nothing to the left of the colon.  That means overwrite
+`tags/MyTag` with "nothing", which effectively deletes `tags/MyTag` on the remote.
