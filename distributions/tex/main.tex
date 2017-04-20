@@ -218,19 +218,21 @@ This is often expressed in words as ``the mean squared minus the
 square of the mean.''  In the special case where the mean is zero,
 the variance is equal the mean squared.
 
-The mean and variance are special cases of \emph{moments}.
+The mean is a special cases of a \emph{moments}.
 The $n^{\mbox{th}}$ moment is defined as
 
 $$
-\mbox{Var}(X) = \sum_{i = -\infty}^{\infty} (i - E(X))^n \cdot f_X(i)
+\mbox{Var}(X) = \sum_{i = -\infty}^{\infty} i^n \cdot f_X(i)
 $$
 
 We've already seen that the first moment is the mean.
-The second moment is the variance.  Higher moments are not
+The second moment can be used to determine the variance.
+Higher moments are not
 discussed as often, but they still come in handy.  The
-third moment is the \emph{skew}.  It describes the degree
+third moment is related to the \emph{skew}, which describes
+the degree
 to which a distribution is lopsided with respect to its
-mean.  The fourth moment is the \emph{kurtosis}.  It
+mean.  The fourth moment is related to the \emph{kurtosis}.  It
 describes the extent to which a distribution avoids its mean.
 
 An important tool used in working with distributions is the
@@ -398,5 +400,124 @@ substitute these values into (\ref{discrete_var2}).
    & = & (np)^2 + npq - (np)^2 \nonumber \\
    & = & npq \label{binomial_var}
 \end{eqnarray}
+
+\subsubsection{Poisson Process}
+
+A Poisson process is a special type of counting process.
+A counting process is a function $N(t), t \ge 0$ that
+only takes non-negative integer values, is non-decreasing,
+and $N(0)=0$;
+i.e. it represents a count of occurrences over time.  The
+Python and R workshops provide graphs of the Poisson
+probability mass function.
+
+\begin{equation} \label{poisson_pmf}
+f_X(k; \lambda) = e^{-\lambda} \frac{\lambda^k}{k!} 
+\quad k = 0, 1, 2, \ldots
+\end{equation}
+
+The workshops experiment with $\lambda = 5$.  You get a
+PMF curve with a hump near $\lambda$.  The curve looks plausible
+enough.  But why this function?  Is it just the most
+convenient way to express a curve with a hump in a certain
+place?  Or is there something special about the expression
+in (\ref{poisson_pmf})?
+
+It turns out that this particular "humped curve" does indeed
+have some special properties.  In fact, (\ref{poisson_pmf})
+can be derived from four properties.
+
+\begin{enumerate}
+
+\item Non-overlapping intervals are independent.
+
+\item The processes is \emph{stationary}.  That is,
+  the probability of an occurrence within time $h$
+  from zero is the same as the probability of an occurrence
+  within time $t$ to $t + h$, it doesn't depend on $t$.
+  In symbols: $P[N(t+h)-N(t)]$ depends only on $h$, not $t$.
+  
+\item $P[N(t) = 1] = \lambda t + o(t)$
+
+\item $P[N(t) \ge 1] = o(t)$
+
+\end{enumerate}
+
+The symbol $o(t)$ represents any quantity second order or
+higher.  Namely,
+
+$$
+\lim_{t \rightarrow 0} \frac{o(t)}{t} = 0
+$$
+
+If $o(t)$ was analytic (and we're not saying it is), then
+it's power series representation would only have second
+order and above terms (i.e. $o(t) = a_2t^2 + a_3t^3 \ldots$).
+
+\subsection{Continuous Distributions}
+
+\emph{Continuous distributions} describe experiments where
+the random variable can take continuous values.  Examples
+are time intervals and averages of counts.
+
+A \emph{continuous density} $f_X$ corresponding to a continuous
+distribution is related through its integral in a way similar to
+how a discrete mass function is related through a sum.
+
+\begin{eqnarray*}
+F_X(x) & = & \int_{-\infty}^x f(t) dt \\
+f_X(x) & = & \frac{dF(x)}{dx}
+\end{eqnarray*}
+
+The analogous formulas for expectation and variance also hold.
+
+\begin{eqnarray}
+E[X] & = & \int_{-\infty}^{\infty} xf_X(x) dx \label{cont_mean} \\
+\mbox{Var}[X] & = & \int_{-\infty}^{\infty} (E[X] - x)^2 f_X(x) dx \label{cont_var}
+\end{eqnarray}
+
+Our friend, the moment generating function, continues to be useful
+with continuous random variables.
+
+\begin{equation} \label{cont_mgf}
+m_X(t) = E[e^{xt}] = \int_{-\infty}^{\infty} e^{xt} f_X(x) dx
+\end{equation}
+
+This is the continuous version of (\ref{discrete_mgf}).
+
+\subsubsection{Normal Distribution}
+
+The granddaddy of all distributions is the \emph{normal distribution}.
+It has two parameters: the mean $\mu$ and variance $\sigma^2$.  The
+density function for the normal distribution in one dimension is given
+by the following formula.
+
+\begin{equation}
+f_X(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi}\sigma}e^{\frac{-(x - \mu)^2}{2\sigma^2}}
+\end{equation}
+
+It has the familiar bell-shaped curve centered about the mean.
+A common practice is to normalize the random variable through
+the transformation
+
+$$
+z = \frac{x - \mu}{\sigma}
+$$
+
+Then it takes the form
+
+\begin{equation}
+f_X(x) = \frac{1}{\sqrt{2\pi}}e^\frac{-x^2}{2}
+\end{equation}
+
+\subsubsection{Exponential Distribution}
+
+The exponential random variable has a density function of the form
+
+\begin{equation} \label{exp_density}
+f_X(t; \lambda) = \lambda e^{-\lambda t}
+\end{equation}
+
+where $1/\lambda$ is the expected wait-time of a Poisson processes.
 
 \end{document}

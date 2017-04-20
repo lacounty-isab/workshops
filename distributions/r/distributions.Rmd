@@ -145,3 +145,82 @@ shape "approaching" our density function.
 ```{r binom_hist}
 hist(b_sample, breaks=30, xlim=c(0, 100), col="blue")
 ```
+
+## 2.2 Poisson Distribution
+
+The Poisson random variable represents the number of occurrences of an event
+over a fixed interval of time.
+This could be the number of crimes reported per hour.
+The parameter of the random variable, usually
+denoted by $\lambda$, turns out to be the expected number of occurrences.
+The Poisson density function is given by
+
+$$
+f_X(i;\lambda) = e^{-\lambda} \frac{\lambda^i}{i!}
+$$
+
+For each $i$, this represents the probability of observing $i$ counts within
+the unit time period.  R provides the usual four random variable functions
+for the Poisson random variable.
+
+* `dpois` - Poisson density (PMF) function
+* `ppois` - Poisson probability (CDF) function
+* `qpois` - Poisson quantile (inverse CDF) function
+* `rpois` - Poisson random sample
+
+Let's consider a case of a Poisson process where the expected
+number of occurrences per time period is 5.
+
+Since 5 is the expected value, we expect the mass function to be strong
+near 5.  Let's check this.
+
+```{r poisson_pmf1}
+dpois(c(3,5,7), 5) * 100
+```
+
+We see a 14% of getting a 3 count, a 18% chance of getting a 5 count
+and a 10% chance of getting a 7 count.  Now let's check the cumulative
+distribution function.
+
+```{r poisson_cdf1}
+ppois(c(3,5,7), 5) * 100
+```
+
+The chance of getting
+
+* 3 or less is 27%
+* 5 or less is 62%
+* 7 or less is 87%
+
+Let's view this graphically.
+
+```{r poisson_plot1}
+x <- seq(0, 20)
+plot(x, ppois(x, 5), col="blue", pch=19)
+points(x, dpois(x, 5), col="red", pch=19)
+title(main="Poisson density and distribution for lambda = 5")
+```
+
+The standard quantiles are giving by
+
+```{r poisson_quantiles}
+qpois(c(0.25, 0.5, 0.75), 5)
+```
+
+* 3 is the smallest count that occurs at least 25% of the time
+* 5 is the smallest count that occurs at least 50% of the time
+* 6 is the smallest count that occurs at least 75% of the time
+
+Finally, let's run a Poisson simulation with 1,000 trials with
+$\lambda = 5$.
+
+```{r poisson_rpois}
+poisson_sample <- rpois(1000, 5)
+poisson_sample[1:100]
+```
+
+Let's check that our histogram looks anything like our PMF.
+
+```{r poisson_hist}
+hist(poisson_sample, breaks=20, xlim=c(0, 20), col="blue")
+```
