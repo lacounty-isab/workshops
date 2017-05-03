@@ -1817,3 +1817,113 @@ This a more advanced form of the `git push` command.  It says, "push to origin
 everything from the left of the colon to the right of the colon.""  Notice how
 there is nothing to the left of the colon.  That means overwrite
 `tags/MyTag` with "nothing", which effectively deletes `tags/MyTag` on the remote.
+
+
+## GitHub
+
+The [section on remotes](#remotes) describes how we interact with a repository
+other than our local repository.  The "other repository" can be local to our
+machine (but in a separate location) or on a remote location reachable by others,
+i.e. shared.  A shared repository is usually hosted on a server and accessed
+through some network protocol.  While Git does possess a proprietary network
+protocol, this is not commonly used.  One aspect of Git's appeal is that it
+can be configured to use ubiquitous secure protocols such as SSH and HTTPS.  
+These are both secure and firewall friendly.
+
+It's not difficult to configure a Git server.  But in this age of the cloud
+where provisioning a server is more troublesome than configuring one, it is
+common to use a Git hosting service.
+[GitHub](https://github.com) is the most popular service by far -
+so much so that many people confuse GitHub with Git itself.
+GitHub's popularity stems from several factors.
+
+* It's been around since the early days of Git.
+* Hosting public repositories is free.
+* GitHub provides many add-ons to Git such as issue tracking,
+  wiki pages, enhanced file rendering (especially with respect to
+  markdown), forks and pull requests, and many other miscellaneous
+  goodies.
+* GitHub is passionate about spreading Git training; checkout their
+  [YouTube channel](https://www.youtube.com/user/github).
+
+GitHub became the standard place to host open source projects both large
+and small.  Commercial/private use of GitHub is the basis for GitHub's
+revenue model.  
+
+Each GitHub repository is associated with a GitHub account.
+These can be viewed through a web browser.  URLs have the form
+
+       https://github.com/<account name>/<repository name>
+
+An *account name* can belong to an individual or to an organization.
+`lacounty-isab` is an example of an organization account.
+`workshops` is an example of a repository.
+
+### Issue Tracking
+
+Each GitHub repository comes with a simple issue tracking tool.
+This does not require an understanding of Git to use.
+Anyone with access to the repository can add issues and comment
+on them.
+
+### Wiki
+
+Each repository can associate a Wiki page for documentation.
+This is actually a separate repository associated with the main
+repository used for providing external documentation about the
+project.
+
+### Gists
+
+A *gist* is a unique feature of GitHub.  It allows you to share
+a small snippet of code that doesn't warrant its own project.
+They are useful as a reminder to yourself and to others.  The
+following items are example of GitHub gists:
+
+* [console.log for R](https://gist.github.com/pglezen/246da458d9b22caad1c71605c7356518)
+* [git logdate alias](https://gist.github.com/pglezen/8034464)
+* [parsing DataPower latency records](https://gist.github.com/pglezen/b724ee99d6cd4edb0217)
+
+Gists are useful for
+
+* reminding you of how to do something
+* sharing with others
+* updating (you can version a Gist)
+
+### Forks
+
+The term `fork` has a negative connotation in the software community.
+Technically, it denotes a split in the commit history of a product
+or project.  It often occurs as a result of discord between team
+members.  The source of the discord may be legal, commercial, or
+intellectual.  `Fork` in the software community is like a *divorce*.
+
+Within the GitHub community, a *fork* is not negative at all.
+It's simply someone else "copying" from one account to their own
+account to that they can make their own modifications without
+requiring permissions from the original owner.  There is nothing
+negative about this.  In fact, it's often a source of flattery -
+someone is interested enough in your repository that they wish
+to tinker with it.
+One measure of popularity for a GitHub repository is the number
+of forks (which is displayed prominently at the top).
+
+Sometimes a "tinkerer" develops an improvement worthy of being
+merged back into the original repository.  The tinkerer issues
+a **pull request** to the original repository owner.  This
+request is visible on the repository for others to review
+and comment upon.  If the proposal is deemed worthy, it may
+be merged back to the original repository.  It is in this way
+that the general public may contribute to repositories for
+which they do not have write permission.
+
+### New Repository
+
+A common task is to make a local repository available as a shared
+repository on GitHub.  When we think of a "local repository", we're
+initially inclined to think of some body of source code for a software
+project or product.  But it need not be this ambitious.  It could be
+a single `readme.md` file, perhaps with a few images throw in.
+The following steps allow you to share a local repository.
+
+1. 
