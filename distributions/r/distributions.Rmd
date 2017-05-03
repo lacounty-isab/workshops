@@ -224,3 +224,65 @@ Let's check that our histogram looks anything like our PMF.
 ```{r poisson_hist}
 hist(poisson_sample, breaks=20, xlim=c(0, 20), col="blue")
 ```
+
+
+# 3 Continuous Distributions
+
+## 3.1 Normal Distribution
+
+The following functions address the normal distribution.
+
+* `dnorm` - density function
+* `pnorm` - cumulative distribution function
+* `qnorm` - quantiles
+* `rnorm` - random samples
+
+```{r norm_pdf1}
+dnorm(c(-3, -2, -1, 0, 1, 2, 3))
+```
+
+The symmetric character of the normal distribution is apparent 
+here. We don't interpret these as probabilities (like we did 
+with discrete mass function) since the continuous case represents
+an infinitesimal range of the random variable. But we still extract
+probabilities from the CDF.
+
+```{r norm_cdf}
+pnorm(c(-3, -2, -1, 0, 1, 2, 3)) * 100
+```
+
+Graphically the normal is the familiar bell curve.
+```{r norm_plot}
+x <- seq(-3, 3, by=0.02)
+plot(x, pnorm(x), col='blue', type='l', lty='solid')
+lines(x, dnorm(x), col='red')
+title(main="Standard Normal PDF and CDF", ylab="", xlab="")
+```
+
+The `qnorm` function provides quantile information.
+In other distributions we've shown quantile information for
+quarters, i.e. quartile information.  But due to the role
+of the normal distribution in the
+[Central Limit Theorem](https://en.wikipedia.org/wiki/Central_limit_theorem),
+we'll examine quantiles for 90%, 95%, and 97.5% since these are often
+referenced in the study of confidence intervals.
+
+```{r norm_quantile}
+qnorm(c(0.5, 0.9, 0.95, 0.975))
+```
+
+Since the normal distribution is symmetric about the origin,
+we expect half to lie on one side of 0 and half on the other
+side.  The last number says that 97.5% of the curve lies to
+the left of **1.96**.  This is a number we'll commit to memory
+during the study of confidence intervals.
+
+
+## 3.2 Exponential Distribution
+
+The *exponential distribution* is a continuous distribution that
+complements the discrete Poisson distribution that we encountered
+above.  Whereas a Poisson random variable represents a count of
+events that occur over a fixed unit of time, an exponential
+random variable represents the amount of time between one such
+event and the next.

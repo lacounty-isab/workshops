@@ -327,7 +327,7 @@ So a particular occurrence of $i$ successes and $n-i$
 failures occurs with probability $p^i \cdot (1-p)^{n-i}$.
 Since there are ${n \choose i}$ ways this can happen, the
 probability this can happen in \emph{some way} 
-(whichever way, we don't care) is
+(whichever order, we don't care) is
 
 \begin{equation} \label{binomial_density}
 f(i) = {n \choose i} p^i (1-p)^{n-i}, i \in 0, \ldots, n
@@ -417,7 +417,54 @@ f_X(k; \lambda) = e^{-\lambda} \frac{\lambda^k}{k!}
 \end{equation}
 
 The workshops experiment with $\lambda = 5$.  You get a
-PMF curve with a hump near $\lambda$.  The curve looks plausible
+PMF curve with a hump near $\lambda$.
+
+\textbf{Mean and Variance}
+
+For the mean and variance we appeal once again to the
+moment generation function technique.
+
+\begin{eqnarray*}
+m_X(t) & = & E(e^{it}) \\
+   & = & \sum_{i=0}^n e^{it} e^{-\lambda} \frac{\lambda^k}{k!} \\
+   & = & e^{-\lambda} \sum_{i=0}^n \frac{(e^t \lambda)^i}{i!} \\
+   & = & e^{-\lambda} e^{e^t \lambda}
+\end{eqnarray*}
+
+Now differentiate the moment generating function twice with
+respect to $t$.
+
+\begin{eqnarray*}
+m_X'(t) & = & e^{-\lambda} e^{e^t \lambda} e^t \lambda \\
+        & = & \lambda e^{(t-\lambda) + \lambda e^t} \\
+m_X''(t) & = & \lambda e^{(t-\lambda) + \lambda e^t}(1+\lambda e^t)\end{eqnarray*}
+
+Now evaluate each of the derivatives at $t=0$ for the
+required moments.
+
+\begin{eqnarray*}
+E(X) & = & m_X'(0) \\
+   & = & \lambda e^{(0-\lambda) + \lambda e^0} \\
+   & = & \lambda e^0 \\
+   & = & \lambda \label{poisson_mean} \\
+E(X^2) & = & m_X''(0) \\
+   & = & \lambda e^{(0-\lambda) + \lambda e^0}(1+\lambda e^0) \\
+   & = & \lambda e^0(1+\lambda) \\
+   & = & \lambda + \lambda^2
+\end{eqnarray*}
+
+The mean is $\lambda$ like we expect.  For the variance we
+substitute these values into (\ref{discrete_var2}).
+
+\begin{eqnarray}
+\mbox{Var}(X) & = & E(X^2) - E(X)^2 \nonumber \\
+   & = & \lambda + \lambda^2 - \lambda^2 \nonumber \\
+   & = & \lambda \label{poisson_var}
+\end{eqnarray}
+
+\textbf{Motivation}
+
+The curve looks plausible
 enough.  But why this function?  Is it just the most
 convenient way to express a curve with a hump in a certain
 place?  Or is there something special about the expression
@@ -507,17 +554,85 @@ $$
 Then it takes the form
 
 \begin{equation}
-f_X(x) = \frac{1}{\sqrt{2\pi}}e^\frac{-x^2}{2}
+f_X(z) = \frac{1}{\sqrt{2\pi}}e^\frac{-z^2}{2}
 \end{equation}
 
 \subsubsection{Exponential Distribution}
 
-The exponential random variable has a density function of the form
+The exponential random variable has a cumulative distribution
+function of the form
 
-\begin{equation} \label{exp_density}
-f_X(t; \lambda) = \lambda e^{-\lambda t}
+\begin{equation} \label{exp_cdf}
+F_X(x; \lambda) = \left\{ \begin{array}{r@{\quad:\quad}l}
+   1 - e^{-\lambda x} & x > 0 \\
+   0 & x \le 0
+ \end{array} \right.
 \end{equation}
 
 where $1/\lambda$ is the expected wait-time of a Poisson processes.
+As usual, the density function is the derivative of the CDF.
+
+\begin{equation} \label{exp_density}
+f_X(x; \lambda) = \lambda e^{-\lambda x}
+\end{equation}
+
+To calculate the mean and variance, we resort once again to the
+moment generating function.
+
+\begin{eqnarray*}
+m_X(t) & = & E[e^{xt}] \\
+   & = & \int_0^{\infty} e^{xt} \lambda e^{-x \lambda} dx \\
+   & = & \lambda \int_0^{\infty} e^{-x(\lambda - t)} dx \\
+   & = & \left. \lambda \cdot \frac{-1}{\lambda - t} e^{-x(\lambda - t)}
+      \right|_{x=0}^{x=\infty} \\
+   & = & \frac{-\lambda}{\lambda - t} (0 - 1) \\
+   & = & \frac{\lambda}{\lambda - t}
+\end{eqnarray*}
+
+Note the definite integral only converges for $\lambda - t > 0$.
+This is fine for our needs since we intend to evaluate the moment
+generating function close to zero for its derivatives at zero.
+
+Now differentiate the moment generating function twice with
+respect to $t$.
+
+\begin{eqnarray*}
+m_X'(t) & = & \lambda(\lambda - t)^{-2}  \\
+m_X''(t) & = & \lambda (-2)(\lambda - t)^{-3}(-1) \\
+   & = & \frac{2 \lambda}{(\lambda - t)^3}
+\end{eqnarray*}
+
+Now evaluate each of the derivatives at $t=0$ for the
+required moments.
+
+\begin{eqnarray*}
+E(X) & = & m_X'(0) \\
+   & = & \frac{\lambda}{\lambda^2} \\
+   & = & \frac{1}{\lambda} \label{expon_mean} \\
+E(X^2) & = & m_X''(0) \\
+   & = & \frac{2 \lambda}{\lambda^3} \\
+   & = & \frac{2}{\lambda^2}
+\end{eqnarray*}
+
+The mean is $1 / \lambda$.  For the variance we
+substitute these values into (\ref{discrete_var2}).
+
+\begin{eqnarray}
+\mbox{Var}(X) & = & E(X^2) - E(X)^2 \nonumber \\
+   & = & \frac{2}{\lambda^2} - \frac{1}{\lambda^2} \nonumber \\
+   & = & \frac{1}{\lambda^2} \label{poisson_var}
+\end{eqnarray}
+
+It turns out the first and second moments are not difficult
+to derive directly from their integral formulas.
+
+\begin{eqnarray*}
+E[X] & = & \int_0^{\infty} x \lambda e^{-\lambda x} dx \\
+E[X^2] & = & \int_0^{\infty} x^2 \lambda e^{-\lambda x} dx
+\end{eqnarray*}
+
+It's a straight forward pair of calculations using integration
+by parts. But moment generating functions still save a little
+bit of work.
 
 \end{document}
