@@ -277,6 +277,20 @@ side.  The last number says that 97.5% of the curve lies to
 the left of **1.96**.  This is a number we'll commit to memory
 during the study of confidence intervals.
 
+Finally, let's run a normal simulation with 1,000 trials 
+using $\mu = 0$ and $\sigma = 1$.
+
+```{r norm_sample}
+norm_sample <- rnorm(1000)
+round(norm_sample[1:100], 2)
+```
+
+Let's check that our histogram looks anything like our PMF.
+
+```{r norm_hist}
+hist(norm_sample, breaks=20, xlim=c(-4, 4), col="blue")
+```
+
 
 ## 3.2 Exponential Distribution
 
@@ -286,3 +300,146 @@ above.  Whereas a Poisson random variable represents a count of
 events that occur over a fixed unit of time, an exponential
 random variable represents the amount of time between one such
 event and the next.
+
+The density function for the exponential function is
+
+$$
+f_X(x; \lambda) = \lambda e^{-\lambda x}
+$$
+
+where the expected wait time is $1/\lambda$  Let's go through
+the usual moments with $\lambda = 1/3$.  The exponential function
+decreases as x gets larger.
+
+```{r exp_pdf}
+x <- dexp(c(1,2,3,4), 1/3)
+round(x, 2)
+```
+
+Since the expected wait time is $1/\lambda = 3$ units of time,
+we expect the CDF to cross 50% there.
+
+```{r exp_cdf}
+x <- pexp(c(1,2,3,4), 1/3)
+round(x, 2)
+```
+
+The is the PDF and CDF graphically.
+
+```{r exp_plot}
+x <- seq(0, 12, by=0.02)
+plot(x, pexp(x, 1/3), col='blue', type='l', lty='solid')
+lines(x, dexp(x, 1/3), col='red')
+title(main="Exponential PDF and CDF", ylab="", xlab="")
+```
+
+Once again, we can see the relationship between the 
+CDF $F_X(x; \lambda)$ and the PDF $f_X(x; \lambda)$.
+
+$$
+F_X(x; \lambda) = \int_0^x f_X(t; \lambda) dt
+$$
+
+The standard quartiles are given by
+
+```{r exp_quartiles}
+x = qexp(c(0.25, 0.5, 0.75), 1/3)
+round(x, 2)
+```
+
+Notice that the median is 2.08.  This is an example the median
+and the average do not agree, even for a continuous random variable.
+These values tell us we should expect a wait time of
+
+* 0.86 time units or less 25% of the time
+* 2.08 time units or less 50% of the time
+* 4.16 time units or less 75% of the time
+
+Let's generate some exponential distributed time intervals for
+a simulated Poisson process.
+
+Finally, let's run an exponential simulation with 1,000 trials with
+$\lambda = 1/3$.
+
+```{r exp_rexp}
+exp_sample <- rexp(1000, 1/3)
+round(exp_sample[1:100], 2)
+```
+
+Let's check that our histogram looks anything like our PMF.
+
+```{r exp_hist}
+hist(exp_sample, breaks=24, xlim=c(0, 12), col="blue")
+```
+
+## Gamma Distribution
+
+A Gamma random variable is often interpreted as a sum of $r$ independent
+exponential random variables with the same parameter $\lambda$.  The
+density function is
+
+$$
+f_X(x; \lambda, r) = \frac{\lambda}{\Gamma(r)}(\lambda x)^{r-1} e^{-\lambda x}
+$$
+
+So we have $r$ Poisson processes with an expected wait time of $1/\lambda$.
+Let's continue using our Poisson process from before with an expected wait
+time of 3 time units; but this time let's assume we are waiting for 5 of
+them (one after another).  So in this particular case, $\lambda = 1/3$ and
+$r = 5$.
+
+The R functions related to the Gamma random variable take two parameters:
+
+* `shape` - this corresponds to $r$ in the density function above
+* `scale` - this corresponds to $\lambda$ in the density function above
+
+Let's check a few density function values.
+
+```{r gamma_pdf}
+x <- dgamma(c(5, 10, 15, 20, 25), shape=5, scale=3)
+round(x, 2)
+```
+
+The cumulative distribution function gives a better feel for the distribution.
+
+```{r gamma_cdf}
+x <- pgamma(c(5, 10, 15, 20, 25), shape=5, scale=3)
+round(x, 2)
+```
+
+The is the PDF and CDF graphically.
+
+```{r gamma_plot}
+x <- seq(0, 50, by=0.02)
+plot(x,  pgamma(x, shape=5, scale=3), col='blue', type='l', lty='solid')
+lines(x, dgamma(x, shape=5, scale=3) * 10, col='red')
+title(main="Gamma PDF and CDF", ylab=" ", xlab=" ")
+```
+
+The PDF was multiplied by 10 to emphasize its shape.
+The quartiles are given by 
+
+```{r gamma_quartile}
+x <- qgamma(c(0.25, 0.5, 0.75), shape=5, scale=3)
+round(x, 2)
+```
+
+This means that we can expect a trial (which consists of 5 independent Poisson
+processes, each with expected duration of 3 time units) to take less than
+
+* `r round(x[1], 2)` time units 25% of the time
+* `r round(x[2], 2)` time units 50% of the time
+* `r round(x[3], 2)` time units 75% of the time
+
+Let's simulate 1,000 trials through a random number generator.
+
+```{r gamma_sample}
+g35_sample <- rgamma(1000, shape=5, scale=3)
+round(g35_sample[1:100], 2)
+```
+
+Now let's check the histogram.
+
+```{r gamma_hist}
+hist(g35_sample, breaks=25, xlim=c(0, 50), col="blue")
+```
