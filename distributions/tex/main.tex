@@ -129,7 +129,8 @@ maps outcomes to real numbers, the next question is to ask
 how the values of the random variable are likely to be
 distributed along the real axis after performing the
 experiment many times.  A central concept to answering
-this question is the \emph{distribution}.
+this question is the \emph{distribution} or 
+\emph{cumulative distribution}.
 
 $$
 F_X(t) = P(X \le t)
@@ -185,33 +186,34 @@ F(n) & = & \sum_{i \le n} f(i)\\
 \end{eqnarray*}
 
 The X subscripts were dropped for brevity; but in general
-one writes $F_X$ or $f_X$ to associate them with the random
-variable they represent.
+one writes $F_X$ or $f_X$ to associate the function with
+the associated random variable $X$.  This becomes more
+important when multiple random variables are considered.
 
 Many useful quantities can be expressed in terms of a density.
 First, there is the \emph{mean}.
 
 \begin{equation} \label{discrete_mean}
-E(X) = \sum_{i = -\infty}^{\infty} i \cdot f_X(i)
+E[X] = \sum_{i = -\infty}^{\infty} i \cdot f_X(i)
 \end{equation}
 
 And the variance.
 
 \begin{equation} \label{discrete_var1}
-\mbox{Var}(X) = \sum_{i = -\infty}^{\infty} (i - E(X))^2 \cdot f_X(i)
+\mbox{Var}[X] = \sum_{i = -\infty}^{\infty} (i - E(X))^2 \cdot f_X(i)
 \end{equation}
 
 A popular alternative expression for the variance can be
 obtained by expanding the square.
 
 \begin{eqnarray}
-\mbox{Var}(X) & = & \sum_{i=-\infty}^{\infty} (i - E(X))^2 \cdot f_X(i) \nonumber \\
-   & = & \sum_{i=-\infty}^{\infty} (i^2 - 2iE(X) + E(X)^2) \cdot f_X(i) \nonumber \\
+\mbox{Var}[X] & = & \sum_{i=-\infty}^{\infty} (i - E[X])^2 \cdot f_X(i) \nonumber \\
+   & = & \sum_{i=-\infty}^{\infty} (i^2 - 2iE[X] + E[X]^2) \cdot f_X(i) \nonumber \\
    & = & \sum_{i=-\infty}^{\infty} i^2 \cdot f_X(i) 
-       - 2E(X) \sum_{i=-\infty}^{\infty} i \cdot f_X(i)
-       - E(X)^2 \sum_{i=-\infty}^{\infty} f_X(i) \nonumber \\
-   & = & E(X^2) - 2E(X) E(X) - E(X)^2 \nonumber \\
-   & = & E(X^2) - E(X)^2   \label{discrete_var2}
+       - 2E[X] \sum_{i=-\infty}^{\infty} i \cdot f_X(i)
+       - E[X]^2 \sum_{i=-\infty}^{\infty} f_X(i) \nonumber \\
+   & = & E[X^2] - 2E[X] E[X] - E[X]^2 \nonumber \\
+   & = & E[X^2] - E[X]^2   \label{discrete_var2}
 \end{eqnarray}
 
 This is often expressed in words as ``the mean squared minus the
@@ -222,7 +224,7 @@ The mean is a special cases of a \emph{moments}.
 The $n^{\mbox{th}}$ moment is defined as
 
 $$
-\mbox{Var}(X) = \sum_{i = -\infty}^{\infty} i^n \cdot f_X(i)
+E[X^n] = \sum_{i = -\infty}^{\infty} i^n \cdot f_X(i)
 $$
 
 We've already seen that the first moment is the mean.
@@ -236,7 +238,8 @@ mean.  The fourth moment is related to the \emph{kurtosis}.  It
 describes the extent to which a distribution avoids its mean.
 
 An important tool used in working with distributions is the
-\emph{moment generating function}.  It's defined as
+\emph{moment generating function}.  For a discrete random
+variable, it's defined as
 
 \begin{equation} \label{discrete_mgf}
 m_X(t) = E(e^{it}) = \sum_{i=-\infty}^{\infty} e^{it} f_X(i)
@@ -248,8 +251,8 @@ to be important both practically and theoretically.
 
 The theoretical importance derives from analytic function
 theory which describes a class of functions that are completely
-determined in some neighborhood by the derivatives of all
-orders at a single point.  Moment generating functions are
+determined in some neighborhood of a point by the derivatives 
+of all orders at the point.  Moment generating functions are
 used to show how, in most cases, a distribution is uniquely
 determined by the value of all its moments.  This result
 is encountered in many proofs to show how a particular
@@ -348,7 +351,7 @@ the mean and variance of this distribution.  From
 (\ref{discrete_mean}) we have to evaluate
 
 $$
-\sum_{i=0}^n i {n \choose i} p^i (1-p)^{(n-i}
+\sum_{i=0}^n i {n \choose i} p^i (1-p)^{n-i}
 $$
 
 This is not easy to solve in a closed form.  It's
@@ -376,7 +379,7 @@ m_X''(t) & = & n(n-1)(pe^t + q)^{(n-2)} pe^t pe^t +
    & = & npe^t(pe^t + q)^{(n-2)}(npe^t + q)
 \end{eqnarray*}
 
-Now evaluate each of the derivatives at $t=0$ for the
+And evaluate each of the derivatives at $t=0$ for the
 required moments.
 
 \begin{eqnarray*}
@@ -498,7 +501,7 @@ $$
 $$
 
 If $o(t)$ was analytic (and we're not saying it is), then
-it's power series representation would only have second
+its power series representation would only have second
 order and above terms (i.e. $o(t) = a_2t^2 + a_3t^3 \ldots$).
 
 \subsection{Continuous Distributions}
@@ -535,9 +538,9 @@ This is the continuous version of (\ref{discrete_mgf}).
 \subsubsection{Normal Distribution}
 
 The granddaddy of all distributions is the \emph{normal distribution}.
-It has two parameters: the mean $\mu$ and variance $\sigma^2$.  The
-density function for the normal distribution in one dimension is given
-by the following formula.
+It has two parameters: the mean $\mu$ and standard deviation
+$\sigma$.  The density function for the normal distribution in one
+dimension is given by the following formula.
 
 \begin{equation}
 f_X(x; \mu, \sigma) = \frac{1}{\sqrt{2\pi}\sigma}e^{\frac{-(x - \mu)^2}{2\sigma^2}}
