@@ -482,7 +482,7 @@ The following conventions apply to Git comments.
 Generally you do **not** need to provide
 
 * __the date__ - this is provided automatically
-* __the author__ - this defaults to the committer; but their is a `commit`
+* __the author__ - this defaults to the committer; but there is a `commit`
   option to specify a different author than the committer.  (See below)
 * __the changed files__ - this is obtainable through other Git commands;
   it does not *need* to be part of the commit message.  But this is only
@@ -495,7 +495,7 @@ git commit --author "Mai Kaleegh <mkaleegh@agcy.place.gov>"
 ```
 
 The commit record will still register you as the committer.  But the author
-field will be someone else.
+field will be Mai Kaleegh.
 
 #### Comment Editor
 
