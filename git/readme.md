@@ -37,6 +37,8 @@ This document is an outline used to guide a pair of workshops.
 * [Merge Conflicts](#merge-conflicts)
 * [Remotes](#remotes)
 * [Tags](#tags)
+* [GitHub](#github)
+* [Cloverleaf Lifecycle](#cloverleaf-lifecycle)
 
 ## Installation
 
@@ -1094,12 +1096,12 @@ Workshop 1 ended with the topic of [branches](#branches).
 We saw how easy it was to create a branch.  A good analogy
 would be the difficulty associated with jumping out the window
 of a building.  The "jumping out" part would be analogous to
-"creating a branch."  Most people achieve that much without
+"creating a branch."  Most people can achieve that without
 much pain.  Landing is a different thing altogether.  Without
 a certain amount of planning, landing can go very badly.  In
-fact, most people avoid jumping out windows of buildings
+fact, most people avoid jumping out building windows
 solely based on the complications involved with landing,
-even though the jumping and falling part is easy and even fun.
+even though the jumping and falling part is easy, and maybe even fun.
 
 A **merge** is to a **branch** as *landing* is to a *jump*.
 Without some amount of planning, it can be messy and go badly.
@@ -1118,7 +1120,7 @@ The next level of complexity is when two branches edit
 
 In this case, the Git `merge` command will handle this
 automatically.  It will create a *merge commit* vertex in
-the DAG that points back in to the two source vertices.
+the DAG that points back to two source vertices.
 We saw this at the end of Workshop 1.  In this section, we're
 going to examine the case where the same line of the same file
 is changed by both branches.  This is a *merge conflict*.
@@ -1130,11 +1132,50 @@ so bad once you dig in to understand what's going on.
 
 ***
 
-Enough chit-chat.  Let's dig in.  We have the scenario in the
-diagram below with two files.
+Enough chit-chat.  Let's create a conflict.
+1. Create a new empty directory named `conflicted`.
+2. Copy the following two files from
+   <https://github.com/lacounty-isab/workshops/tree/master/git/samples>
 
-* `file1.txt` - a set of mapping entries
-* `file2.py` - a simple Python script
+   * `file1.txt` - a set of mapping entries
+   * `file2.py` - a simple Python script
+
+   into the `conflicted` directory.
+3. Initialize a new Git repository.
+4. Add both files with `git add .`.
+5. Commit with `git commit -m 'Initial version.'`
+6. Create a **B3** branch with `git branch B3`.
+   (Note: we are still on the `master` branch.)
+7. Make the changes indicated in the table below for `master`.
+8. Add and commit the changes with the comment `master changes`.
+9. Switch to the `B3` branch using `git checkout B3`.
+10. Make the  changes indicated in the table below for `B3`.
+11. Add and commit the changes with the comment `B3 changes`.
+12. Switch back to `master` with `git checkout master`.
+
+`file1.txt`
+
+(nc) - no change
+
+|Original Content | `master` change | `B3` change |
+|-----------------|-----------------|-------------|
+| `aa 20`         | `aa 30`         | (nc)        |
+| `ab 43`         | `aa 53`         | (nc)        |
+| `ca 39`         | `ca 39,40`      | `ca 39,41`  |
+| `cb 34`         | `cb 35`         | `cb 36`     |
+| `cc 44`         | `cc   44`       | `cc 44  `   |
+| `ea 45`         | (nc)            | `cc 55`     |
+| `eb 19`         | (nc)            | `eb 29`     |
+
+
+`file2.py`
+
+* `master` - change triple-quote string to individual prints;
+  delete `print(usage)` line.
+* `B3` - Add an extra space of indent to all code inside the
+   `print_usage` block.
+
+We have the scenario in the diagram below with two files.
 
 ![Merge Start](images/merge1.png)
 
@@ -1577,8 +1618,8 @@ far more important about the figure above is what did
 
 There was absolutely no impact of this fetch on L17's
 workflow.  The only evidence to L17 that anything occurred
-is the presence of the tracking branch.  **This is a big
-deal!**.  Fetching commits from others does **not** disrupt
+is the presence of the tracking branch.  **This is a great
+benefit!**.  Fetching commits from others does **not** disrupt
 anything you're currently doing.
 
 The L17 developer prepares for the merge of L21's work
@@ -1926,4 +1967,72 @@ project or product.  But it need not be this ambitious.  It could be
 a single `readme.md` file, perhaps with a few images throw in.
 The following steps allow you to share a local repository.
 
-1. 
+1. Create your repository locally.  We've done this several
+   times.
+2. Create an empty GitHub repository.  Note the URL (provided
+   by GitHub when you create the repository).
+3. Push your local repository to the empty one created on GitHub
+   using the command that GitHub furnishes you.
+
+
+## Cloverleaf Lifecycle
+
+The Cloverleaf programming model differs from most application servers
+where developers edit and compile the source code on their workstations,
+then move it to the server after completion.  For Cloverleaf, the development
+tool connects to a "TEST" server.  Changes to a file in the editor are
+changed on the server, not the local workstation.  This presents obvious
+issues should two programmers attempt to change the same file at the
+same time.  But it also presents problems for developers that change
+the same file in overlapping lifecycles.  For example, you change a file
+and begin testing it.  Meanwhile someone else changes it before you
+finish testing and attempt to deploy it.  They are unwittingly deploying
+your changes before you finish testing.
+
+The only way to keep order is for a single person to coordinate development
+activity among multiple teams.  When a developer of team of developers
+wish to start a change, the follow this processes.
+
+1. Open an issue on the GitHub repository listing the files they intend
+   to change.
+2. The coordinator checks that the target files in TEST are consistent
+   with the file in PROD.  This is necessary since some files have been
+   modified and then abandoned, sometimes several years ago.  Without
+   this consistency check, a developer would start from a version
+   different from the one in production.
+3. If the consistency check shows disparities, these are reviewed with
+   the developer to determine which version should be placed in TEST as
+   the starting part.
+4. The developer makes changes and tests.
+5. After successful testing, a production promotion is planned.
+6. The coordinator downloads the code changes to a local Git workspace
+   and commits them to a branch named after the issue.  For example,
+   if the issue number is 30, then the branch will be named `i30`.
+6. Prior to the promotion date, the branch is merged to `master`.
+   This will determine whether any changes to the TEST file occurred
+   because of a non-trivial merge.  If this happens, the merged
+   code must be retested.
+7. The merged code is place on the PROD machine in a *staging area*.
+   This makes it easy to effect the changes at the scheduled promotion
+   time.
+8. The changes are promoted at the scheduled time.
+9. If the change is stable after a few days in PROD, the change on
+   the `master` branch of the coordinators local repository is pushed
+   to GitHub (the shared repository).
+10. The commit corresponding to the promoted code is tagged.  Release
+    notes are added to GitHub.
+
+There are certain "special" files which have their own lifecycle.
+
+### NetConfig
+
+The `NetConfig` file is not promoted since it contains a great deal of
+environment specific information.  Rather, any required changes are
+made manually to the PROD copy.  This copy is then copied to source
+control for the release.
+
+### Shared Libraries
+
+Some PIX components are implemented as C shared libraries.  The C
+code is under source control, but the compiled libraries are not.
+They are simply copied from TEST to PROD.
