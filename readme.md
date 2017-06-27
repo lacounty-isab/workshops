@@ -9,16 +9,19 @@ If you have an idea for improvement, feel free to open an issue.
 
 | Directory | Workshop Description                               |
 |-----------|----------------------------------------------------|
-| [regex](regex/readme.md)| Introduction to regular expressions and their use in APIs |
-| [git](git/readme.md)| Introduction to Git and GitHub |
-| [distributions](distributions/readme.md)| Gaining familiarity with Python and/or R via a review of elementary probability distributions|
+| [regex](regex/)| Introduction to regular expressions and their use in APIs |
+| [git](git/)| Introduction to Git and GitHub |
+| [distributions](distributions/)| Gaining familiarity with Python and/or R via a review of elementary probability distributions|
+| [R Programming](ds/r/)| Statistics and Programming with R |
+| [Python Programming](ds/python/)| Python and Data Analysis |
 
 ## Background
 
 ISAB (Information Systems Advisory Body) is a sub-committee of the
 [CCJCC](http://ccjcc.lacounty.gov/)
 (Countywide Criminal Justice Coordination Committee) of Los Angeles County.
-As described on the [official ISAB site](http://ccjcc.lacounty.gov/Subcommittees-Task-Forces/Information-Systems-Advisory-Board-ISAB),
+As described on the
+[official ISAB site](http://ccjcc.lacounty.gov/Subcommittees-Task-Forces/Information-Systems-Advisory-Board-ISAB),
 ISAB is a multi-jurisdictional organization serving the justice communities
 within the county.  The ISAB Data Science Committee (IDSC) addresses
 data science issues faced by the community.  This repository addresses
