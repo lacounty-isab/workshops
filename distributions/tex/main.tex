@@ -21,6 +21,7 @@
 
 \title{Probability Distribution Workshop}
 \author{Los Angeles County\\ISAB}
+\date{}
 
 \begin{document}
 \maketitle
@@ -559,6 +560,45 @@ Then it takes the form
 \begin{equation}
 f_X(z) = \frac{1}{\sqrt{2\pi}}e^\frac{-z^2}{2}
 \end{equation}
+
+The moment generation function is defined in the usual way.
+
+\begin{eqnarray*}
+m_X(t) &= &E \left[ e^{tx}\right] \\
+  &= &\int_{-\infty}^{\infty} e^{tx} \frac{1}{\sqrt{2\pi}\sigma} 
+         e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \\
+  &= &\frac{1}{\sqrt{2\pi} \sigma} \int_{-\infty}^{\infty}
+       \exp \left[ -\frac{1}{2} \left( \frac{x-\mu}{\sigma} \right)^2 + tx \right] dx
+\end{eqnarray*}
+
+From this point it becomes an exercise in completing the square within
+the exponent.
+
+\begin{eqnarray*}
+-\frac{1}{2} \frac{(x-\mu)^2}{\sigma^2} + tx & = & \frac{1}{2\sigma^2} \left[
+      (x-\mu)^2 - 2tx\sigma^2 \right] \\
+   &= &\frac{1}{2\sigma^2} \left[ x^2 - 2x\mu + \mu^2 - 2tx\sigma^2 \right] \\
+   &= &\frac{1}{2\sigma^2} \left[ x^2 - 2x(\mu + t\sigma^2) + \mu^2 \right] \\
+   &= &\frac{1}{2\sigma^2} \left[ [ x^2 - 2x(\mu + t\sigma^2) + (\mu + t\sigma^2)^2 ]
+       - (\mu + t\sigma^2)^2 + \mu^2 \right] \\
+   &= &\frac{1}{2\sigma^2} \left[ [x - (\mu + t\sigma^2)]^2
+       - \mu^2 + 2\mu t \sigma^2 - t^2 \sigma^4 + \mu^2 \right] \\
+   &= &\frac{1}{2} \left[ \frac{x - (\mu + t\sigma^2)}{\sigma} \right]^2
+      +\frac{1}{2} \left[ 2\mu t + t^2 \sigma^2 \right]
+\end{eqnarray*}
+
+Now if we substitute this exponent expression back into our moment
+generating function, we get
+
+\begin{eqnarray}
+m_X(t) &= &\frac{1}{\sqrt{2\pi} \sigma} \int_{-\infty}^{\infty} \exp \left[
+   \frac{1}{2} \left( \frac{x - (\mu + t\sigma^2)}{\sigma} \right)^2
+      +\frac{1}{2} ( 2\mu t + t^2 \sigma^2) \right] dx  \nonumber \\
+  &= &\exp \left[ \frac{1}{2} ( 2\mu t + t^2 \sigma^2) \right] \frac{1}{\sqrt{2\pi} \sigma} 
+   \int_{-\infty}^{\infty} \exp \left[ \frac{1}{2} 
+   \left( \frac{x - (\mu + t\sigma^2)}{\sigma} \right)^2 \right] dx \nonumber \\
+  &= & \exp \left[\mu t + \frac{1}{2}t^2 \sigma^2 \right] \label{norm_mgf}
+\end{eqnarray}
 
 \subsubsection{Exponential Distribution}
 
