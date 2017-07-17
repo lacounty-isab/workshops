@@ -600,6 +600,82 @@ m_X(t) &= &\frac{1}{\sqrt{2\pi} \sigma} \int_{-\infty}^{\infty} \exp \left[
   &= & \exp \left[\mu t + \frac{1}{2}t^2 \sigma^2 \right] \label{norm_mgf}
 \end{eqnarray}
 
+Now differentiate $m_X(t)$ twice.
+
+\begin{eqnarray*}
+m_X'(t) &= &(\mu + t\sigma^2) \exp \left[ \mu t + \frac{1}{2} t^2 \sigma^2 \right] \\
+m_X''(t) &= &(\mu + t\sigma^2) (\mu + t\sigma^2) 
+   \exp \left[ \mu t + \frac{1}{2} t^2 \sigma^2 \right]
+   + \sigma^2 \exp \left[ \mu t + \frac{1}{2} t^2 \sigma^2 \right]
+\end{eqnarray*}
+
+Evaluate at zero to obtain the moments.
+
+\begin{eqnarray*}
+E[X] &= &m_X'(0) \\
+   &= &(\mu + 0) \exp [0] \\
+   &= &\mu \\
+E[X^2] &= &m_X''(0) \\
+   &= &(\mu + 0) (\mu + 0) \exp[ 0] + \sigma^2 \exp [0] \\
+   &= &\mu^2 + \sigma^2
+\end{eqnarray*}
+
+The variance comes out as expected.
+
+\begin{eqnarray*}
+\mbox{var}[X] &= &E[X^2] - E[X]^2 \\
+  &= &\mu^2 + \sigma^2 - \mu^2 \\
+  &= &\sigma^2
+\end{eqnarray*}
+
+
+A linear combination of normal distributions
+$X_1, X_2, ..., X_n$ are \emph{jointly normal}
+if the density of linear combination is given by
+
+$$
+\frac{1}{(\sqrt{2\pi})^n} \frac{1}{\mbox{det}|G|} \exp
+\left[ -\frac{1}{2}(x-\alpha)^t G^{-1} (x-\alpha) \right]
+$$
+
+This seems menacing at first.  But we can gain an
+intuition for it if we consider some simple cases.
+Perhaps the most menacing introduction is the
+correlation matrix $G$.  This matrix contains the covariance
+of each pair of $X_i$.
+
+$$
+G_{ij} = \mbox{cov}(X_i, X_j)
+$$
+
+Let's consider the case where the $X_i$ are independent of
+each other.  Then $\mbox{cov}(X_i, X_j) = 0$ for $i \ne j$
+and G is diagonal where each diagonal element
+$G_{ii} = var(X_i) = \sigma_i^2$.
+
+Let's assume the $X_i$ are centered so that $\alpha = 0$.
+Then the expression in the exponent simplifies to
+
+\begin{eqnarray*}
+-\frac{1}{2}(x-\alpha)^t G^{-1} (x-\alpha) &= &-\frac{1}{2} x^t G^{-1} x \\
+  &= &-\frac{1}{2} \sum_{i=1}^n x_i \frac{1}{G_{ii}} x_i \\
+  &= &-\frac{1}{2} \sum_{i=1}^n \frac{x_i^2}{G_{ii}}
+\end{eqnarray*}
+
+With these simplifications, the exponent becomes a weighted
+some of squares among the $x$ components.  If we further
+stipulate that the variances are equal, then $G = \sigma^2 I$
+is a constant and the expression simplifies to
+
+$$
+-\frac{1}{2} \sum_{i=1}^n \frac{x_i^2}{\sigma^2} =
+-\frac{1}{2\sigma^2} \sum_{i=1}^n x_i^2 =
+-\frac{1}{2} \frac{|x|^2}{\sigma^2}
+$$
+
+So we can see how the general form simplifies to our
+familiar one if we make assumptions about covariances.
+
 \subsubsection{Exponential Distribution}
 
 The exponential random variable has a cumulative distribution
