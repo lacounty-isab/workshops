@@ -1,5 +1,5 @@
 # Python Workshops
 
-I haven't been making the Python workshops publically available because
-they have incorporated sensitive datasets in a few of the examples.  I
-intend to remedy this starting with Workshop 5.
+I only started making the Python workshops available publicly with
+Workshop 5 because earlier ones incorporate sensitive datasets in
+a few of the examples.
