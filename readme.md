@@ -15,6 +15,27 @@ If you have an idea for improvement, feel free to open an issue.
 | [R Programming](ds/r/)| Statistics and Programming with R |
 | [Python Programming](ds/python/)| Python and Data Analysis |
 
+## Jupyter Rendering and Firewalls
+
+Many presentations are provided as Jupyter notebooks.
+These are indicated by files with a `.ipynb` extension.
+While intended to be rendered by a Jupyter notebook server where they
+can be altered and re-executed dynamically,
+GitHub can render them statically.  However, the JavaScript that
+provides the rendering comes from https://render.githubusercontent.com/.
+If your firewall configuration does not allow this address,
+then when you select a `.ipynb` or `.pdf` file, the content will
+fail to load.
+
+You can remedy this by loading https://render.githubusercontent.com/
+into your browser.  Since this page was not intended to be
+invoked directly, it will simply present a default image.
+
+![Octo Trooper](octotrooper.png)
+
+After successfully loading this page, the `.ipynb` and `.pdf`
+content should load.
+
 ## Background
 
 ISAB (Information Systems Advisory Body) is a sub-committee of the
