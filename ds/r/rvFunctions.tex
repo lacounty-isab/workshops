@@ -52,7 +52,7 @@ mapping events to the real number line.
 
 A function of a random variable simply maps the points from one
 real number line to another real number line.  In this way, a function
-of a random variable create a new random variable on the same event
+of a random variable creates a new random variable on the same event
 space, i.e. a new way to map events to real numbers.
 
 \includegraphics[width=\linewidth]{rv2.png}
@@ -63,18 +63,18 @@ $\Omega \rightarrow \mathcal{R} \rightarrow \mathcal{R}$, then
 $Y$ is also a random variable.
 
 Assuming that such a mapping is useful (and we'll find out later that
-this one is), we'll want to know the CDF and PDF of the new
+this $g(X) = X^2$ is), we'll want to know the CDF and PDF of the new
 random variable.  Unfortunately, it's not as simply as plugging
 $x^2$ everywhere you see an $x$.
 
 Using the figure above as an example, let's determine $F_Y(y)$ from
-basic principals.  The basic principal is
+basic principles.  The basic principle is
 
 $$
 F_Y(y) = P[Y \le y]
 $$
 
-From this principal we plug in the function to derive the expression.
+From this principle we plug in the function to derive the expression.
 Since $Y = g(X) = X^2$, we restrict our attention to $y > 0$ since
 $F_Y(y) = 0$ for $y \le 0$.
 
@@ -92,9 +92,9 @@ the CDF, we can derive the PDF.
 \begin{eqnarray*}
 f_Y(y) &= &\frac{d}{dy}F_Y(y) \\
    &= &\frac{d}{dy}\left[ F_x(\sqrt{y}) - F_X(-\sqrt{y}) \right] \\
-   &= &\left. \frac{dF_X}{dx} \right\vert_{x=\sqrt{y}} \frac{dx}{dy} - 
-   \left. \frac{dF_X}{dx} \right \vert_{x=-\sqrt{y}} \frac{dx}{dy} \\
-   &= &\frac{1}{2\sqrt{y}} \left( f_x(\sqrt{y}) - f_x(-\sqrt{y}) \right)
+   &= &\left. \frac{dF_X}{dx} \right\vert_{x=\sqrt{y}} \frac{d(\sqrt{y})}{dy} - 
+   \left. \frac{dF_X}{dx} \right \vert_{x=-\sqrt{y}} \frac{d(-\sqrt{y})}{dy} \\
+   &= &\frac{1}{2\sqrt{y}} \left[ f_x(\sqrt{y}) + f_x(-\sqrt{y}) \right]
 \end{eqnarray*}
 
 where
@@ -130,14 +130,14 @@ area under $f_X$ that has a probability interpretation.  You
 can't say anything about an area with just the height.  You
 need to also specify the width.  So in the case of our transformation
 $g$, it's not enough to determine the height of $f_Y$ at a certain
-point though corresponding values of $f_X$.  We need to know how
+point through corresponding values of $f_X$.  We need to know how
 $g$ is stretching the differential widths to get the full picture
 of how areas under $f_X$ transform to \emph{areas} under $f_Y$.  The
-Jacobian factor provides this "width stretching" information.
+Jacobian factor provides this ``width stretching'' information.
 
-We're still messing around in the realm in probability.  In the next
+We're still messing around in the realm of probability.  In the next
 workshop, we'll consider some special functions of a random
-variable (like the average of a sample) and cross over into the
+variable (like the average of a sample) and cross into the
 realm of \emph{statistics} proper.
 
 
