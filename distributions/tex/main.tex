@@ -406,6 +406,7 @@ substitute these values into (\ref{discrete_var2}).
 \end{eqnarray}
 
 \subsubsection{Poisson Process}
+\label{subsec:poisson}
 
 A Poisson process is a special type of counting process.
 A counting process is a function $N(t), t \ge 0$ that
@@ -478,7 +479,7 @@ It turns out that this particular "humped curve" does indeed
 have some special properties.  In fact, (\ref{poisson_pmf})
 can be derived from four properties.
 
-\begin{enumerate}
+\begin{enumerate}  \label{poisson_properties}
 
 \item Non-overlapping intervals are independent.
 
@@ -490,7 +491,7 @@ can be derived from four properties.
   
 \item $P[N(t) = 1] = \lambda t + o(t)$
 
-\item $P[N(t) \ge 1] = o(t)$
+\item $P[N(t) > 1] = o(t)$
 
 \end{enumerate}
 
@@ -504,6 +505,12 @@ $$
 If $o(t)$ was analytic (and we're not saying it is), then
 its power series representation would only have second
 order and above terms (i.e. $o(t) = a_2t^2 + a_3t^3 \ldots$).
+
+  \includegraphics[height=8cm,keepaspectratio]{ot.png}
+
+Conditions 3 and 4 are saying that $P[N(t) = 1]$ is similar
+to the red line for small $t$ while $P[N(t) > 1]$
+looks like a linear combination of green lines.
 
 \subsection{Continuous Distributions}
 
@@ -678,6 +685,79 @@ familiar one if we make assumptions about covariances.
 
 \subsubsection{Exponential Distribution}
 
+The Exponential distribution is, in a sense, the complement of
+the Poisson distribution introduced in 
+Subsection (\ref{subsec:poisson}).  Whereas the Poisson
+distribution applies to the question of ``how many occurrences
+of an event happen per unit time for Poisson process,'' 
+the Exponential distribution addresses the question 
+``how long until the next occurrence.''
+
+Let's get a feel for how the characterization of a Poisson 
+process from
+Page (\pageref{poisson_properties}) leads to an Exponential
+distribution.  Let $P_0(t)$ denote the probability of no
+occurrences between times 0 and $t$.  We can rewrite this
+in terms of characterics (iii) and (iv) of a Poisson process.
+
+\begin{eqnarray*}
+P_0(t) &= & \mbox{nothing happens from zero to time} \: t \\
+  &= & 1 - [\mbox{exactly one thing happens}] - 
+     [ \mbox{more than one thing happens} ] \\
+  &= & 1 - [\lambda t) + o(t)] - [ o(t) ] \\
+  &= & 1 - \lambda t + o(t)
+\end{eqnarray*}
+
+The $o(t)$ arithmetic may look funny.  But remember that $o(t)$
+refers to a class of functions which are closed under linear
+combinations.
+
+Another property that $P_0(t)$ has from Poisson characteristic
+(i) of Page \pageref{poisson_properties} is that non-overlapping
+intervals are independent.  That means the probability of two
+things happening in separate (non-overlapping) intervals is the
+product of the separate probabilities.
+
+$$
+P_0(t+h) = P_0(t)P_0(h)
+$$
+
+We can the above two equations to derive a differential equation
+for $P_0(t)$.
+
+\begin{eqnarray}
+\frac{dP_0(t)}{dt} &= & \lim_{h \to 0} \frac{P_0(t+h) - P_(t)}{h} \nonumber \\
+  &= & \lim_{h \to 0} \frac{P_0(t)P_0(h) - P_0(t)}{h} \nonumber \\
+  &= & \lim_{h \to 0} \frac{P_0(t)(P_0(h) - 1)}{h} \nonumber \\
+  &= & P_0(t)\lim_{h \to 0} \frac{(1 - \lambda h + o(h) - 1)}{h} \nonumber \\
+  &= & P_0(t)\left[ \lim_{h \to 0} \frac{-\lambda h}{h} 
+     + \lim_{h \to 0} \frac{o(h)}{h} \right] \nonumber \\
+  &= & P_0(t)\left[ \lim_{h \to 0} (-\lambda)
+     + 0 \right] \nonumber \\
+  &= & -\lambda P_0(t) \label{exp_de}
+\end{eqnarray}
+
+This first order differential equation has a well known solution
+of $P_0(t) = Ke^{\lambda t}$ for arbitrary constant $K$.  Since
+we are constraining $P_0(t)$ to be a probability density function,
+we require that
+
+$$
+1 = \int_0^{\infty} K e^{-\lambda t}
+$$
+
+which constrains $K$ to be $\lambda$.  This applies at a
+particular point $t$.  But since the Poisson process is
+\emph{stationary} 
+(characteristic (ii) on Page \pageref{poisson_properties})
+it translates to all $t > 0$.  So our expression for the
+exponential density of a Poisson process with rate $1/\lambda$
+is
+
+\begin{equation} \label{exp_density}
+f_X(x; \lambda) = \lambda e^{-\lambda x}
+\end{equation}
+
 The exponential random variable has a cumulative distribution
 function of the form
 
@@ -688,25 +768,19 @@ F_X(x; \lambda) = \left\{ \begin{array}{r@{\quad:\quad}l}
  \end{array} \right.
 \end{equation}
 
-where $1/\lambda$ is the expected wait-time of a Poisson processes.
-As usual, the density function is the derivative of the CDF.
-
-\begin{equation} \label{exp_density}
-f_X(x; \lambda) = \lambda e^{-\lambda x}
-\end{equation}
 
 To calculate the mean and variance, we resort once again to the
 moment generating function.
 
-\begin{eqnarray*}
-m_X(t) & = & E[e^{xt}] \\
-   & = & \int_0^{\infty} e^{xt} \lambda e^{-x \lambda} dx \\
-   & = & \lambda \int_0^{\infty} e^{-x(\lambda - t)} dx \\
+\begin{eqnarray}
+m_X(t) & = & E[e^{xt}] \nonumber \\
+   & = & \int_0^{\infty} e^{xt} \lambda e^{-x \lambda} dx \nonumber \\
+   & = & \lambda \int_0^{\infty} e^{-x(\lambda - t)} dx \nonumber \\
    & = & \left. \lambda \cdot \frac{-1}{\lambda - t} e^{-x(\lambda - t)}
-      \right|_{x=0}^{x=\infty} \\
-   & = & \frac{-\lambda}{\lambda - t} (0 - 1) \\
-   & = & \frac{\lambda}{\lambda - t}
-\end{eqnarray*}
+      \right|_{x=0}^{x=\infty} \nonumber \\
+   & = & \frac{-\lambda}{\lambda - t} (0 - 1) \nonumber \\
+   & = & \frac{\lambda}{\lambda - t} \label{exp_mgf}
+\end{eqnarray}
 
 Note the definite integral only converges for $\lambda - t > 0$.
 This is fine for our needs since we intend to evaluate the moment
@@ -739,7 +813,7 @@ substitute these values into (\ref{discrete_var2}).
 \begin{eqnarray}
 \mbox{Var}(X) & = & E(X^2) - E(X)^2 \nonumber \\
    & = & \frac{2}{\lambda^2} - \frac{1}{\lambda^2} \nonumber \\
-   & = & \frac{1}{\lambda^2} \label{poisson_var}
+   & = & \frac{1}{\lambda^2} \label{expon_var}
 \end{eqnarray}
 
 It turns out the first and second moments are not difficult
@@ -753,5 +827,548 @@ E[X^2] & = & \int_0^{\infty} x^2 \lambda e^{-\lambda x} dx
 It's a straight forward pair of calculations using integration
 by parts. But moment generating functions still save a little
 bit of work.
+
+\subsubsection{Gamma Distribution}
+
+The \emph{Gamma function} is defined by
+
+\begin{equation} \label{gamma_function}
+\Gamma(r) = \int_{0}^{\infty} x^{r-1} e^{-x} dx
+\end{equation}
+
+for $r \in [1,\infty)$.
+One application of integration by parts reveals its
+special property.
+
+\begin{eqnarray*}
+\Gamma(r) &= &\int_{0}^{\infty} x^{r-1} e^{-x} dx \\
+  &= &\left. -x^{r-1}e^{-x} \right|_0^{\infty}
+     + \int_0^{\infty} (r-1)x^{r-2} e^{-x} dx \\
+  &= &-(0 - 0) + (r-1) \int_0^{\infty} x^{(r-1) - 1} e^{-x} dx \\
+  &= &(r-1) \Gamma(r-1) \\
+\end{eqnarray*}
+
+It's easy to show $\Gamma(1)=1$.  So for positive integers
+$\Gamma(n) = (n-1)\Gamma(n-1) = (n-1)!$.  But the Gamma function
+is defined for all real $r>1$.  So the special property of the
+Gamma function is that it
+``fills in the gaps'' of the factorial function.
+
+The Gamma function lends its name to the
+\emph{Gamma density function}.
+
+\begin{equation} \label{gamma_density}
+\Gamma(x; r, \lambda) = \frac{\lambda}{\Gamma(r)} 
+     (\lambda x)^{r-1} e^{- \lambda x}
+\end{equation}
+
+We'll see in the next section how the Gamma random variable
+arises from summing $r$ Exponential random variables with
+parameter $\lambda$.
+For now let's content ourselves with determining its moment
+generating function.  About halfway through you see the change
+of variable $u = (\lambda - t)x$.
+
+\begin{eqnarray}
+m_X(t) & = & E[e^{xt}] \\
+   & = & \int_0^{\infty} e^{xt} \frac{\lambda}{\Gamma(r)} 
+     (\lambda x)^{r-1} e^{- \lambda x} dx \nonumber \\
+   &= & \frac{\lambda}{\Gamma(r)} \int_0^{\infty} (\lambda x)^{r-1}
+    e^{-(\lambda - t)x} dx \nonumber \\
+   & = & \frac{\lambda}{\Gamma(r)} \int_0^{\infty} 
+        \left( \frac{\lambda u}{\lambda - t} \right)^{r-1}
+        e^{-u} \frac{du}{\lambda - t} \nonumber \\
+   & = & \frac{\lambda^r}{(\lambda - t)^r \Gamma(r)} \int_0^{\infty} 
+        u^{r-1}  e^{-u} du \nonumber  \\
+   & = & \frac{\lambda^r \Gamma(r)}{(\lambda - t)^r \Gamma(r)} \nonumber \\
+   & = & \left( \frac{\lambda}{\lambda - t} \right)^r \label{gamma_mgf}
+\end{eqnarray}
+
+This reduces to ($\ref{exp_mgf}$) for the Exponential distribution
+when $r=1$.
+
+
+\section{Random Variable Functions}
+
+Most of the random variables we've examined so far directly
+directly model some conceptually simple experiment like
+flipping a coin, counting the successes of a number of trials,
+or counting the number of occurrences over a fixed time interval.
+But we'll find there is value in constructing new random variables
+that are functions of random variables we have already encountered.
+The most common cases are squares and linear
+combinations of variables.  This section will outline two
+techniques useful for determining the distribution function
+that arises from a function of a random variable.
+
+\subsection{CDF Method}
+
+Consider random variable $Y = X^2$ where we already know
+the density function $f_X(x)$. What can we say about $f_Y(y)$.
+The technique we'll demonstrate in this section starts with
+the CDF.  Since $Y$ can only take on positive values, we know
+that the CDF is zero for all $Y \le 0$.
+
+Let's recall what a random variable is doing.
+A random variable maps from an abstract event space to points on
+the real number line.  Often the event space won't be so abstract
+and the mapping will be quite natural; so natural that we often just
+write $X$ rather than
+$X(\omega) \in \mathcal{R}$ for $\omega \in \Omega$.
+
+\includegraphics[width=\linewidth]{rv1.png}
+
+By mapping from an ``event space'' to the concrete real number line,
+random variables allow us to directly employ analytic techniques
+that have long existed for the real number line.  Our
+cumulative distribution functions and probability density functions
+are defined on the real number line by virtue of the random variable
+that maps events to the real number line.
+
+A function of a random variable simply maps the points from one
+real number line to another real number line.  In this way, a function
+of a random variable creates a new random variable on the same event
+space, i.e. a new way to map events to real numbers.
+
+\includegraphics[width=\linewidth]{rv2.png}
+
+In the figure above, $g(x) = x^2$ is such a function.  If we define
+$Y$ as the result of mapping
+$\Omega \rightarrow \mathcal{R} \rightarrow \mathcal{R}$, then
+$Y$ is also a random variable.
+
+Assuming that such a mapping is useful (and we'll find out later that
+this $g(X) = X^2$ is), we'll want to know the CDF and PDF of the new
+random variable.  Unfortunately, it's not as simple as plugging
+$x^2$ everywhere you see an $x$.
+
+Using the figure above as an example, let's determine $F_Y(y)$ from
+basic principles.  The basic principle is
+
+$$
+F_Y(y) = P[Y \le y]
+$$
+
+From this principle we plug in the function to derive the expression.
+Since $Y = g(X) = X^2$, we restrict our attention to $y > 0$ since
+$F_Y(y) = 0$ for $y \le 0$.
+
+\begin{eqnarray*}
+F_Y(y) &= &P[Y \le y] \\
+  &= &P[X^2 \le y] \\
+  &= &P\left[-\sqrt{y} \le X \le \sqrt{y}\right] \\
+  &= &P\left[X \le \sqrt{y}\right] - P\left[X \le -\sqrt{y}\right]
+\end{eqnarray*}
+
+This gives us the CDF for Y.  It's close to simply substituting
+$\sqrt{y}$ for $x$ into the expression for $F_X$.  Now that we have
+the CDF, we can derive the PDF.
+
+\begin{eqnarray*}
+f_Y(y) &= &\frac{d}{dy}F_Y(y) \\
+   &= &\frac{d}{dy}\left[ F_x(\sqrt{y}) - F_X(-\sqrt{y}) \right] \\
+   &= &\left. \frac{dF_X}{dx} \right\vert_{x=\sqrt{y}} \frac{d(\sqrt{y})}{dy} - 
+   \left. \frac{dF_X}{dx} \right \vert_{x=-\sqrt{y}} \frac{d(-\sqrt{y})}{dy} \\
+   &= &\frac{1}{2\sqrt{y}} \left[ f_x(\sqrt{y}) + f_x(-\sqrt{y}) \right]
+\end{eqnarray*}
+
+where
+
+$$
+\frac{dx}{dy} = \frac{d y^{\frac{1}{2}}}{dy} = \frac{1}{2}y^{-\frac{1}{2}}
+$$
+
+The expression for $f_Y$ in terms of $f_X$ in this specific case of
+$Y = X^2$ demonstrates two important complications.
+
+1. If $g$ is not 1-to-1, then we must account for all the points
+   in $g^{-1}(y)$.  In the case of a quadratic, there are usually
+   two.
+
+2. The $f_Y$ expression introduced an additional multiplicative
+   factor, known in vector calculus circles as \emph{the Jacobian}.
+   The Jacobian incorporates the stretch factor introduced by the
+   transformation.
+
+It's reasonable to ask why the CDF didn't need a stretch factor.
+It's because we don't integrate the CDF.  We just evaluate it at
+various points.
+\textbf{The value of the CDF at any point represents a probability.}
+
+This is not the case with a continuous density function.  The
+value of $f_X$ at a single point does not really mean anything
+\textbf{by itself.
+It certainly does not represent a probability.}  We only get
+probabilities from $f_X$ by integrating it over some interval
+or combination of intervals.  In other words, it's only the
+area under $f_X$ that has a probability interpretation.  You
+can't say anything about an area with just the height.  You
+need to also specify the width.  So in the case of our transformation
+$g$, it's not enough to determine the height of $f_Y$ at a certain
+point through corresponding values of $f_X$.  We need to know how
+$g$ is stretching the differential widths to get the full picture
+of how areas under $f_X$ transform to \emph{areas} under $f_Y$.  The
+Jacobian factor provides this ``width stretching'' information.
+
+We're still messing around in the realm of probability.  In the next
+workshop, we'll consider some special functions of a random
+variable (like the average of a sample) and cross into the
+realm of \emph{statistics} proper.
+
+\subsection{Moment Generating Functions}
+
+Another way to determine the density function $f_Y(y)$ for
+$Y = g(X)$ is to compute the moment generating function of
+$g(x)$ and determine whether it's something we recognize.
+
+\subsubsection{Linear Combinations}
+
+Let's consider the case where we have $n$ independent samples,
+each one from its own distribution.  Let $Y$ be a linear
+combination of the independent samples.  That is,
+$Y = g(X) = a_1 X_1 + \cdots + a_n X_n$ where $X_i$
+represents the distribution $i$ from which we are sampling.
+The $a_i$ are constants.
+The expression for the moment generating function is
+
+\begin{eqnarray}
+m_Y(t) &= & E \left[ e^{tY} \right] 
+  =  E \left[ e^{tg(x)} \right] 
+  = E \left[ e^{t \sum_{i=1}^n a_i X_i} \right]
+  = E \left[ e^{\sum_{i=1}^n t a_i X_i} \right]
+  = E \left[ \prod_{i=1}^n e^{t a_i X_i} \right] \nonumber \\
+  &= & \prod_{i=1}^n E \left[ e^{t a_i X_i} \right]
+  = \prod_{i=1}^n m_{X_i}(t a_i) \label{mgf_product}
+\end{eqnarray}
+
+We used the independence between the samples in going from the
+first line to the second.
+So the moment generating function for the sum of independent 
+random variables can be expressed as product of the individual
+moment generating function.
+
+Let's consider an example where $X$ represents an exponential
+random variable with parameter $\lambda$.  Recall that the
+value of the exponential random variable is the expected wait
+time for a Poisson process with rate $1/\lambda$.  Let
+$Y = X_1 + \cdots + X_n$, the time for the $n$th occurrence.
+Then the product rule in ($\ref{mgf_product}$) where each
+$m_{X_i}$ is the exponential moment generating function with
+parameter $\lambda$.  We established this in
+Equation ($\ref{exp_mgf}$) on Page $\pageref{exp_mgf}$.
+
+$$
+m_X(t) = \frac{\lambda}{\lambda - t}
+$$
+
+Plugging this into ($\ref{mgf_product}$) yields
+
+$$
+m_Y(t) = \prod_{i=1}^n m_{X_i}(t)
+  = \prod_{i=1}^n \frac{\lambda}{\lambda - t}
+  = \left( \frac{\lambda}{\lambda - t} \right)^n
+$$
+
+And this, as we saw in Equation ($\ref{gamma_mgf}$) on
+Page $\pageref{gamma_mgf}$, is the moment generating
+function for the Gamma distribution.
+
+Another popular application of ($\ref{mgf_product}$)
+yields the moment generating function for an average of
+independent samples.
+
+$$
+\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i
+$$
+
+In this case, we have $X_i = X$ and $a_i = 1/n$.
+
+\begin{equation}
+m_{\bar{X}}(t) = \left[ m_X \left( \frac{t}{n} \right) \right]^n
+\end{equation}
+
+\subsubsection{Normal Squares}
+
+The above are nice general results.  Let's direct our attention
+back to the normal distribution.  The formulas above apply to
+the normal distribution.  But here we'll investigate random
+variables that arise from the squares of the normal.
+
+Why would we care about the square of a normal random
+variable?  Mostly because it provides us information about
+the spread around its mean.  Linear combinations of the
+positions arounds its mean can cancel out.
+But squares are always positive and they accumulate.
+And they accumulate in certain expected patterns which, if not
+followed, lead us to suspect the underlying assumptions.
+One popular application of this is the so-called Chi-Squared
+goodness of fit test.
+
+Consider the case of $n$ independent samples from a normal
+distribution with mean $\mu$ and variance $\sigma^2$.  Then
+standardize the usual way.
+
+$$
+Z_i = \frac{X_i - \mu}{\sigma}
+$$
+
+Our new random variable will be
+
+$$
+U = \sum_{i=1}^n Z_i^2 = \sum_{i=1}^n \left( 
+    \frac{X_i - \mu}{\sigma} \right)^2
+$$
+
+Let's start on the moment generating function.
+
+\begin{equation}
+m_U(t) = E \left[ e^{tU} \right]
+ = E \left[ e^{t \sum_{i=1}^n Z_i^2} \right]
+ = E \left[ \prod_{i=1}^n e^{t Z_i^2} \right]
+ = \prod_{i=1}^n E \left[ e^{t Z_i^2} \right] \label{norm_sq1}
+\end{equation}
+
+This is just the linear combination stuff we did in the
+last section.  Now let's dig into this square.
+
+\begin{eqnarray}
+E \left[ e^{t Z_i^2} \right] &= & \frac{1}{\sqrt{2\pi}}
+     \int_{-\infty}^{\infty} e^{tz_i^2} e^{-\frac{1}{2} z_i^2}
+     dz_i \nonumber \\
+  &= & \frac{1}{\sqrt{2\pi}}
+     \int_{-\infty}^{\infty} e^{-\frac{1}{2} (1-2t)z_i^2}
+      dz_i \label{norm_sq2}
+\end{eqnarray}
+
+At this point we introduce a standard change of variables for
+this kind of thing.
+
+\begin{eqnarray*}
+u^2 = (1-2t)z_i^2 & \; &2udu = (1-2t)z_idz_i \\
+\frac{u}{z} = \sqrt{1-2t} & \; &dz_i = \frac{2udu}{(1-2t)2z}
+    = \frac{\sqrt{1-2t}}{1-2t} du = \frac{du}{\sqrt{1-2t}}
+\end{eqnarray*}
+
+Let's dump all this into ($\ref{norm_sq2}$) to get something
+we can work with.
+
+\begin{eqnarray}
+E \left[ e^{t Z_i^2} \right] &= & \frac{1}{\sqrt{2\pi}}
+     \int_{-\infty}^{\infty} e^{-\frac{1}{2} u^2}
+      \frac{du}{\sqrt{1-2t}} \nonumber \\
+  &= & \frac{1}{\sqrt{1-2t}} \frac{1}{\sqrt{2\pi}}
+     \int_{-\infty}^{\infty} e^{-\frac{1}{2} u^2} du \nonumber \\
+  &= & \frac{1}{\sqrt{1-2t}}  \nonumber  \\
+  &= & \left( \frac{1/2}{1/2 - t} \right)^{1/2} \label{norm_sq3}
+\end{eqnarray}
+
+Now let's substitute ($\ref{norm_sq3}$) back into
+($\ref{norm_sq1}$).
+
+\begin{eqnarray}
+m_U(t) &= &\prod_{i=1}^n \left( \frac{1/2}{1/2 - t} \right)^{1/2}
+   \nonumber \\
+   &= & \left( \frac{1/2}{1/2 - t} \right)^{n/2}
+\end{eqnarray}
+
+Now this moment generating function should look familiar.
+If not, review the previous section where we showed how the
+Gamma random variable arises from successive exponential trials.
+The Gamma moment generating function is 
+Equation ($\ref{gamma_mgf}$) on Page $\pageref{gamma_mgf}$.
+The expression in ($\ref{norm_sq3}$) is Gamma moment generating
+function for $r = n/2$ and $\lambda = 1/2$.
+
+So our sum of squares of standard normals has a distribution
+that we have already encountered before: $\mbox{Gamma}(n/2, 1/2)$.
+This distribution is special enough to get its own name:
+the \emph{Chi Squared} distribution.
+
+
+\appendix
+
+\section{Least Squares Formula}
+
+We assume $n$ independent samples from a population with
+mean $\mu$ and variance $\sigma^2$.  We don't know these
+two parameters.  We can only estimate them through sampling.
+
+Our first estimator is $\bar{X}$, defined by
+\begin{equation}
+\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i
+\end{equation}
+
+For a given sampling, $\{x_i\}, i=1 \ldots n$, we have the
+value of the estimator (the estimate)
+$$
+\bar{x} = \frac{1}{n} \sum_{i=1}^n x_i
+$$
+
+First we show that for any sample, $\bar{x}$ minimizes
+
+\begin{equation} \label{least_squares}
+f(\theta) = \frac{1}{n} \sum_{i=1}^n (x_i - \theta)^2
+\end{equation}
+
+It's easy to show this with Calculus.  But the algebraic
+route with a few tricks will shed more light later in
+this article.
+
+\begin{eqnarray}
+f(\theta) &= &\frac{1}{n} \sum_{i=1}^n (x_i - \theta)^2 \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n \left[ (x_i - \bar{x}) + (\bar{x} - \theta)\right]^2 \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n \left[ (x_i - \bar{x})^2 + 2 (x_i-\bar{x})(\bar{x} - \theta) + (\bar{x} - \theta)^2 \right] \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 + 
+     \frac{2(\bar{x} - \theta)}{n} \sum_{i=1}^n (x_i - \bar{x}) +
+     \frac{1}{n} (\bar{x} - \theta)^2 \sum_{i=1}^n 1 \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 + 
+     \frac{2(\bar{x} - \theta)}{n} \left[ \sum_{i=1}^n x_i - \sum_{i=1}^n  \bar{x} \right]  +
+     \frac{n}{n} (\bar{x} - \theta)^2 \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 + 
+     \frac{2(\bar{x} - \theta)}{n} \left[ n \bar{x} - n \bar{x} \right]  +
+     (\bar{x} - \theta)^2 \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 + 
+     (\bar{x} - \theta)^2 \label{least_square_residue}
+\end{eqnarray}
+
+Equation (\ref{least_square_residue}) makes it clear that
+the more $\theta$ differs from $\bar{x}$, the larger $f(\theta)$.
+Therefore the quantity reaches its least value
+when $\theta = \bar{x}$.
+
+For every sample $\{x_i\}$, there will be a different $\bar{x}$
+value that marks the minimal value of the least squares expression.
+Let $\mu$ be the population mean.  We don't know what $\mu$ is; we
+can only estimate it using $\bar{x}$.
+
+\section{Sample Variance}
+
+How close to $\mu$ can we reasonably expect our estimate $\bar{x}$ to be?
+We need to examine variance to answer that.  The expression we'll ultimately
+use is not intuitively obvious upon inspection.  For this reason we'll
+embark on an expository approach to arrive at a suitable expression
+for the variance.
+
+We use the symbol $S^2$ to distinguish sample variance from the
+variance of the distribution, $\sigma^2$.  Let's start with a
+candidate we'll call $S_0^2$.
+
+\begin{equation} \label{s0}
+S_0^2 = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2
+\end{equation}
+
+This seems like a reasonable candidate for the variance.  Let's
+check its expected value.
+
+\begin{eqnarray}
+E\left[ S_0^2 \right] &= &E \left[ \frac{1}{n} \sum_{i=1}^n 
+         (X_i - \mu)^2\right] \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n E \left[ (X_i - \mu)^2 \right] \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n E \left[ X_i^2 - 2 X_i \mu + \mu^2 \right] \nonumber \\ 
+  &= &\frac{1}{n} \sum_{i=1}^n E \left[ X_i^2 \right] -
+      \frac{2 \mu}{n} \sum_{i=1}^n E [ X_i ] + 
+      \frac{\mu^2}{n} \sum_{i=1}^n 1 \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n E \left[ X^2 \right] -
+      \frac{2 \mu}{n} \sum_{i=1}^n \mu + 
+      \frac{\mu^2 n}{n}  \label{s01}   \\
+  &= &\frac{E \left[ X^2 \right] }{n} \sum_{i=1}^n 1 - 
+      \frac{2 \mu^2}{n} \sum_{i=1}^n 1 + \mu^2  \nonumber \\
+  &= &E \left[ X^2 \right] -  2 \mu^2 + \mu^2  \nonumber \\
+  &= &E \left[ X^2 \right] -  \mu^2  \nonumber  \\
+  &= &\sigma^2  \nonumber
+\end{eqnarray}
+
+Equation (\ref{s01}) follows from the fact $E[X_i] = E[X]$ 
+for all $i$ since
+all $X_i$ come from the same distribution.  Once this is recognized,
+they become constants as far as the summation over $i$ is concerned.
+
+Great!  We got the expected value we wanted.  But there is a hitch.
+$S_0^2$ is \emph{not a statistic}.  That is, we can't evaluate it
+solely from data in our sample.  We have all the $\{x_i\}$.  But
+we don't know $\mu$.  The best we can do is estimate it with
+$\bar{X}$.  So let's try that with our new candidate $S_1^2$.
+
+\begin{equation} \label{s1}
+S_1^2 = \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2
+\end{equation}
+
+Recall (\ref{least_square_residue}) from our least squares
+discussion with $\mu$ stuck in for $\theta$.
+
+\begin{eqnarray}
+\frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2
+  = & \frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 & +
+  (\bar{x} - \mu)^2  \nonumber \\
+s_0^2 = & s_1^2 & + (\bar{x} - \mu)^2 \label{var_diff}
+\end{eqnarray}
+
+Here we let the lower case $s_0^2$ and $s_1^2$ denote the respective
+values of sampling the random variables $S_0^2$ and $S_1^2$.
+We know that $s_1^2 < s_0^2$ from the least square discussion.
+So it shouldn't be a surprise that the expectation of $s_1^2$
+should also be less.  This is a bit of a concern since 
+$s_0^2$ is unbiased.  That means $s_1^2$ probably \textbf{is} biased,
+unless the expectation of $(\bar{X} - \mu)^2$ is zero, which
+is unlikely since it is never negative.  Let's calculate
+this expectation.
+
+\begin{eqnarray}
+E \left[ (\bar{X} - \mu)^2 \right] &= &E \left[ \bar{X}^2 - 2 \bar{X} \mu + \mu^2 \right] \nonumber \\
+   &= & E \left[ \left( \frac{1}{n} \sum_{i=1}^n X_i \right) 
+       \left( \frac{1}{n} \sum_{j=1}^n X_j \right) \right]
+       - 2 \mu E[\bar{X}] + \mu^2  \nonumber \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n  E \left[ X_i X_j \right]
+       - 2 \mu \mu + \mu^2  \nonumber \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X_i^2] + \sum_{j \ne i}  E \left[ X_i X_j \right] \right]
+       - \mu^2 \label{voa1}  \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \sum_{j \ne i}  E \left[X_i \right] E \left[X_j \right] \right]
+       - \mu^2 \label{voa2}  \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \sum_{j \ne i}  E \left[X \right] E \left[X \right] \right]
+       - \mu^2  \label{voa3}  \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \mu^2 \sum_{j \ne i} 1 \right] - \mu^2 \nonumber \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \mu^2 (n-1) \right] - \mu^2 \nonumber \\
+   &= & \frac{1}{n} \left[ E[X^2] + \mu^2 (n-1) \right] - \mu^2 \nonumber \\
+   &= & \frac{1}{n} \left[ E[X^2] - \mu^2 \right]  \nonumber \\
+   &= & \frac{\sigma^2}{n}
+\end{eqnarray}
+
+In (\ref{voa1}) we separate the expectation of a product into two cases:
+when $i=j$ and when $i \ne j$.  When they are equal, it's just the expectation of a
+product of a random variable with itself, i.e. the second moment.  When they aren't
+equal, it's the expectation of two independent random variables.  In this case,
+$0 = \mbox{cor}(A,B) = E[AB] - E[A]E[B]$.  This is used in (\ref{voa2}).  In
+(\ref{voa3}) we use again the fact that $E[X_i] = E[X]$ for all $i$.
+
+Many will have guessed this result the well-known variance of the average 
+of $n$ samples from a distribution with variance $\sigma^2$.  Now we also
+know this is how biased our $s_1^2$ estimator is.  From (\ref{var_diff})
+we have
+
+\begin{eqnarray}
+E \left[ S_1^2 \right] &= & E \left[ S_0^2 \right] - E \left[ (\bar{X} - \mu)^2 \right] \nonumber \\
+   &= & \sigma^2 - \frac{\sigma^2}{n} \nonumber \\
+   &= & \frac{n-1}{n} \sigma^2 \label{es1} 
+\end{eqnarray}
+
+$S_1^2$ is a true statistic because it consists only of items we know
+from the sample.  As an estimator it's biased by the amount in
+(\ref{var_diff}) resulting in an expectation revealed in (\ref{es1}).
+By refining our statistic via the multiplicative constant revealed in
+(\ref{es1}), we get a statistic that is unbiased.
+
+\begin{eqnarray}
+S^2 &= & \frac{n}{n-1} S_1^2 \nonumber \\
+    &= & \frac{n}{n-1} \frac{1}{n} \sum_{i=1}^n \left( X_i - \bar{X} \right)^2 \nonumber \\
+    &= & \frac{1}{n-1} \sum_{i=1}^n \left( X_i - \bar{X} \right)^2 \label{s2}
+\end{eqnarray}
+
+so that
+
+$$
+E \left[S^2 \right] = \sigma^2
+$$
+
+This why we settle on the expression in (\ref{s2}) for our \emph{sample variance}.
 
 \end{document}
