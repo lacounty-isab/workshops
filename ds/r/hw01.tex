@@ -1,0 +1,166 @@
+\documentclass[]{article}
+
+\usepackage{marginnote}
+\usepackage{verbatim}
+\usepackage[letterpaper,left=3cm,right=4cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{allcolors={blue}}
+\hypersetup{pdftitle={Workshop 6 Homework}}
+\hypersetup{pdfauthor={Paul Glezen}}
+\hypersetup{pdfcreator={Latex}}
+\hypersetup{pdfkeywords={ISAB, Workshop, Probability, Distributions}}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+\title{Workshop 6 Homework}
+\author{Los Angeles County\\ISAB}
+\date{October 18, 2017}
+
+\begin{document}
+\maketitle
+These exercises are intended to refresh your calculus brain
+cells for the upcoming statistics topics.
+
+Print this out and take it with you to your meetings.
+Whenever the meeting becomes a waste of your time, discreetly take
+these pages out and start filling in the gaps of these derivations.
+Meeting hand-outs are a great source of scratch paper.
+Feign interest by asking for extra copies.
+
+The gamma function and associated gamma distribution
+will be popping up here and there.  It will help to become
+familiar with them.
+
+\section*{Normal Distribution}
+
+
+Evaluate
+
+$$
+R = \int_{-\infty}^{\infty} e^{-\frac{1}{2} x^2} dx
+$$
+
+\textbf{Trick}: Polar Coordinates
+
+Instead of computing $R$ directly, compute $R^2$ as a
+double integral and convert to polar coordinates.  The
+symmetry about the origin simplifies things.
+
+\begin{eqnarray*}
+R^2 &= & R \cdot R \\
+  &= & \int_{-\infty}^{\infty} e^{-\frac{1}{2} x^2} dx 
+       \int_{-\infty}^{\infty} e^{-\frac{1}{2} y^2} dy \\
+  &= & \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}
+       e^{-\frac{1}{2} x^2} e^{-\frac{1}{2} y^2} dx dy \\
+  &= & \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}
+       e^{-\frac{1}{2} (x^2 + y^2)} dx dy
+\end{eqnarray*}
+
+The exponential in this integral is begging for polar
+coordinates.
+
+\begin{eqnarray*}
+x = \cos\theta & \; & y = \sin\theta \\
+r^2 = x^2 + y^2 & \; & dx dy = J(r,\theta) dr d\theta
+\end{eqnarray*}
+
+$J(r,\theta)$ is the Jacobian of the transformation from
+$(x,y)$ to $(r,\theta)$ coordinates.  It accounts for how
+differential $dx \times dy$ area stretches to $dr \times d\theta$
+area under the change of variables.
+
+\textbf{Problem 1} Verify the value of the Jacobian.
+
+$$
+J(r,\theta) =
+\begin{vmatrix}
+\frac{\partial x}{\partial r} & \frac{\partial x}{\partial \theta} \\
+\frac{\partial y}{\partial r} & \frac{\partial y}{\partial \theta}
+\end{vmatrix} = r
+$$
+
+Substitute these back into the double integral.
+
+$$
+R^2 = \int_{0}^{2\pi} \int_{0}^{\infty}
+       e^{-\frac{1}{2} r^2} r  dr d\theta \label{p1}
+$$
+
+\textbf{Problem 2} Compute this integral to determine the
+normalization constant of the standard normal distribution.
+
+When you find the value of this integral, don't forget we're
+interested in $R$, not $R^2$.
+
+
+\section*{Gamma Distribution}
+
+The Gamma function is defined as
+
+$$
+\Gamma(r) = \int_0^{\infty} x^{r-1} e^{-x}dx
+$$
+
+\textbf{Problem 3} Calculate $\Gamma(1)$.
+
+\textbf{Problem 4} Calculate $\Gamma(2)$ using integration
+by parts.
+
+\textbf{Problem 5} Show for positive integers $n > 1$ that
+$\Gamma(n) = (n-1)\Gamma(n-1)$ using integration by parts. 
+
+The formula in Problem 5 means that for positive integers,
+$\Gamma(n) = (n-1)!$.  But since there is no restriction on
+$r$ to be an integer, this makes the gamma function a 
+continuous version of the factorial function.  Most non-integer
+values have to be computed numerically.  But there is one more
+special value that we can compute directly.
+
+\textbf{Problem 6} Compute $\Gamma \left(\frac{1}{2} \right)$.
+Use the substitution
+
+$$
+x = \frac{1}{2}u^2
+$$
+
+and your result from Problem 2.
+
+The Gamma distribution has the following density function.
+
+$$
+\mbox{Gamma}(x; r, \lambda) = \frac{\lambda}{\Gamma(r)} 
+                  (\lambda x)^{r-1} e^{-\lambda x}
+$$
+
+for $x \in [0, \infty)$.
+
+\textbf{Problem 7} Show that the integral of the 
+density function is 1.
+
+$$
+1 = \int_0^{\infty} \frac{\lambda}{\Gamma(r)} 
+                  (\lambda x)^{r-1} e^{-\lambda x} dx
+$$
+
+\textbf{Problem 8} Show that when $r = 1$, you get the 
+exponential distribution.
+
+\textbf{Problem 9} Calculate the moment generating function
+for the Gamma distribution.
+
+$$
+m_X(t) = E\left[ e^{tx} \right] = \int_0^{\infty}  e^{tx} 
+    \frac{\lambda}{\Gamma(r)}   (\lambda x)^{r-1} e^{-\lambda x} dx
+$$
+
+Hint: use substituion $u=(t-\lambda)x$.
+
+\end{document}  

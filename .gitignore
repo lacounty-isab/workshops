@@ -1,8 +1,10 @@
 .DS_Store
 .Rhistory
+.RApp.history
 .Rproj
 .Rproj.user
 R.Rproj
+__pycache__
 .ipynb*
 *.pptx
 *.ppt
