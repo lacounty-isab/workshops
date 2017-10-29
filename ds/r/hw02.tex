@@ -1,0 +1,194 @@
+\documentclass[]{article}
+
+\usepackage{marginnote}
+\usepackage{verbatim}
+\usepackage[letterpaper,left=3cm,right=4cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{allcolors={blue}}
+\hypersetup{pdftitle={Workshop 7 Homework}}
+\hypersetup{pdfauthor={Paul Glezen}}
+\hypersetup{pdfcreator={Latex}}
+\hypersetup{pdfkeywords={ISAB, Workshop, Probability, Distributions}}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+\title{Workshop 7 Homework}
+\author{Los Angeles County\\ISAB}
+\date{November 15, 2017}
+
+\begin{document}
+\maketitle
+These exercises are intended to help you review basic identities
+related to the variance of random variables.
+
+Print this out and take it with you to your meetings.
+Whenever the meeting becomes a waste of your time, discreetly take
+these pages out and start filling in the gaps of these derivations.
+Meeting hand-outs are a great source of scratch paper.
+Feign interest by asking for extra copies.
+
+Why this obsession with the variance of a distribution?
+When we sample from a population in order to estimate some
+quantity (like an average or a percentage), the confidence
+in our estimate (the so-called confidence interval) is directly
+related to the variance of the population.  This makes
+variance computations a big deal.
+
+
+\section*{Variance}
+
+Recall the identity we derived for the variance of a random
+variable $X$ last Spring.
+
+$$
+\mbox{Var}[X] = E[X^2] - E[X]^2
+$$
+
+We often write $\mu_X$ for the population mean, or $\mu$ when
+$X$ is understood.
+
+\textbf{Problem 1} Derive the above identity from the
+following definition.
+
+$$
+\mbox{Var}[X] = E\left[ (X - \mu)^2 \right]
+$$
+
+\textbf{Problem 2} How does the formula for the variance
+simplify when the population mean is zero?
+
+
+\section*{Covariance}
+
+Related to the variance is the \emph{covariance} of two random
+variables.  This is defined as
+
+$$
+\mbox{cov}[X,Y] = E\left[(X-\mu_x)(Y-\mu_y) \right]
+$$
+
+\textbf{Problem 3} Derive the following identity commonly
+used for the covariance from the above definition.
+
+$$
+\mbox{cov}[X,Y] = E[XY] - E[X]E[Y]
+$$
+
+Two random variables $X$ and $Y$ are said to be
+\emph{independent} when $\mbox{cov}[X,Y] = 0$.
+
+\textbf{Problem 4} Using the covariance identity above,
+what can we say about the expectation of a product of two
+independent random variables?
+
+
+\section*{Linear Combinations}
+
+\textbf{Problem 5} For a positive constant $a$ show that
+$\mbox{Var}[aX] = a^2 \mbox{Var}[X]$.
+
+Just start with the definition and use the linearity of
+expectation.
+
+$$
+\mbox{Var}[aX] = E\left[(aX)^2\right] - E[(aX)]^2
+$$
+
+
+\textbf{Problem 6} For two random variables $X$ and $Y$
+show that
+
+$$
+\mbox{Var}(X+Y) = \mbox{Var}[X] + \mbox{Var}[Y]
+                + 2 \cdot \mbox{cov}[X,Y]
+$$
+
+\textbf{Problem 7} Show that for two random variables
+$X$ and $Y$ that \textbf{are independent} we have that
+
+$$
+\mbox{Var}(aX+bY) = a^2\mbox{Var}[X] + b^2\mbox{Var}[Y]
+$$
+
+Using the sigma notation for standard deviation
+where $\sigma_X^2 = \mbox{Var}[X]$, we have
+
+$$
+\sigma_{aX+bY} = \sqrt{a^2 \sigma_X^2 + b^2 \sigma_Y^2}
+$$
+
+We can see that variances are nicer for calculation.
+But don't forget that at the end of the day, it's the
+standard deviation that we use for our confidence intervals.
+
+\section*{Sample Average}
+
+Let's say we're sampling from a distribution represented by
+the random variable $X$.  If we sample $n$ times, then we
+represent the set as $X_1, \cdots, X_n$.  We'll stick to the
+case where each sample is independent of the others.  Each
+of the $X_i$ is a random variable with same distribution as
+the others.  We can create a new random variable as a function
+of these $n$ random variables.
+
+\begin{equation} \label{sample_avg}
+\bar{X} = \frac{1}{n} \sum_{i=1}^n X_i
+\end{equation}
+
+This function should be familiar.  It represents the average.
+But at this stage, we just want to think of it as another
+random variable.  Like other random variables, an experiment
+or event occurs and a number pops out.  The experiment in this
+case is to sample the $X$ random variable $n$ times and take
+the average.  Equation (\ref{sample_avg}) is called the
+\textbf{sample average}.
+
+It's important not to confuse this with the
+\textbf{population mean}. (It's easy to do when this is new!)
+
+$$
+\bar{X} \ne \mu_X = E[X]
+$$
+
+The left side is a random variable; the right side is a
+constant.  The left side yields a number with each sampling.
+Sometime this number may be close to $\mu_X$; other times it
+may not be so close.  What you expect the random variable to
+be (i.e. $E[\bar{X}]$) and the value that actually pops out
+are two different things.  The expectation is fixed; the actual
+value varies with each sampling.  And since I just brought it
+up, what is this $E[\bar{X}]$?
+
+\textbf{Problem 8} Show that $E[\bar{X}] = \mu_X$.
+
+This is a simple application linearity of the expected
+value.  So let's make this a little more interesting.  Apply
+what you derived in the \textbf{Linear Combinations} section
+to the following.
+
+\textbf{Problem 9} Show that
+\begin{equation} \label{sample_var}
+\mbox{Var}[\bar{X}] = \frac{\mbox{Var}[X]}{n}
+\end{equation}
+
+To get things started:
+
+$$
+\mbox{Var}[\bar{X}] = \mbox{Var} \left[ \frac{1}{n}
+     \sum_{i=1}^n X_i \right]
+  =  \frac{1}{n^2} \mbox{Var} \left[\sum_{i=1}^n X_i \right]
+  =  \frac{1}{n^2} \sum_{i=1}^n \mbox{Var}[X_i]
+$$
+
+Remember to use the fact that the $X_i$ are independent
+of each other.
+
+\end{document}  
