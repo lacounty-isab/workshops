@@ -198,10 +198,17 @@ First, there is the \emph{mean}.
 E[X] = \sum_{i = -\infty}^{\infty} i \cdot f_X(i)
 \end{equation}
 
-And the variance.
+The variance is defined in terms of the mean as
+
+\begin{equation} \label{def_variance}
+\mbox{Var}[X] = E\left[(X - E[X])^2 \right]
+\end{equation}
+
+In terms of a density function the variance is
 
 \begin{equation} \label{discrete_var1}
-\mbox{Var}[X] = \sum_{i = -\infty}^{\infty} (i - E(X))^2 \cdot f_X(i)
+\mbox{Var}[X] = E\left[(X - E[X])^2 \right]
+     = \sum_{i = -\infty}^{\infty} (i - E(X))^2 \cdot f_X(i)
 \end{equation}
 
 A popular alternative expression for the variance can be
@@ -738,19 +745,20 @@ for $P_0(t)$.
 \end{eqnarray}
 
 This first order differential equation has a well known solution
-of $P_0(t) = Ke^{\lambda t}$ for arbitrary constant $K$.  Since
-we are constraining $P_0(t)$ to be a probability density function,
-we require that
-
-$$
-1 = \int_0^{\infty} K e^{-\lambda t}
-$$
-
-which constrains $K$ to be $\lambda$.  This applies at a
-particular point $t$.  But since the Poisson process is
+of $P_0(t) = Ke^{\lambda t}$ for arbitrary constant $K$.
+This applies at a particular point $t$.
+But since the Poisson process is
 \emph{stationary} 
 (characteristic (ii) on Page \pageref{poisson_properties})
-it translates to all $t > 0$.  So our expression for the
+it translates to all $t > 0$.
+Since we are constraining $P_0(t)$ to be a probability 
+density function, we require that
+
+$$
+1 = \int_0^{\infty} K e^{-\lambda t} dt
+$$
+
+which constrains $K$ to be $\lambda$. So our expression for the
 exponential density of a Poisson process with rate $1/\lambda$
 is
 
@@ -1184,22 +1192,22 @@ Substitute ($\ref{norm_sq3}$) back into ($\ref{norm_sq1}$).
 \begin{eqnarray}
 m_U(t) &= &\prod_{i=1}^n \left( \frac{1/2}{1/2 - t} \right)^{1/2}
    \nonumber \\
-   &= & \left( \frac{1/2}{1/2 - t} \right)^{n/2}
+   &= & \left( \frac{1/2}{1/2 - t} \right)^{n/2} \label{norm_sq4}
 \end{eqnarray}
 
 Now let's step back and think: have we seen a moment generating
-function like this anywhere?  It should look familiar.
+function like ($\ref{norm_sq4}$) anywhere?  It should look familiar.
 If not, review the previous section where we showed how the
 Gamma random variable arises from successive exponential trials.
 The Gamma moment generating function is 
 Equation ($\ref{gamma_mgf}$) on Page $\pageref{gamma_mgf}$.
-The expression in ($\ref{norm_sq3}$) is Gamma moment generating
-function for $r = n/2$ and $\lambda = 1/2$.
+The expression in ($\ref{norm_sq4}$) is the Gamma moment
+generating function for $r = n/2$ and $\lambda = 1/2$.
 
-So our sum of squares of standard normals has a distribution
+So our sum of squares of $n$ standard normals has a distribution
 that we have already encountered before: $\mbox{Gamma}(n/2, 1/2)$.
 This distribution is special enough to get its own name:
-the \emph{Chi Squared} distribution.
+the \emph{Chi-Squared} distribution.
 
 \begin{eqnarray} \label{chisq_density}
 \chi_n^2(x) = \mbox{Gamma}(x; n/2, 1/2) = \frac{1/2}{\Gamma(n/2)} 
@@ -1208,10 +1216,14 @@ the \emph{Chi Squared} distribution.
 
 The $n$ is a parameter of our distribution called the
 \emph{degrees of freedom}.  So the above expression is
-spoken as a 
-"Chi-Squared distribution with n degrees of freedom."
+said to be a 
+"Chi-Squared distribution with $n$ degrees of freedom."
 
-\subsection{The Average}
+\subsection{Samples}
+
+
+
+\subsubsection{Sample Average}
 
 Let's define a random variable to represent the average of
 $n$ samples from a distribution: $\{X_1, \cdots , X_n\}$.
@@ -1236,14 +1248,270 @@ This says that the expected value of the sample average is
 the mean.  This sounds so natural that we when we first
 encounter it, we often confuse $\bar{X}$ and $\mu$.  They
 are \textbf{not} the same.  $E[\bar{X}] = \mu$; but
-$\bar{X} \ne \mu$.
+$\bar{X} \ne \mu$.  This will become more apparent as we
+director our attention to the sample variance.
 
-% Derive the variance of \bar{X} and segue into
-% the Central Limit Theorem.
+We know that if we have a whole bunch of samples, the
+sample average will converge to the population mean.
+But how close to the mean can we expect these averages
+to be?  A fundamental indicator of how the samples are
+likely to be spread is the \emph{standard deviation},
+which is the positive square root of the variance.
+We can use (\ref{var_lc_indep}) on Page 
+\pageref{var_lc_indep} of the Appendix
+to find an expression for the variance of an average.
+Since the sampling is done independently,
+
+\begin{eqnarray}
+\mbox{Var}[\bar{X}] &= &\mbox{Var}\left[ \frac{1}{n} 
+         \sum_{i=1}^n X_i \right] \nonumber \\
+  &= &\sum_{i=1}^n  \frac{1}{n^2} \mbox{Var}[X_i] \nonumber \\
+  &= &\frac{1}{n^2} \sum_{i=1}^n  \sigma^2 \nonumber \\
+  &= &\frac{\sigma^2}{n} \label{sample_var1}
+\end{eqnarray}
+
+where $\sigma^2$ is the population variance.
+The standard deviation of the averages is the square root of
+this quantity.
+$$
+\frac{\sigma}{\sqrt{n}}
+$$
+This is how much
+we expect the average of samples to dance around the mean for
+a given sample size $n$.  For $n=1$, we get the original standard
+deviation of the population, which is what we should expect.  As
+we bump up $n$, the standard deviation decreases.  In other words,
+the distribution of the average clusters more closely to the mean.
+
+\subsubsection{Central Limit Theorem}
+
+We've determined that for a sample size $n$, if we perform
+the sampling many times, and accumulate many average
+($\bar{X}$) values, they'll
+
+\begin{itemize}
+\item tend to have an average around the population mean $\mu$
+\item tend to have a standard deviation near $\sigma/\sqrt{n}$
+   where $\sigma$ is the population standard deviation.
+\end{itemize}
+
+But what else can we say about the distribution of $\bar{X}$?
+Is it symmetric?  Does it look anything like the original $X$?
+The answer is amazing and is provided by the Central Limit
+Theorem (CLT).  The CLT says that the distribution $\bar{X}_n$
+(of averages from $n$ samples) from a  
+population with mean $\mu$ and standard deviation $\sigma$ will
+asymptotically approach a normal distribution with mean $\mu$
+and standard deviation $\sigma/\sqrt{n}$.
+
+$$
+\bar{X}_n \rightarrow \mathcal{N}(\mu, \sigma)
+$$
+
+It's amazing that the shape of the population distribution
+(from which the samples were taken) doesn't matter.  The shape
+of the sample average values will always approach
+a normal distribution.  Now you may be wondering about the
+menacing qualifiers like \emph{asymptotically} and
+\emph{approach}.  They signify that $\bar{X}_n$ isn't exactly
+normal.  And that could be a deal-breaker if ``not exactly''
+meant ``not even close''.  Fortunately, in most cases,
+``not exactly'' means ``good enough''.  Some special cases
+are worth noting.
+
+\begin{itemize}
+
+\item If the population is already a normal distributon,
+then $\bar{X}_n$ will be exactly normal for all $n$.
+
+\item If the sample size is less than 30 (just a rule of
+thumb), there is more concern that $n$ is too small
+for $\bar{X}_n$ to approach close enough to a normal.  In
+this case we resort to a \emph{t distributon} which is
+designed to compensate for the smaller sample size.
+\end{itemize}
+
+The CLT is the basis for most work on statistical inference
+and hypothesis testing.
+
+
+\subsubsection{Sample Variance}
+
+
+How close to $\mu$ can we reasonably expect our estimate $\bar{x}$ to be?
+We need to examine variance to answer that.  The expression we'll ultimately
+use is not obvious upon inspection.  For this reason we'll
+embark on an expository approach to arrive at a suitable expression
+for the variance.
+
+We use the symbol $S^2$ to distinguish sample variance from the
+variance of the distribution, $\sigma^2$.  Let's start with a
+candidate we'll call $S_0^2$.
+
+\begin{equation} \label{s0}
+S_0^2 = \frac{1}{n} \sum_{i=1}^n (X_i - \mu)^2
+\end{equation}
+
+This seems like a reasonable candidate for the variance.  Let's
+check its expected value.  This will tell us what to expect if
+we take more and more samples, resulting in more and more sample
+variances, to what can we expect their average to converge?
+
+\begin{eqnarray}
+E\left[ S_0^2 \right] &= &E \left[ \frac{1}{n} \sum_{i=1}^n 
+         (X_i - \mu)^2\right] \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n E \left[ (X_i - \mu)^2 \right] \nonumber \\
+  &= &\frac{1}{n} \sum_{i=1}^n \sigma^2 \nonumber \\ 
+  &= &\sigma^2  \nonumber
+\end{eqnarray}
+
+Great!  We got the expected value we wanted.  The sample variances
+will eventually converge to the population variance, the thing
+we're trying to estimate.  The statistical term for this quality
+is that it is \emph{unbiased}.  Conversely, an estimator whose
+expected value is \emph{not} equal to its counterpart for the
+population is called \emph{biased}.
+
+But there is a hitch.
+$S_0^2$ is \emph{not a statistic}.  That is, we can't evaluate it
+solely from data in our sample.  We have all the $\{x_i\}$.  But
+we don't know $\mu$.  (If we know this about the population,
+we probably wouldn't need to sample it; though there are cases
+where we know the mean of a population and we sample it to find
+other things.)
+
+The best we can do without the actual mean is estimate it with
+$\bar{X}$.  So let's try that with our new candidate $S_1^2$.
+
+\begin{equation} \label{s1}
+S_1^2 = \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2
+\end{equation}
+
+$\bar{X}$ qualifies as a statistic because everything we
+need to determine its value is contained in a sample.
+You're probably on pins and needles wondering whether this
+estimator is biased.  It \emph{is biased}.  However, don't
+despair; it happens to be a bias that is easy to correct.
+The correction is simple to apply; but not as simple to
+understand.
+
+We could derive the expectation of (\ref{s1}) directly
+and readily see the needed correction.  That would
+show us \emph{what} correction is needed; but it would
+not provide us with intuition on \emph{why} it is needed.
+To address the ``why'' as well as the ``what,'' we'll
+take a somewhat circuitous route in our analysis of
+(\ref{s1}).
+
+The first stop is Appendix \ref{sec:least_squares_formula}
+(page \pageref{sec:least_squares_formula}).
+There you'll derive a least squares formula that forms
+the crux of arguments that follow.  Equations
+(\ref{least_squares}) and
+(\ref{least_square_residue}) from 
+Appendix \ref{sec:least_squares_formula}
+are combined below for convenience.
+
+\begin{equation}
+\frac{1}{n} \sum_{i=1}^n (x_i - \theta)^2 =
+     \frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 + 
+     (\bar{x} - \theta)^2 \label{least_square_residue2}
+\end{equation}
+
+In (\ref{least_square_residue2}) the ${\{x_i\}}$ are a sample set,
+$\bar{x}$ is the average of the sample set, and $\theta$ is
+any real number.  An important quality of (\ref{least_square_residue2})
+is that it divides the lefthand side into a sum of two parts:
+one that is independent of $\theta$ and one that contains the
+$\theta$ contribution.  Note that the first part, independent of
+$\theta$, is none other than our candidate for sample variance,
+$S_1^2$ from (\ref{s1}).
+
+Let $\mu$ be the population mean.  We don't know what $\mu$ is; we
+can only estimate it using $\bar{x}$.  Set $\theta = \mu$ in
+(\ref{least_square_residue2}).
+For every sample $\{x_i\}$, there will be a different $\bar{x}$
+value that marks the minimal value of the least squares expression.
+$\mu$, on the other hand, is always the same.
+
+\begin{eqnarray}
+\frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2
+  = & \frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 & +
+  (\bar{x} - \mu)^2  \nonumber \\
+s_0^2 = & s_1^2 & + (\bar{x} - \mu)^2 \label{var_diff}
+\end{eqnarray}
+
+Here we let the lower case $s_0^2$ and $s_1^2$ denote the respective
+values of sampling the random variables $S_0^2$ and $S_1^2$.
+We know that $s_1^2 < s_0^2$ from the least square discussion.
+So it shouldn't be a surprise that the expectation of $s_1^2$
+should also be less.  This is a bit of a concern since 
+$s_0^2$ is unbiased.  That means $s_1^2$ probably \textbf{is} biased,
+unless the expectation of $(\bar{X} - \mu)^2$ is zero, which
+is unlikely since it is never negative.  Let's calculate
+this expectation.
+
+\begin{eqnarray}
+E \left[ (\bar{X} - \mu)^2 \right] &= &E \left[ \bar{X}^2 - 2 \bar{X} \mu + \mu^2 \right] \nonumber \\
+   &= & E \left[ \left( \frac{1}{n} \sum_{i=1}^n X_i \right) 
+       \left( \frac{1}{n} \sum_{j=1}^n X_j \right) \right]
+       - 2 \mu E[\bar{X}] + \mu^2  \nonumber \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n  E \left[ X_i X_j \right]
+       - 2 \mu \mu + \mu^2  \nonumber \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X_i^2] + \sum_{j \ne i}  E \left[ X_i X_j \right] \right]
+       - \mu^2 \label{voa1}  \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \sum_{j \ne i}  E \left[X_i \right] E \left[X_j \right] \right]
+       - \mu^2 \label{voa2}  \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \sum_{j \ne i}  E \left[X \right] E \left[X \right] \right]
+       - \mu^2  \label{voa3}  \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \mu^2 \sum_{j \ne i} 1 \right] - \mu^2 \nonumber \\
+   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \mu^2 (n-1) \right] - \mu^2 \nonumber \\
+   &= & \frac{1}{n} \left[ E[X^2] + \mu^2 (n-1) \right] - \mu^2 \nonumber \\
+   &= & \frac{1}{n} \left[ E[X^2] - \mu^2 \right]  \nonumber \\
+   &= & \frac{\sigma^2}{n}
+\end{eqnarray}
+
+In (\ref{voa1}) we separate the expectation of a product into two cases:
+when $i=j$ and when $i \ne j$.  When they are equal, it's just the expectation of a
+product of a random variable with itself, i.e. the second moment.  When they aren't
+equal, it's the expectation of two independent random variables.  In this case,
+$0 = \mbox{cor}(A,B) = E[AB] - E[A]E[B]$.  This is used in (\ref{voa2}).  In
+(\ref{voa3}) we use again the fact that $E[X_i] = E[X]$ for all $i$.
+
+Many will have guessed this result the well-known variance of the average 
+of $n$ samples from a distribution with variance $\sigma^2$.  Now we also
+know this is how biased our $s_1^2$ estimator is.  From (\ref{var_diff})
+we have
+
+\begin{eqnarray}
+E \left[ S_1^2 \right] &= & E \left[ S_0^2 \right] - E \left[ (\bar{X} - \mu)^2 \right] \nonumber \\
+   &= & \sigma^2 - \frac{\sigma^2}{n} \nonumber \\
+   &= & \frac{n-1}{n} \sigma^2 \label{es1} 
+\end{eqnarray}
+
+$S_1^2$ is a true statistic because it consists only of items we know
+from the sample.  As an estimator it's biased by the amount in
+(\ref{var_diff}) resulting in an expectation revealed in (\ref{es1}).
+By refining our statistic via the multiplicative constant revealed in
+(\ref{es1}), we get a statistic that is unbiased.
+
+\begin{eqnarray}
+S^2 &= & \frac{n}{n-1} S_1^2 \nonumber \\
+    &= & \frac{n}{n-1} \frac{1}{n} \sum_{i=1}^n \left( X_i - \bar{X} \right)^2 \nonumber \\
+    &= & \frac{1}{n-1} \sum_{i=1}^n \left( X_i - \bar{X} \right)^2 \label{s2}
+\end{eqnarray}
+
+so that
+
+$$
+E \left[S^2 \right] = \sigma^2
+$$
+
+This why we settle on the expression in (\ref{s2}) for our \emph{sample variance}.
 
 \appendix
 
-\section{Least Squares Formula}
+\section{Least Squares Formula} \label{sec:least_squares_formula}
 
 We assume $n$ independent samples from a population with
 mean $\mu$ and variance $\sigma^2$.  We don't know these
@@ -1267,7 +1535,7 @@ f(\theta) = \frac{1}{n} \sum_{i=1}^n (x_i - \theta)^2
 \end{equation}
 
 It's easy to show this with Calculus.  But the algebraic
-route with a few tricks will shed more light later in
+route with a few tricks will shed more light elsewhere in
 this article.
 
 \begin{eqnarray}
@@ -1292,13 +1560,118 @@ the more $\theta$ differs from $\bar{x}$, the larger $f(\theta)$.
 Therefore the quantity reaches its least value
 when $\theta = \bar{x}$.
 
-For every sample $\{x_i\}$, there will be a different $\bar{x}$
-value that marks the minimal value of the least squares expression.
-Let $\mu$ be the population mean.  We don't know what $\mu$ is; we
-can only estimate it using $\bar{x}$.
 
-\section{Sample Variance}
+\section{Variance Formulas}
 
+In this section we'll derive some formulas for the variance
+and covariance of random variables.  We first encountered the
+variance in (\ref{def_variance}) on Page \pageref{def_variance}.
+We used the discrete density function to derive an alternative
+expression (\ref{discrete_var2}) that would have derived more
+generally.
+
+\begin{eqnarray*}
+\mbox{Var}[X] &= &E\left[(X - E[X])^2 \right] \\
+   &= & E \left[ X^2 - 2XE[X] + E[X] E[X] \right] \\
+   &= & E[X^2] - E\left[2XE[X]\right] + E[X] E[X] \\
+   &= & E[X^2] - 2 E[X] E[X] + E[X] E[X] \\
+   &= & E[X^2] - E[X]^2
+\end{eqnarray*}
+
+\subsection{Covarance}
+
+The \emph{covariance} of two random variables $X$ and $Y$ is
+
+\begin{equation} \label{def_covariance}
+\mbox{cov}(X,Y) = E\left[(X - E[X])(Y - E[Y])\right]
+\end{equation}
+
+Much like with the "alternative formula" for variance, we
+can derive one for the covariance.
+
+\begin{eqnarray}
+\mbox{cov}(X,Y) &= &E\left[(X - E[X])(Y - E[Y])\right] \nonumber \\
+  &= &E\left[ XY - X E[Y] - E[X] Y - E[X] E[Y] \right] \nonumber \\
+  &= &E[XY] - E[X] E[Y] - E[X] E[Y] - E[X] E[Y] \nonumber \\
+  &= &E[XY] - E[X] E[Y] \label{cov2}
+\end{eqnarray}
+
+Note that the covariance of a random variable with
+itself is just the variance: $cov(X,X) = \mbox{Var}(X)$.
+An import property of covariance is that the covariance
+of two \emph{independent} random variables is always zero.
+(The converse is not always true; but one has to try hard
+to find examples.)
+
+When two random variables are independent, their covariance
+is zero.  Equation (\ref{cov2}) then implies
+
+\begin{equation} \label{cov_zero}
+E[XY] = E[X]E[Y]
+\end{equation}
+
+This is an important identity.  We use it in many places; but
+it's important to understand we can only do so when $X$ and
+$Y$ are independent.
+
+\subsection{Linear Combinations}
+
+Expectations are linear.
+
+$$
+E\left[ \sum a_i X_i \right] = \sum a_i E[X_i]
+$$
+
+Variances are not.  In this section we'll determine
+formulas for
+a linear combination of random variables.
+In the present case, $X = \sum_{i=1}^n a_i X_i$.
+
+\begin{eqnarray}
+\mbox{Var}\left[ \sum_{i=1}^n a_i X_i \right] &= &E\left[
+    \left( \sum_{i=1}^n a_i X_i - E\left[\sum_{i=1}^n a_i X_i
+    \right] \right)^2 \right] \nonumber \\
+  &= &E\left[ \left(\sum_{i=1}^n a_i X_i \right)
+              \left(\sum_{i=1}^n a_i X_i \right)
+     - 2 \left(\sum_{i=1}^n a_i X_i \right) E\left[\sum_{i=1}^n a_i X_i\right]
+     + \left( E\left[\sum_{i=1}^n a_i X_i \right] \right)^2
+               \right] \nonumber \\
+  &= &E\left[ \sum_{i=1}^n \sum_{j=1}^n a_i a_j X_i X_j 
+     - 2 \left(\sum_{i=1}^n a_i X_i \right) \sum_{i=1}^n a_i E[X_i]
+     + \left( \sum_{i=1}^n a_i E[X_i] \right)^2
+               \right] \nonumber \\
+  &= &\sum_{i=1}^n \sum_{j=1}^n a_i a_j E[ X_i X_j ]
+     - 2 \left(\sum_{i=1}^n a_i E[X_i] \right) \sum_{i=1}^n a_i E[X_i]
+     + E\left[ \sum_{i=1}^n a_i E[X_i] \right]^2 \nonumber \\
+  &= &\sum_{i=1}^n \sum_{j=1}^n a_i a_j E[ X_i X_j ]
+     - \sum_{i=1}^n a_i E[X_i] \sum_{i=1}^n a_i E[X_i] \nonumber \\
+  &= &\sum_{i=1}^n \sum_{j=1}^n a_i a_j E[ X_i X_j ]
+     - \sum_{i=1}^n \sum_{j=1}^n a_i a_j E[X_i] E[X_j] \nonumber \\
+  &= &\sum_{i=1}^n \sum_{j=1}^n a_i a_j (E[ X_i X_j ] 
+     - E[X_i] E[X_j]) \nonumber \\
+  &= &\sum_{i=1}^n \sum_{j=1}^n a_i a_j \mbox{cov}(X_i, X_j) \label{var_lc}
+\end{eqnarray}
+
+We've appealed to several linearity of averages sited above.
+Remember that $E[X]$ is a constant.  So when it appears inside
+another average expression, it can be factored out.
+$E[ a E[X]] = aE[E[X]] = aE[X]$.
+We've also used the expression for covariance in (\ref{cov2})
+in the last step.
+
+One special cases is when all the ${X_i}$ are independent of
+each other.  Then $cov(X_i, X_j) = 0$ when $i \ne j$.  Then
+(\ref{var_lc}) simplifies to
+
+\begin{eqnarray}
+\mbox{Var}\left[ \sum_{i=1}^n a_i X_i \right] &= &\sum_{i=1}^n 
+        \sum_{j=1}^n a_i a_j \mbox{cov}(X_i, X_j) \nonumber \\
+  &= &\sum_{i=1}^n a_i a_i \mbox{cov}(X_i, X_i) \nonumber \\
+  &= &\sum_{i=1}^n a_i^2 \mbox{Var}[X_i,] \label{var_lc_indep}
+\end{eqnarray}
+
+%--------------- Begin to be deleted ------------------------
+\begin{comment}
 How close to $\mu$ can we reasonably expect our estimate $\bar{x}$ to be?
 We need to examine variance to answer that.  The expression we'll ultimately
 use is not intuitively obvious upon inspection.  For this reason we'll
@@ -1426,5 +1799,7 @@ E \left[S^2 \right] = \sigma^2
 $$
 
 This why we settle on the expression in (\ref{s2}) for our \emph{sample variance}.
+\end{comment}
+% -------------- End to be Deleted ---------------------
 
 \end{document}
