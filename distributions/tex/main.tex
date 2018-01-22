@@ -18,6 +18,7 @@
 
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1em}
+\setcounter{tocdepth}{2}
 
 \title{Probability Distribution Workshop}
 \author{Los Angeles County\\ISAB}
@@ -25,6 +26,7 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
 
 \section{Introduction}
 
@@ -1095,7 +1097,7 @@ In this case, we have $X_i = X$ and $a_i = 1/n$.
 m_{\bar{X}}(t) = \left[ m_X \left( \frac{t}{n} \right) \right]^n
 \end{equation}
 
-\subsubsection{Normal Squares}
+\subsubsection{Normal Squares} \label{sec:normal-squares}
 
 The above are nice general results.  Let's focus our attention
 on the normal distribution.  The formulas above apply to
@@ -1219,11 +1221,10 @@ The $n$ is a parameter of our distribution called the
 said to be a 
 "Chi-Squared distribution with $n$ degrees of freedom."
 
-\subsection{Samples}
 
+\section{Samples}
 
-
-\subsubsection{Sample Average}
+\subsection{Sample Average}
 
 Let's define a random variable to represent the average of
 $n$ samples from a distribution: $\{X_1, \cdots , X_n\}$.
@@ -1283,7 +1284,7 @@ deviation of the population, which is what we should expect.  As
 we bump up $n$, the standard deviation decreases.  In other words,
 the distribution of the average clusters more closely to the mean.
 
-\subsubsection{Central Limit Theorem}
+\subsection{Central Limit Theorem} \label{sec:clt}
 
 We've determined that for a sample size $n$, if we perform
 the sampling many times, and accumulate many average
@@ -1335,7 +1336,7 @@ The CLT is the basis for most work on statistical inference
 and hypothesis testing.
 
 
-\subsubsection{Sample Variance}
+\subsection{Sample Variance}
 
 
 How close to $\mu$ can we reasonably expect our estimate $\bar{x}$ to be?
@@ -1362,7 +1363,7 @@ E\left[ S_0^2 \right] &= &E \left[ \frac{1}{n} \sum_{i=1}^n
          (X_i - \mu)^2\right] \nonumber \\
   &= &\frac{1}{n} \sum_{i=1}^n E \left[ (X_i - \mu)^2 \right] \nonumber \\
   &= &\frac{1}{n} \sum_{i=1}^n \sigma^2 \nonumber \\ 
-  &= &\sigma^2  \nonumber
+  &= &\sigma^2  \label{es0}
 \end{eqnarray}
 
 Great!  We got the expected value we wanted.  The sample variances
@@ -1430,64 +1431,63 @@ $S_1^2$ from (\ref{s1}).
 Let $\mu$ be the population mean.  We don't know what $\mu$ is; we
 can only estimate it using $\bar{x}$.  Set $\theta = \mu$ in
 (\ref{least_square_residue2}).
-For every sample $\{x_i\}$, there will be a different $\bar{x}$
-value that marks the minimal value of the least squares expression.
-$\mu$, on the other hand, is always the same.
+For every sample $\{x_i\}$, $\frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2$
+represents how the elements of the sample differ from $\mu$.
+$\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2$ represents how the
+elements of the sample differ from $\bar{x}$.
+They will always differ more, on average, from $\mu$ than from
+$\bar{x}$ because $\bar{x}$ is chosen, via least squares
+optimization, to differ the least
+for the elements of a \emph{particular sample}.
+But we're fundamentally interested in how samples differ from
+$\mu$ (that's how variance is defined), not how they differ from
+some quantity $\bar{x}$ that dances around for each new sample
+in order to undercut the differences from $\mu$.
+
+So we have the following situation.
+
+\begin{itemize}
+
+\item $\frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2$ - This is the
+   quantity we want, since it more accurately, on average,
+   estimates the population variance.  But we can't use this
+   directly because we don't know $\mu$.
+
+\item $\frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2$ - This is
+   usually less than the quantity above (except in the rare
+   case where $\bar{x} = \mu$).  But we can calculate it
+   directly from the sample.
+
+\end{itemize}
+
+The two quantities are related through the identity in
+(\ref{least_square_residue2}) with $\mu$ substituted for
+$\theta$.
 
 \begin{eqnarray}
 \frac{1}{n} \sum_{i=1}^n (x_i - \mu)^2
-  = & \frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 & +
+  = & \frac{1}{n} \sum_{i=1}^n (x_i - \bar{x})^2 & + \;
   (\bar{x} - \mu)^2  \nonumber \\
-s_0^2 = & s_1^2 & + (\bar{x} - \mu)^2 \label{var_diff}
+s_0^2 = & s_1^2 & + \; (\bar{x} - \mu)^2 \label{var_diff}
 \end{eqnarray}
 
-Here we let the lower case $s_0^2$ and $s_1^2$ denote the respective
-values of sampling the random variables $S_0^2$ and $S_1^2$.
-We know that $s_1^2 < s_0^2$ from the least square discussion.
-So it shouldn't be a surprise that the expectation of $s_1^2$
-should also be less.  This is a bit of a concern since 
-$s_0^2$ is unbiased.  That means $s_1^2$ probably \textbf{is} biased,
-unless the expectation of $(\bar{X} - \mu)^2$ is zero, which
-is unlikely since it is never negative.  Let's calculate
-this expectation.
+We already know the expectation of two of the three terms
+in (\ref{var_diff}).  We substitute (\ref{es0}) for $E[s_0^2]$
+and (\ref{sample_var1}) for $E[(\bar{x} - \mu)^2]$.
 
-\begin{eqnarray}
-E \left[ (\bar{X} - \mu)^2 \right] &= &E \left[ \bar{X}^2 - 2 \bar{X} \mu + \mu^2 \right] \nonumber \\
-   &= & E \left[ \left( \frac{1}{n} \sum_{i=1}^n X_i \right) 
-       \left( \frac{1}{n} \sum_{j=1}^n X_j \right) \right]
-       - 2 \mu E[\bar{X}] + \mu^2  \nonumber \\
-   &= & \frac{1}{n^2} \sum_{i=1}^n \sum_{j=1}^n  E \left[ X_i X_j \right]
-       - 2 \mu \mu + \mu^2  \nonumber \\
-   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X_i^2] + \sum_{j \ne i}  E \left[ X_i X_j \right] \right]
-       - \mu^2 \label{voa1}  \\
-   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \sum_{j \ne i}  E \left[X_i \right] E \left[X_j \right] \right]
-       - \mu^2 \label{voa2}  \\
-   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \sum_{j \ne i}  E \left[X \right] E \left[X \right] \right]
-       - \mu^2  \label{voa3}  \\
-   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \mu^2 \sum_{j \ne i} 1 \right] - \mu^2 \nonumber \\
-   &= & \frac{1}{n^2} \sum_{i=1}^n \left[ E[X^2] + \mu^2 (n-1) \right] - \mu^2 \nonumber \\
-   &= & \frac{1}{n} \left[ E[X^2] + \mu^2 (n-1) \right] - \mu^2 \nonumber \\
-   &= & \frac{1}{n} \left[ E[X^2] - \mu^2 \right]  \nonumber \\
-   &= & \frac{\sigma^2}{n}
-\end{eqnarray}
+$$
+\sigma^2 = E\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2 \right]
+  + \frac{\sigma^2}{n}
+$$
+or
 
-In (\ref{voa1}) we separate the expectation of a product into two cases:
-when $i=j$ and when $i \ne j$.  When they are equal, it's just the expectation of a
-product of a random variable with itself, i.e. the second moment.  When they aren't
-equal, it's the expectation of two independent random variables.  In this case,
-$0 = \mbox{cor}(A,B) = E[AB] - E[A]E[B]$.  This is used in (\ref{voa2}).  In
-(\ref{voa3}) we use again the fact that $E[X_i] = E[X]$ for all $i$.
+\begin{equation}
+E\left[ \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X})^2 \right]
+  = \sigma^2 - \frac{\sigma^2}{n} = \frac{n-1}{n} \sigma^2 \label{es1}
+\end{equation}
 
-Many will have guessed this result the well-known variance of the average 
-of $n$ samples from a distribution with variance $\sigma^2$.  Now we also
-know this is how biased our $s_1^2$ estimator is.  From (\ref{var_diff})
-we have
-
-\begin{eqnarray}
-E \left[ S_1^2 \right] &= & E \left[ S_0^2 \right] - E \left[ (\bar{X} - \mu)^2 \right] \nonumber \\
-   &= & \sigma^2 - \frac{\sigma^2}{n} \nonumber \\
-   &= & \frac{n-1}{n} \sigma^2 \label{es1} 
-\end{eqnarray}
+The factor $(n-1)/n$ is the degree to which $E[S_1^2]$ undercuts
+the $E[S_0^2]$.
 
 $S_1^2$ is a true statistic because it consists only of items we know
 from the sample.  As an estimator it's biased by the amount in
@@ -1507,7 +1507,92 @@ $$
 E \left[S^2 \right] = \sigma^2
 $$
 
-This why we settle on the expression in (\ref{s2}) for our \emph{sample variance}.
+This is why we settle on the expression in (\ref{s2})
+for our \emph{sample variance} rather than the expession
+in (\ref{s1}).  The $n-1$ in place of $n$ for the sample
+variance confuses many, including some veterans that are
+simply used to it, but don't understand it.
+
+This was a long section (especially if you include the
+referenced appendix section).   But this derivation for
+a sample variance formula involved several
+important statistical concepts that are worth reviewing.
+
+\begin{enumerate}
+
+\item We started with a sensible formula for an 
+   \emph{estimator} for the sample variance in 
+   (\ref{es0}).  This formula was motivated by
+   the similar formula for the population variance.
+
+\item The computation of the expected value for (\ref{es0})
+   yielded what we wanted (the population variance).
+   In statistical terms, this estimator was \emph{unbiased}.
+   But there was an immediate drawback: the presence of $\mu$,
+   the population mean,
+   a quantity not available to us from a sample.  It means
+   that (\ref{es0}) is \emph{not a statistic} in the formal sense.
+
+\item We modified our candidate by replacing $\mu$ with the
+   next best thing: an estimator for $\mu$, $\bar{X}$, that
+   we had obtained in the previous section.  $\bar{X}$ is
+   a statistic, so that makes our next candidate (\ref{es1})
+   a \emph{statistic} since we can compute the value of this
+   estimator using only information from a sample.
+
+\item But by altering our estimator from (\ref{es0}) to
+   (\ref{es1}), we ended up altering the expected value
+   of our estimator by a factor of $(n-1)/n$.  This makes
+   (\ref{es1}) a \emph{biased} estimator.  That
+   was simple enough to remedy: we simply evolved our
+   candidate for an estimator once more by multiplying
+   (\ref{es1}) by the reciprocal $n/(n-1)$ factor.
+   This resulted in the estimator we settled on in
+   (\ref{s2}).
+
+\end{enumerate}
+
+\subsection{Distribution of the Variance}
+
+We say in the last section that the expected value for
+the sample variance for a distribution
+
+$$
+S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2
+$$
+
+was the population variance $\sigma^2$.  For a sequence
+of samplings, sometimes it will be lower, sometimes it
+will be higher.  If we average the sample variance over
+enough times, we expect it to be very close to the 
+population variance.  But what if instead of just averaging
+all the sample variances we obtained, we created a histogram?
+What would it look like?  The following theorem answers
+this questions.
+
+\begin{equation} \label{chisq2}
+\frac{n-1}{\sigma} S^2 =
+\frac{1}{\sigma}\sum_{i=1}^n (X_i - \bar{X})^2
+\end{equation}
+
+has a chi-square distribution with $n-1$ degrees of freedom.
+
+We first encountered the chi-square distribution back in
+Section \ref{sec:normal-squares} on Normal Squares.  It
+led us to a density function (\ref{chisq_density}) on Page
+\pageref{chisq_density} that was a special case of a
+gamma density function.  
+
+\subsection{Smaller Samples}
+
+When we discussed the Central Limit Theorem back in 
+Section \ref{sec:clt} (page \pageref{sec:clt}), we noted
+that the approximation to a normal distribution becomes
+less certain for $n$ less than 30.  (Remember the number
+30 is just a rule of thumb; there is nothing magic about
+it.)  So what do we do for the smaller $n$?
+
+
 
 \appendix
 
