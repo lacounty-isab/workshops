@@ -14,6 +14,7 @@ If you have an idea for improvement, feel free to open an issue.
 | [distributions](distributions/)| Gaining familiarity with Python and/or R via a review of elementary probability distributions|
 | [R Programming](ds/r/)| Statistics and Programming with R |
 | [Python Programming](ds/python/)| Python and Data Analysis |
+| [Crypto Fundamentals](crypto) | Introduction to Cryptographic Concepts and SSH |
 
 ## Jupyter Rendering and Firewalls
 
