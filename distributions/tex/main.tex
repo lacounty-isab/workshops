@@ -1592,6 +1592,37 @@ less certain for $n$ less than 30.  (Remember the number
 30 is just a rule of thumb; there is nothing magic about
 it.)  So what do we do for the smaller $n$?
 
+The answer is that we follow a tactic similar to what
+we followed for deriving an expression for sample variance.
+Recall how we started with a naive expression based on
+the population variance counterpart.  Where it involved
+population quantities we didn't know, such as the population
+mean $\mu$, we substituted an estimator for the mean
+$\bar{X}$.  We found our naive guess to be biased by
+a factor of $(n-1)/n$.  For large sample sizes of $n$,
+this might not even matter.  But in cases where we are
+restrained to smaller samples sizes, this factor becomes
+more significant.
+
+The CLT (Central Limit Theorem) says that that our
+distribution of averages \emph{approaches} a normal
+distribution with mean $\mu$ and variance
+$\sigma^2/n$ as $n$ gets large.  In other words
+
+$$
+Z_n = \frac{\bar{X}_n - \mu}{\sigma}
+$$
+
+(where $\bar{X}_n$ is the average of $n$ samples)
+approaches a standard normal.
+
+But for smaller $n$
+we replace our confidence in knowledge of $\sigma^2$
+with our population variance estimator in (\ref{s2}).
+
+\begin{equation}
+Z_n = \frac{\bar{X}_n - \mu}{S/\sqrt{n}} \label{t1}
+\end{equation}
 
 
 \appendix
