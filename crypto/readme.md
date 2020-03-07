@@ -1,4 +1,4 @@
-# Crypto Fundamentals and SSH
+# Crypto Presentations
 
 This folder holds artifacts used to conduct the
 *Crypto Fundamentals and SSH* workshop.
