@@ -47,52 +47,6 @@ The Git installer for Windows is available for free download from
 
 <https://git-scm.com/download/win>
 
-Running the installer is mostly straight forward.  Below are some tips
-for helping you through the installation wizard.
-
-* The default installation location is usually fine.
-
-* Under **Select Components**, I deselect `Git Bash Here` and
-  deselect `Associate .sh files to be run with Bash`.  You should
-  be able to do all your Git work from your DOS command line.
-
-  ![Git Components](images/install-win1.png)
-
-* Under **Adjusting your PATH environment**, select the middle
-  option for `Use Git from the Windows Command Prompt`.
-
-* Under **Choosing HTTPS Transport Backend**, I choose `OpenSSL`.
-  The native Windows Secure Channel library is a newer option.
-  Feel free to experiment if you wish.  But the only remote Git
-  server we're likely to use with HTTPS is GitHub.  The
-  `ca-bundle.crt` file should be sufficient for that.
-
-* The **Configurating line ending conversions** can be a tricky
-  decision.  For most cases, the first option is appropriate.
-  A common problem with source controlling text files
-  is that one user with a Linux or OS X workstation will check in
-  a file with LF endings.  Then a Windows user will check out the
-  file, change a single line, and commit the change.  But the
-  diff-tools will show that the Windows developer changed every
-  line in the file.  What happened is that the Windows editor
-  changed every LF occurrence to CR-LF.  This is not a Git-specific
-  issue, but Git attempts to address it on Windows by converting
-  back and forth between LF (Unix and OS X convention) and CR-LF
-  Windows convention.
-
-  If you run an editor that automatically converts LF to CR-LF,
-  then please select the first option to protect the rest of us
-  from your unintended line changes.  If, on the other hand, you
-  maintain Linux/Unix shell scripts as part of your job, **and**
-  you FTP them in binary mode to the server (i.e. as part of zip
-  archive), **and** you use an editor that does not corrupt
-  end-of-line characters, then select the middle option.  If none
-  of this makes sense to you, select the first option.
-
-* For terminal emulate, choose `Use Windows default console window`.
-  The other one may be OK, too, if you wish to experiment.
-
-* For **extra options**, leave the defaults.
 
 After installation, check that the `C:\Program Files\Git\cmd`
 directory is in your `PATH` variable.  You can add it manually
@@ -133,16 +87,57 @@ and `user.email` properties.
 > git config --global user.email jdoe@somewhere.gov
 ```
 
-The `--global` flag set the property in your global user
-configuration file.
+The `--global` flag sets the property in your global user
+configuration file.  You can override this setting on a
+per-repository basis.  The choices are
+
+* `--local` - (default) applies property to a particular repository.
+* `--global` - applies property to all repositories for a user.
+* `--system` - applies across all users.
+
+This is useful when you use a home computer for work projects.
+Your `--global` setting would be your personal email. But you
+would override a work repository email setting.
+
 
 By default, Git on Windows uses its own version of **vi** to
 edit commit comments.  If this doesn't sit well with you, then
 you might want to change it to something else.  Note that your
-choice needs to work with Git, like `vi`, `emacs`,
-or `Notepad++`.  Editors that do **not** work with Git are
-`notepad` and `write`.  It's also possible to provide a one-line
+choice needs to work with Git, like `vi`, `emacs`, or `Notepad++`.
+Editors that do **not** work with Git are `notepad` and `write`.
+It's also possible to provide a one-line
 commit message on the command line.
+
+------------
+**Exercise 1 - Setup**
+
+1. Create a new directory on your file system in which to perform the
+   activities for the workshop.  This directory will be called
+   `GitWorkshop` for the rest of this workshop.
+
+2. Open a command line terminal to `GitWorkshop`.
+
+3. Verify your Git version with `git --version`.  If this fails,
+   you need to fix problems with your `PATH` or the installation.
+
+4. Set your name and email in the **global** scope using the commands
+   above.
+
+5. Clone the ISAB repository for this workshop to your workstation.
+
+   ```
+   git clone https://github.com/lacounty-isab/workshops isabrepo
+   ```
+
+------------
+
+This will **clone** the Git repository hosted on GitHub to your local
+file system into a new directory named `isabrepo`.  If you omit the `isabrepo`
+parameter on the end, the new directory will default to the base name of the
+repository, in this case `workshops`.
+
+Keep this directory handy.  Later exercises will be pulling from parts of it.
+
 
 ### GUI Git
 
@@ -153,7 +148,8 @@ them are standalone; others are part of IDEs (Integrated
 Development Environments) like Eclipse (Java), Visual Studio
 (.Net), RStudio (R), and others.
 The GUIs are mostly good.  But you are strongly encouraged
-to understand the Git command line.
+to understand the Git command line.  There are seveal benefits
+to learning the Git command line.
 
 1. Most actions of any GUI tool can be understood in terms
    of the command line.  
@@ -164,17 +160,46 @@ to understand the Git command line.
 4. When searching for help in public forums (such as
    <https://stackoverflow.com>), questions and answers are
    most easily expressed in terms of the command line.
+5. Git commands are easily scripted.
 
 Once you are well grounded in the command line, most GUI Git
-tools are easy to understand.
+tools are easy to learn.
+
+
+## Distributed vs Centralized
+
+Git differs fundamentally from version control tools popular
+15 years ago in that it is a *distributed version control* tool
+as opposed to traditional *centralized version control* tool.
+Traditional centralized tools include CVS, SVN and ClearCase.
+They define a repository a server.  Clients download a
+*certain version* to their workspace and work with it.  The other
+versions remain on the server only.  Operations such as creating
+new project, checking out a different version, comparing versions,
+committing new versions or viewing change history of a file
+require communication with the server.  Without the server, none
+of these operations are possible.
+
+The distributed model stores the entire repository on every
+workstation.  This reduces the distinction between "client" and
+"server" to one of convention.  One always commits changes to a local
+copy, never to a remote copy.  Those local changes may latter be
+synchronized to another remote copy (an operation Git calls `push`).
+But all the interesting work occurs locally.
+
+*Remote operations merely synchronize what was already accomplished locally.*
+
+This notion is somewhat abstract at first.  But the concept, as well as
+the benefits, will become clearer as we work through the exercises.
 
 
 ## Initialization
 
-There are two ways to create a Git repository:
+There are two ways to add a local Git repository to your workstation:
 
 1. *Init* a new repository to track files on your workstation
    that are not currently under source control.
+
 2. *Clone* an existing repository from somewhere else to your
    workstation.
 
@@ -182,91 +207,274 @@ There are two ways to create a Git repository:
 
 The Git `init` command creates a new repository.  It's normally used
 to create a new local repository for files you wish to place under
-source control.  To run this command, first change to the directory
-that will be the root of the repository.  Then run the command.
+source control.  This is much simpler than with CVS and SVN, where
+you must first create a repository on a server (even if you're hosting
+the server on your own machine), upload the files to the server, then
+create a **new** directory in which to work with the files you just
+uploaded.
+
+With Git, you simply run the `init` command in the directory
+that holds the working copy.
+
 
 ```
 git init
 ```
 
-It will be very anticlimactic.  All it does is create a `.git`
-folder in your directory.  Because the name starts with a dot,
-your file explorer may not even show it.  The `.git` folder
-contains an **empty** Git repository.  It's important to understand
-that none of the code that may have existed in the folder when
-you issued the `git init` command is part of the repository yet.
-This is by design.  After all, you may not want every file in
-your directory to be part of the repository.
+That creates an *empty* local repostory.
+The left side of the figure below shows the repository in red.
+The entire repository resides in a folder named `.git` that is
+a child of the project root directory.  It's important to understand
+that the files in black are **not** part of the repository.  They
+are called *the working copy*.  At times they may be consistent with
+a version in the repository.  But they are expected to drift out of
+sync with the repository as we make changes.  When we *commit* these
+changes, they are written to the repository.
 
-To track the code your directory, you first must add it to the
-Git staging area.  This is done with the `git add` command.  The
-parameters to this command specify which files you want to add.
-You can specify file names, directory names, or both.  When a
-directory is specified, all its files are added and all its
-subdirectories are added recursively.  The following command
-adds everything.
+![Init](images/scmDirectories.png)
+
+Let's examine some differences between a local Git repository on
+your workstation and that of a checked-out SVN project.
+A corresponding workspace for SVN is
+shown on the right side of the above diagram.  The SVN metadata is
+is kept in `.svn` directories in **every folder of the project**.
+(The same is true for CVS and ClearCase).  These folders contain
+metadata about how the folder relates to the corresponding folder
+on the server.
+
+The next exercise demonstrates how the Git directory model is
+more pragmatic.
+
+
+-------------------------
+**Exercise 2 - Init**
+
+1. From the clone of the `workshops` repository, copy the 
+   `isabrepo/git/samples` directory to `GitWorkshop`.
+   After this, you should have a copy named `GitWorkshop/samples`.
+
+2. Change to the `GitWorkshop/samples` directory in your command line.
+   This represents a directory of files from which we want to
+   create a new Git repository.
+
+3. Run `git status`.  This is probably the most common Git command
+   you'll ever execute.  In this context, it returns an ominous
+   message that simply means we are not in the context of a Git
+   repository.
+
+   ```
+   GitWorkshop/samples$ git status
+   fatal: not a git repository (or any of the parent directories): .git
+   ```
+
+4. Run `git init`.  This will create an *empty local repository*.
+   None of the files in this directory have been placed in this 
+   repository.  That will come later.  On Windows, the new `.git`
+   folder is harder to verify.  On Linux and macOS, it's apparent
+   with `ls -a`.
+
+   ```
+   GitWorkshop/samples$ git init
+   Initialized empty Git repository in GitWorkshop/samples/.git/
+   ```
+
+5. Run `git status`.  Now that you actually have a repository to
+   work with, abeit an empty one, Git has more to say.  In particular,
+   it's telling us that we have four files that are not yet tracked.
+
+   ```
+   GitWorkshop/samples$ git status
+   On branch master
+
+   No commits yet
+
+   Untracked files:
+     (use "git add <file>..." to include in what will be committed)
+
+   	file1.txt
+   	file2.py
+   	hg17.txt
+   	hg21.txt
+
+   nothing added to commit but untracked files present (use "git add" to track)
+   ```
+
+   The remark "nothing added to commit" is alluding to the **staging area**.
+   In Git there are three states in which a version of a file can occupy:
+   the working copy, the staging area, and a commit.  
+   These are shown in the illustration below.
+   
+   ![Init](images/firstCommit1.png)
+
+   The *working copy* of a file is the one in your directory that you can see
+   and edit.  The *staging area* is a version of file that is to be committed
+   in the next `commit` action.  Committed versions of files are in the 
+   commit state.  These are preserved in the commit history.
+
+   The three logical boxes above were created with the `git init` command.
+   At the beginning, all files only exist as part of the working copy.
+
+6. For this scenario, let's say we want to commit all the `*.txt` files,
+   but delay the `*.py` file.
+
+   ```
+   GitWorkshop/samples$ git add *.txt
+   GitWorkshop/samples$ git status
+   On branch master
+
+   No commits yet
+
+   Changes to be committed:
+     (use "git rm --cached <file>..." to unstage)
+
+       new file:   file1.txt
+       new file:   hg17.txt
+       new file:   hg21.txt
+
+   Untracked files:
+     (use "git add <file>..." to include in what will be committed)
+
+   	   file2.py
+   ```
+
+   Note the change in the status message.  The status of the files went
+   from "untracked" to "to be committed".  These are the files that will
+   be added to the repository 
+
+   ![Init](images/firstCommit2.png)
+
+   We say these versions of the files are "added to the staging area."
+
+7. Now the `*.txt` files are in the staging area and ready to commit.
+   We have excluded the Python script by not staging it.  We are ready to
+   run the `git commit`.
+
+   ```
+   GitWorkshop/samples$ git commit -m "Initial version."
+   [master (root-commit) d5ec68e] Initial version.
+    3 files changed, 102 insertions(+)
+    create mode 100644 file1.txt
+    create mode 100644 hg17.txt
+    create mode 100644 hg21.txt
+   ```
+
+   Note the `commit` command does **not** refernce any files.  It simply
+   commits whatever changes are in the staging area.
+
+   ![Init](images/firstCommit3.png)
+
+   This command will commit the changes using the message
+   `Initial version`.  This avoids a `vi` session for those of you
+   not familiar withe the `vi` editor.  But it limits you to
+   commit messages that are a single line.
+
+-------------
+
+At the end of this exercise we still have `file2.py` as an untracked file.
+There is no harm in having files in the directory that are not part of the
+repository.  We can commit them later or never commit them.
 
 ```
-git add .
-```
+git1/samples$ git status
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
 
-Now all the files are in the staging area and ready to commit.
+	file2.py
 
+nothing added to commit but untracked files present (use "git add" to track)
 ```
-git commit -m "Initial version"
-```
-
-This command will commit the change using the message
-`Initial version`.  This avoids a `vi` session for those of you
-not familiar withe the `vi` editor.  But it limits you to
-commit messages that are a single line.
 
 ### clone
 
-The **clone** command clones a repository from one location to
-another location.  It's commonly used to obtain a local copy of
-a Git repository hosted remotely.  For example:
+The `clone` command copies a repository from one location to
+another location.  We used it in the first exercise to clone the workshop
+repository to our local workstation.  We can also clone locally.
 
-```
-git clone https://github.com/lacounty-isab/workshops workshops
-```
+--------------
+**Exercise 3 - Local Clone**
 
-will copy the `workshops` repository on GitHub into a new subdirectory
-of your current directory named `workshops`.  You could make another
-copy like this.
+1. In your command line, change to the `GitWorkshop` directory.  There
+   should be two subdirectories: `isabrepo` and `samples`.  Each of these
+   directories holds a Git repository.
 
-```
-git clone workshops wksp2
-```
+2. Clone the `samples` repository locally.
 
-This does the same thing; except doesn't use the network.
+   ```
+   git clone samples samples2
+   GitWorkshop/samples2$ ls -a
+   ./         ../        .git/      file1.txt  hg17.txt   hg21.txt
+   ```
 
-### Working Copy
+   This
+   
+   a. creates a clone of the repository and
+   b. checked out a working copy from the repository.
 
-A typical directory containing a Git repository might look like the
-the following.
+   **Note:** There is no Python script because we did not commit that
+   to the original repostory.  This reinforces the point that the
+   **repository** is copied, **not** the working copy.
 
-```
--- MyRepo/
-   |-- .git/
-   |-- src/
-   |-- docs/
-   |-- readme.md
-```
+3. Change to the `samples2` folder and list the history.
 
-In such a configuration, the `.git` folder is the repository proper.
-The other files are collectively known as *the working copy*.  It's
-tempting to identify the working copy with the repository.  This is
-often harmless; but we should keep in mind that the working copy is
-just that, a **copy**.  Every version of every file in a repository
-is stored in the `.git` folder in some way.  The
-working copy is for the convenience of the developer.
+   ```
+   git log
+   ```
+
+4. Delete the `.git` folder.  It is no longer a Git repository.
+   But you still keep your working copy.
+
+   ```
+   GitWorkshop/samples2$ rm -rf .git
+   GitWorkshop/samples2$ git log
+   fatal: not a git repository (or any of the parent directories): .git
+   GitWorkshop/samples2$ ls
+   file1.txt  hg17.txt   hg21.txt
+   ```
+
+5. Change back to the `GitWorkshop` directory and clone the ISAB 
+   repository locally.
+
+
+   ```
+   GitWorkshop$ git clone isabrepo repo1
+   Cloning into 'repo1'...
+   done.
+   GitWorkshop$ ls repo1
+   crypto/          ds/              octotrooper.png  regex/
+   distributions/   git/             readme.md 
+   ```
+
+   Notice how fast the local clone happened when there are no network
+   calls involved.
+
+6. Make a bare clone of the ISAB repository.  A *bare* repository is
+   one with **no working copy**.
+
+   ```
+   GitWorkshop$ git clone --bare isabrepo repo2
+   Cloning into bare repository 'repo2'...
+   done.
+   GitWorkshop$ ls repo2
+   HEAD         config       hooks/       objects/     refs/
+   branches/    description  info/        packed-refs 
+   ```
+
+   When we list the contens of `repo2`, it is what we would normally see
+   inside the `.git` folder.  Hosting services use bare repositories on
+   remote servers where there is no reason to have a working copy.
+
+--------------------
+
+Cloning a repository locally is a good resoure for teaching yourself new
+commands and operations.  You can test the operation on a local clone first,
+and then apply it to other resositories later.  
 
 
 ## Basic Lifecycle
 
-Most of us have worked with some sort of *centralized* version control
-system (CVCS) in the past.  Tools such as **CVS**, **SVN**, and
+Many of us have worked with some sort of *centralized* version control
+system in the past.  Tools such as **CVS**, **SVN**, and
 **ClearCase** have a basic lifecycle of
 
 1. checkout - copy a version to local workspace
@@ -296,7 +504,8 @@ There are commands that push and pull changes between two repositories.
 But these changes have to have been committed locally first.  There is
 no notion of using a Git client to browse a server.  Rather, you clone
 the server repository to a local repository on your workstation and browse
-it using your workstation file manager.
+it using your workstation file manager.  This makes repository version
+browsing far more efficient.
 
 Once you have a local copy of the repository the basic lifecycle goes
 like this.
@@ -310,157 +519,12 @@ like this.
 
 Note that in the case of a local-only repository, step 6 never happens.
 The commands used in the basic lifecycle are discussed in more detail below.
+
 Reference is often made to **HEAD**.  This is a pointer that refers to
 the place in the commit tree where the next commit will be applied.
 
-### git checkout
 
-The `git checkout` command has two modes.  If the argument is the name
-of a branch, then the HEAD pointer is moved to that branch and your
-working copy files are replaced with the branch's latest version.
-If the argument is a working copy file name, it means replace the existing
-working copy with the committed copy associated with the HEAD commit.
-
-```
-git checkout i40
-```
-
-will make `i40` the current branch (i.e. point HEAD to `i40`) and replace
-the working copy files with the version associated with `i40`.
-
-```
-git checkout i40 -- readme.md
-```
-
-will replace the current version of `readme.md` in the working copy
-with the version associated with the `i40` branch.  But it will not
-switch HEAD to that branch.  If the `readme.md` has local edits that have
-not been saved (via a commit), you will receive a warning.  Use the
-force `-f` option to override.  The `--` is used to separate the branch
-name from the file name (multiple file names are allowed).
-This is not as common as the first form used to switch to another branch.  
-
-It's common to create a new branch before starting work.
-
-```
-git branch MyNewBranch
-git checkout MyNewBranch
-```
-
-The first command creates a new branch, but it does not change HEAD to
-it.  The second command changes HEAD.  A single-command short-cut equivalent
-to the above two commands is
-
-```
-git checkout -b MyNewBranch
-```
-
-This creates a new branch and switches HEAD to it.
-
-With all this branch creation and switching, it's good to know where
-you stand with respect to the current branch.  The `git branch` command
-with no arguments lists all your local branches and highlights the current
-branch with an asterisk.
-
-```
-$ git branch
-  i35
-  i40
-  i45
-  i47
-  i48
-  lasd/gards
-  lasd/juvwrnt
-* master
-```
-
-In the example above, there are eight local branches.  HEAD is currently
-pointing to the `master` branch.  Another command used to determine your
-status is the `git status` command.
-
-```
-$ git status
-On branch master
-Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git checkout -- <file>..." to discard changes in working directory)
-
-	modified:   Tables/DM_event_xref.tbl
-
-no changes added to commit (use "git add" and/or "git commit -a")
-```
-
-The first line of the response says `master` is the current branch.  Next
-it lists a file that has changed, but been staged.  It also reminds us of
-
-1. the command to stage the file
-2. the command to discard the changes.
-
-The last line of the output says we have no staged changes.
-
-### git add
-
-During our edit session several files may have changed.  Some changes we
-want to keep; other changes not.  Some temporary files may have been
-created that we want to keep locally, but not track in source control.
-The Git **add** command is how we cherry-pick exactly what we want to commit
-and exclude what we don't.  The `git add` command adds **changes** to the
-[staging area](https://git-scm.com/about/staging-area).
-Wake up, because this is subtle.  It does **not** place *the file*
-in the staging area.  It copies the contents of the file into the staging area.
-If you make another change to the file and run `commit`, you commit what you
-added earlier, not new changes to the file.  You have to run `git add` again
-to commit the new changes.
-
-Here is an example.
-
-```
-isabmbp1:~/idsc/workshops/git$ git add readme.md
-isabmbp1:~/idsc/workshops/git$ git status
-On branch git
-Changes to be committed:
-  (use "git reset HEAD <file>..." to unstage)
-
-	modified:   readme.md
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-
-	../distributions/
-```
-
-I added changes to the very file you're reading and then ran `git status`.
-It says that `readme.md` is ready to be committed (it's been staged).  
-But now I'm typing more stuff into it before I commit.  Let's run
-`git status` again.
-
-```
-isabmbp1:~/idsc/workshops/git$ git status
-On branch git
-Changes to be committed:
-  (use "git reset HEAD <file>..." to unstage)
-
-	modified:   readme.md
-
-Changes not staged for commit:
-  (use "git add <file>..." to update what will be committed)
-  (use "git checkout -- <file>..." to discard changes in working directory)
-
-	modified:   readme.md
-
-Untracked files:
-  (use "git add <file>..." to include in what will be committed)
-
-	../distributions/
-```
-
-The `readme.md` file appears twice!  Once as a file to be committed (i.e. the
-staged contents) and once as changes not staged for commit (the contents I typed
-later).  If I only want to commit the first change, I could run `git commit`.
-If I want to commit the later change, I must run `git add` again before running
-commit.
-
-### git commit
+### Git commit
 
 Because so much preparatory work goes into populating the staging area with
 exactly what we want to commit, the `git commit` command is very simple.  But
@@ -517,81 +581,174 @@ git commit -m "My one line commit comment."
 When invoked this way, no editor is started since the commit comment is already
 provided.
 
+----------------
+**Exercise 4 - Second Commit**
+
+In this exercise we're going to reinforce the basic lifecycle
+with another commit.  We'll continue using the `GitWorkspace/samples`
+directory.  At this point, we should have the following configuration.
+
+
+![Init](images/secondCommit1.png)
+
+This is the same as the end of Exercise 2, with the addition of
+two pointers.
+
+* __master__ - represents a branch.  There is nothing special about this
+  branch or its name, other than Git creates one for us with each new
+  repository.  It is, however, commonly retained and used.  It's a
+  pointer to a commit object, usually the last one in a sequence of
+  commit objects representing a branch.
+
+* __HEAD__ - is a bookmark of sorts.  It helps Git determine where to
+  apply its commands.  Since we intend for our commands to apply to
+  a particular branch, `HEAD` usually refernces a branch pointer rather
+  than directly to a commit.  Hence it's usually a pointer to a pointer.
+
+We're going to make two edits in the exercise:
+
+- Change a file that has already been committed.
+- Add the Python file that was excluded before.
+
+But first we're going to simulate an accident.
+
+
+1. Let's say we wish to edit `hg17.txt`.  But somehow it accidently
+   got deleted.  Simulate this condition by deleting `hg17.txt`
+   yourself.
+
+   ![Init](images/secondCommit2.png)
+
+2. Verify with
+
+   ```
+   git status
+   ```
+
+   The `status` command will be one of your most commonly used commands.
+
+3. Of course `hg17.txt` still exists, both as a commit and within
+   the staging area.  The following command will restore `hl17.txt`
+   from the **staging area** to the **working copy**.
+
+   ```
+   git checkout hg17.txt
+   ```
+
+   and verify the status.
+
+4. Open `hg17.txt` inside a text editor.
+
+   ```
+   From: <http://www.p2r.se/music/disaster.htm>
+
+   Chapter 17
+
+   The Hitch Hiker's Guide to the Galaxy notes that
+   **Disaster Area**, a plutonium rock band from the
+   ```
+
+5. Delete the first two lines so that the first line is
+   **Chapter 17**.  Then change "Hitch Hiker's" to
+   "Hitchhiker's".  Save the file and close the editor.
+
+6. Run the **diff** command to verify your changes.
+
+   ```
+   GitWorkshop/samples$ git diff
+   diff --git a/hg17.txt b/hg17.txt
+   index d330bb2..1e9969d 100644
+   --- a/hg17.txt
+   +++ b/hg17.txt
+   @@ -1,8 +1,6 @@
+   -From: <http://www.p2r.se/music/disaster.htm>
+   -
+    Chapter 17
+
+   -The Hitch Hiker's Guide to the Galaxy notes that
+   +The Hitchhiker's Guide to the Galaxy notes that
+    **Disaster Area**, a plutonium rock band from the
+    Gagrakacka Mind Zones, are generally held to be not
+    only the loudest rock band in the Galaxy, but in
+   ```
+
+   This will list the changes between the files in the **staging area**
+   and their corresponding files in the **working copy**.
+
+   ![Init](images/secondCommit3.png)
+
+7. Now that we've verfied our change to this file, let's add it.
+
+   ```
+   git add hg17.txt
+   ```
+
+8. Try the **diff** command again.  It should show no changes.
+   That's because it only compares the staging area to the working
+   copy.  If your change has already been added to the staging
+   area, it is consistent with the working copy.
+
+
+   ![Init](images/secondCommit4.png)
+
+   To check differences between the staging area and the latest
+   commit, add the `--cached` flag.
+
+   ```
+   git diff --cached
+   ```
+
+   This is not as commonly done.
+
+9. Now let's turn our attention to the Python program that was
+   omitted the first time around.  We'll use a short cut to 
+   add the Python program.
+
+   ```
+   git add .
+   ```
+
+   This says add **everything** (recursively) starting with the
+   current directory (the `.` means current directory).
+   In our case this is what we want.
+   But sometimes this can add more than you want.
+   It's always good to check the status before committing.
+ 
+10. Run the commit.
+
+    ```
+    git commit -m "Added Python and fixed typos."
+    ```
+
+
+The result is a new commit.  (There is only one staging area and
+working copy.)
+
+![Init](images/secondCommit5.png)
+
+A few things to note:
+
+* The **master** pointer automatically advances.
+* Since **HEAD** references **master**, it is implicitly advanced.
+* The new commit points backward in time to the old commit.  This is
+  another subtle but important difference between Git and tools like
+  CVS and SVN.
+
+----------------
+
 #### Short Circuit
 
 If the whole staging area idea doesn't sit well with you, it is possible
-to commit changes to files straight from the working copy without (explicitly)
-passing them through a staging area.  You should do this when working on
-repositories you share with others.  But it may be fine for Git repositories
-you use privately.  Just provide the `-a` flag.
+to commit changes to files straight from the working copy without manually
+staging them.  Just provide the `-a` flag.
 
 ```
 git commit -a -m "A commit without explicit staging."
 ```
 
-This command will commit all changes of the working copy.  Notice I add the
-"explicit" qualifier to "staging".  That's because it's still happening.  That's
-just how Git works.
-
-#### Commit Hash
-
-A [hash](https://en.wikipedia.org/wiki/Cryptographic_hash_function)
-function takes a string and converts it to a sequence of hexadecimal
-digits.  This string of hexidecimal digits is informally known as
-*a hash*.  (In this context *hash* is a noun.  But the act of calculating
-a hash is sometimes called *hashing*; so it's also a verb.)
-The idea is that if two strings are different, their respective
-hashes will also be different.  While it's theoretically possible to
-have two files hash to the same output, in practical terms, this is
-very difficult to find.
-A great deal of digital cryptography relies on this difficulty.
-A "good hash function" has the property that if you change the input
-string even slightly, the output is completely different.
-
-When you add a file to the Git staging area, the name of the stored
-content (under the `.git` folder) is a
-[SHA-1](https://en.wikipedia.org/wiki/SHA-1) hash of the content.
-The output of a SHA-1 hash is 40 hexadecimal characters.  When you
-commit your changes, all the SHA-1 hashes are collected together,
-along with the text of your commit comment, and used to create a
-*commit hash*.  This commit hash accounts for
-
-* your commit comment,
-* all the files in your commit,
-* the commit hash of the previous commit from which your new commit derives.
-
-This 40-character string is a check on every version of every file
-since the repository was created.  That's why *there is no such thing
-as a Git repository corruption*.  If the hashes don't match the content
-(because of a network error during a transfer or because of someone trying
-to secretly change the record of the past), the Git sync commands will
-immediately detect the inconsistency and fail the operation.  So it
-may fail to reproduce a repository; but it will never reproduce a corrupt one.
-
-As mentioned above, hashes are used to represent many things in Git.  But
-we are mostly concerned only with the **commit hash** that represents the
-state of the entire repository at a given time.  A 40-character hash
-is awkward to type and copy.  But in most cases, just the first few
-digits are needed to uniquely determine a commit.  The need for more digits
-[depends on the number of commits](https://github.com/pglezen/githash).
-
-
-****
-
-Several subtle concepts have been introduced in this section.  If this
-is new to you, you should review this process again via this blog post
-
-<https://git-scm.com/blog/2011/07/11/reset.html>
-
-starting with the section titled **The Workflow**.
-The concepts are the same as described above;
-but with some different emphasis and
-several helpful diagrams carefully detailing what is changing
-and what isn't.  One thing to remember while reading this post is
-that the author uses the term "index" for what we call "the staging area."
-"Index" was the original term for "staging area".  "Staging area"
-started taking hold about five years ago.  "Staging area" is more
-intuitive; "index" has fewer syllables.
+This command will commit all changes in the working copy.
+It is not recommended since it easily leads to versions of files
+being committed that were not intended.
 
 
 ## Log
@@ -603,104 +760,111 @@ to customize what you see and what you hide.  Here is a basic
 form of the `git log` command.
 
 ```
-isabmbp1:~/idsc/workshops$ git log -2
-commit 3c64c71adef0c0ccd9beabd0ced94d5477f7cff1
-Author: Paul Glezen <pglezen@isab.lacounty.gov>
-Date:   Thu Apr 6 07:30:45 2017 -0700
+GitWorkshop/samples$ git log
+commit 10f629df8aab162c65f80112d2c2406095d8dfc6 (HEAD -> master)
+Author: Paul Glezen <bs193538@gmail.com>
+Date:   Mon Mar 30 21:02:13 2020 -0700
 
-    Added Basic Lifecycle section to Git workshop.
+    Added Python and fixed typos.
 
-commit cf5fdf20ee36addd9c40d24fdce1894ef8eee3f7
-Author: Paul Glezen <pglezen@isab.lacounty.gov>
-Date:   Wed Apr 5 07:00:45 2017 -0700
+commit b83eb9bed3deb85a32b12e7679a18d28765bb0de
+Author: Paul Glezen <bs193538@gmail.com>
+Date:   Sun Mar 29 13:15:14 2020 -0700
 
-    Added Git-on-Windows installation section.
+    Initial version.
 ```
 
-* The `-2` option is important.  It limits the output to two commits.
-  Without this option (or some other range restriction), the output
-  will list all commits which could scroll your screen for hundreds
-  of lines.
+Note the entries are in **reverse** chronological order.
 
-* The entries are listed in **reverse chronological** order.
-
-Another way to restrict the number commits is through a relative
-time.
-
-```
-isabmbp1:~/idsc/workshops$ git log --since 1.day
-commit 3c64c71adef0c0ccd9beabd0ced94d5477f7cff1
-Author: Paul Glezen <pglezen@isab.lacounty.gov>
-Date:   Thu Apr 6 07:30:45 2017 -0700
-
-    Added Basic Lifecycle section to Git workshop.
-isabmbp1:~/idsc/workshops
-```
-
-So far, we've restricted the commit range by time only.
-We can also restrict by files.  We can specify a file or
-a directory so that we only see Git commits affecting
-those components.  The following command lists commits
-that affect files in the `Tables` directory for the
-last two months.
-
-```
-git log --since 2.month -- Tables
-```
-
-The `--` is a safety mechanism so that `Tables` is interpreted
-as a file or directory and not the name of a branch.  It's not
-always required; but when you see it, that's what it does.  It's
-just a separator.
-
-## Diff
-
-The `git diff` command is helpful for checking the differences
-between
-
-* two commits
-* the working copy and the last commit
-* the working copy and the staging area
-* the staging area and the last commit
-
-With no options, `git diff` returns the difference between the
-working copy and the staging area.  That's a common use case
-since it shows you what you're about to stage.
-
-The output of the `diff` command is similar to the classical
-Unix diff.  The first few lines of output is just header.
-Further down, you'll see lines that begin with either a minus
-`-` or a plus `+`.  The way to read these is that the
-`-`-prefix lines are deleted and the `+`-prefix lines are
-added.
-
-```
-diff --git a/git/readme.md b/git/readme.md
-index d04da0b..45bd5c2 100644
---- a/git/readme.md
-+++ b/git/readme.md
-@@ -535,7 +535,77 @@ started taking hold about five years ago.  "Staging area" is more
- intuitive; "index" has fewer syllables.
+Our training repository is still very small.  In practice
+there are usually far more commits than you want to see.
+The following exercise provides practice in filtering log
+output.
 
 
--## Log and Diff
-+## Log
-+
-+The [git log](https://git-scm.com/docs/git-log) command displays
-+information about commits.
-```
+----------------
+**Exercise 5 - Log Filtering**
 
-In the case above, you can see that
-```
-## Log and Diff
-```
-was replaced with
-```
-## Log
+1. In your command line change to the `GitWorkshop/isabrepo`
+   directory.  This repository has too many commits to see on
+   a single screen.
 
-The [git log](https://git-scm.com/docs/git-log) command displays
-information about commits.
-```
+2. List the last four commits.
+
+   ```
+   git log -4
+   ```
+
+   This is the most common way to limit the output.  Forgetting
+   this option usually floods your screen as a lesson to remember
+   it next time.
+
+3. It's common to abbreviate the output to an entry per line.
+   The `--oneline` option does this.
+
+   ```
+   git log -5 --oneline
+   ```
+
+4. Most modern installations of git have several log commands
+   aliased out-of-the-box.
+
+   ```
+   git alias | grep log
+   l	 => log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
+   ll	 => log --stat --abbrev-commit
+   logdate	 => log --pretty=format:'%h %cd [%an] %s' --graph --date=short
+   lol	 => log --pretty=format:"%h %s" --graph
+   ```
+
+   Run `git alias` to see which commands you have available.
+
+5. Try one of these aliased commands.
+
+
+   ```
+   git l -4
+   *   3307dd6 (HEAD -> master, origin/master, origin/HEAD) Merged remote-tracking branch origin/master. - Paul Glezen, 4 weeks ago
+   |\
+   | * 79e14d9 Distribution supplement from last year; forgot to commit. - Paul Glezen, 6 months ago
+   * | f2429ae Minor updates to GPG1. - Paul Glezen, 4 weeks ago
+   |/
+   * c551df5 Added workshop PDF for GPG 1. - Paul Glezen, 6 months ago
+   ```
+
+6. Add an alias like `logdate` above (if you don't already have it),
+
+   ```
+   git config --global alias.logdate "log --pretty=format:'%h %cd [%an] %s' --graph --date=short"
+   ```
+
+7. Another way to restrict the number commits is through a relative
+  time.
+
+   ```
+   git l --since 1.month
+   * 3307dd6 (HEAD -> master, origin/master, origin/HEAD) Merged remote-tracking branch origin/master. - Paul Glezen, 4 weeks ago
+   * f2429ae Minor updates to GPG1. - Paul Glezen, 4 weeks ago
+   ```
+
+8. So far, we've restricted the commit range by time only.
+   We can also restrict by files.  We can specify a file or
+   a directory so that we only see Git commits affecting
+   those components.  The following command lists commits
+   that affect files in the `git` directory for the
+   last two months.
+
+   ```
+   git log -- git
+   ```
+
+   The `--` is a safety mechanism so that `git` is interpreted
+   as a file or directory and not the name of a branch.  It's not
+   always required; but when you see it, that's what it does.  It
+   just separates the command options from the file or directory name.
+
+------------
+
 
 ## Branches
 
