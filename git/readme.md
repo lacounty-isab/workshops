@@ -64,7 +64,7 @@ through the following steps:
 
 You can check your work with
 
-```
+```console
 echo %PATH%
 ```
 
@@ -82,9 +82,9 @@ under the section
 The most important section is setting your `user.name`
 and `user.email` properties.
 
-```
-> git config --global user.name "John Doe"
-> git config --global user.email jdoe@somewhere.gov
+```console
+git config --global user.name "John Doe"
+git config --global user.email jdoe@somewhere.gov
 ```
 
 The `--global` flag sets the property in your global user
@@ -125,7 +125,7 @@ commit message on the command line.
 
 5. Clone the ISAB repository for this workshop to your workstation.
 
-   ```
+   ```console
    git clone https://github.com/lacounty-isab/workshops isabrepo
    ```
 
@@ -217,7 +217,7 @@ With Git, you simply run the `init` command in the directory
 that holds the working copy.
 
 
-```
+```console
 git init
 ```
 
@@ -375,7 +375,7 @@ There is no harm in having files in the directory that are not part of the
 repository.  We can commit them later or never commit them.
 
 ```
-git1/samples$ git status
+GitWorkshop/samples$ git status
 On branch master
 Untracked files:
   (use "git add <file>..." to include in what will be committed)
@@ -401,7 +401,7 @@ repository to our local workstation.  We can also clone locally.
 2. Clone the `samples` repository locally.
 
    ```
-   git clone samples samples2
+   GitWorkshop$ git clone samples samples2
    ```
 
    This
@@ -622,7 +622,7 @@ But first we're going to simulate an accident.
 2. Verify with
 
    ```
-   git status
+   GitWorkshop/samples$ git status
    ```
 
    The `status` command will be one of your most commonly used commands.
@@ -632,7 +632,7 @@ But first we're going to simulate an accident.
    from the **staging area** to the **working copy**.
 
    ```
-   git checkout hg17.txt
+   GitWorkshop/samples$ git checkout hg17.txt
    ```
 
    and verify the status.
@@ -680,7 +680,7 @@ But first we're going to simulate an accident.
 7. Now that we've verfied our change to this file, let's add it.
 
    ```
-   git add hg17.txt
+   GitWorkshop/samples$ git add hg17.txt
    ```
 
 8. Try the **diff** command again.  It should show no changes.
@@ -695,7 +695,7 @@ But first we're going to simulate an accident.
    commit, add the `--cached` flag.
 
    ```
-   git diff --cached
+   GitWorkshop/samples$ git diff --cached
    ```
 
    This is not as commonly done.
@@ -705,7 +705,7 @@ But first we're going to simulate an accident.
    add the Python program.
 
    ```
-   git add .
+   GitWorkshop/samples$ git add .
    ```
 
    This says add **everything** (recursively) starting with the
@@ -717,7 +717,7 @@ But first we're going to simulate an accident.
 10. Run the commit.
 
     ```
-    git commit -m "Added Python and fixed typos."
+    GitWorkshop/samples$ git commit -m "Added Python and fixed typos."
     ```
 
 
@@ -759,7 +759,7 @@ As simple as this sounds, there is a bewildering number of options
 to customize what you see and what you hide.  Here is a basic
 form of the `git log` command.
 
-```
+```console
 GitWorkshop/samples$ git log
 commit 10f629df8aab162c65f80112d2c2406095d8dfc6 (HEAD -> master)
 Author: Paul Glezen <bs193538@gmail.com>
@@ -791,8 +791,8 @@ output.
 
 2. List the last four commits.
 
-   ```
-   git log -4
+   ```console
+   GitWorkshop/isabrepo$ git log -4
    ```
 
    This is the most common way to limit the output.  Forgetting
@@ -802,15 +802,15 @@ output.
 3. It's common to abbreviate the output to an entry per line.
    The `--oneline` option does this.
 
-   ```
-   git log -5 --oneline
+   ```console
+   GitWorkshop/isabrepo$ git log -5 --oneline
    ```
 
 4. Most modern installations of git have several log commands
    aliased out-of-the-box.
 
-   ```
-   git alias | grep log
+   ```console
+   GitWorkshop/isabrepo$ git alias | grep log
    l	 => log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
    ll	 => log --stat --abbrev-commit
    logdate	 => log --pretty=format:'%h %cd [%an] %s' --graph --date=short
@@ -821,9 +821,8 @@ output.
 
 5. Try one of these aliased commands.
 
-
-   ```
-   git l -4
+   ```console
+   GitWorkshop/isabrepo$ git l -4
    *   3307dd6 (HEAD -> master, origin/master, origin/HEAD) Merged remote-tracking branch origin/master. - Paul Glezen, 4 weeks ago
    |\
    | * 79e14d9 Distribution supplement from last year; forgot to commit. - Paul Glezen, 6 months ago
@@ -834,22 +833,22 @@ output.
 
 6. Add an alias like `logdate` above (if you don't already have it),
 
-   ```
-   git config --global alias.logdate "log --pretty=format:'%h %cd [%an] %s' --graph --date=short"
+   ```console
+   GitWorkshop/isabrepo$ git config --global alias.logdate "log --pretty=format:'%h %cd [%an] %s' --graph --date=short"
    ```
 
    Recall that adding `--global` to the `config` command makes it
    available to all your repositories.  You can run this alias as
 
    ```
-   git logdate -2
+   GitWorkshop/isabrepo$ git logdate -2
    ```
 
 7. Another way to restrict the number commits is through a relative
-  time.
+   time.
 
-   ```
-   git l --since 1.month
+   ```console
+   GitWorkshop/isabrepo$ git l --since 1.month
    * 3307dd6 (HEAD -> master, origin/master, origin/HEAD) Merged remote-tracking branch origin/master. - Paul Glezen, 4 weeks ago
    * f2429ae Minor updates to GPG1. - Paul Glezen, 4 weeks ago
    ```
@@ -861,8 +860,8 @@ output.
    that affect files in the `git` directory for the
    last two months.
 
-   ```
-   git log -- git
+   ```console
+   GitWorkshop/isabrepo$ git log -- git
    ```
 
    The `--` is a safety mechanism so that `git` is interpreted
@@ -922,7 +921,7 @@ practical terms, `HEAD` determines "which branch you're on".
 We can also see this in implementation terms by peeking
 directly into the Git repository (inside the `.git` folder).
 
-```
+```console
 $ cat .git/HEAD
 ref: refs/heads/master
 $ cat .git/refs/heads/master
@@ -941,7 +940,7 @@ should be a repository with two commits.
 The green circles represent commits.  I've used capital
 letters instead of commit hashes to label them.
 
-![workflow1](images/ex06-01.svg)
+![workflow1](images/ff01.svg)
 
 Branches are represented by blue boxes.  In the
 present case, there is only the `master` branch
@@ -993,7 +992,7 @@ branch because `HEAD` is pointing to it.
    To make `B1` the current branch, use the `checkout`
    command.
 
-   ```conole
+   ```console
    GitWorkshop/samples1$ git checkout B1
    Switched to branch 'B1'
    GitWorkshop/samples1$ git branch
@@ -1054,7 +1053,7 @@ branch because `HEAD` is pointing to it.
    c2e8b4e (HEAD -> B1) Pruned dead URL from Ch 21.
    10f629d (origin/master, origin/HEAD, master) Added Python and fixed typos.
    b83eb9b Initial version.
-   pglezen:~/lac/sessions/GitWorkshop/samples1$ git branch -v
+   GitWorkshop/samples1$ git branch -v
    * B1     c2e8b4e Pruned dead URL from Ch 21.
      master 10f629d Added Python and fixed typos.
    ```
@@ -1154,10 +1153,10 @@ branch because `HEAD` is pointing to it.
    GitWorkshop/samples2$ git branch
    * B1
      master
-   pglezen:~/lac/sessions/GitWorkshop/samples2$ git checkout master
+   GitWorkshop/samples2$ git checkout master
    Switched to branch 'master'
    Your branch is up to date with 'origin/master'.
-   pglezen:~/lac/sessions/GitWorkshop/samples2$ git branch
+   GitWorkshop/samples2$ git branch
      B1
    * master
    ```
@@ -1200,13 +1199,13 @@ current branch. If there is no more work to be done on the `B1`
 branch, we may delete it.
 
 ```console
-   GitWorkshop/samples2$ git branch
-     B1
-   * master
-   pglezen:~/lac/sessions/GitWorkshop/samples2$ git branch -d B1
-   Deleted branch B1 (was 81d60de).
-   pglezen:~/lac/sessions/GitWorkshop/samples2$ git branch
-   * master
+GitWorkshop/samples2$ git branch
+  B1
+* master
+GitWorkshop/samples2$ git branch -d B1
+Deleted branch B1 (was 81d60de).
+GitWorkshop/samples2$ git branch
+* master
 ```
 
 ![Delete-branch](images/ff08.svg)
