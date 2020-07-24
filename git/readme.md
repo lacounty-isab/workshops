@@ -1430,97 +1430,194 @@ GitWorkshop/samples2$ git diff --compact-summary B1...master
 
 Another notion of set difference is the *symmetric difference*.
 This is defined as the *union* of two sets *minus* their *intersection*.
-Basically, it's all the elements that are in one set or the other,
+It's all the elements that are in one set or the other,
 but **not** in both.
+
+Unlike displaying log messages, code changes have a "sign" or
+"direction" associated with them.  If you _make a change_ by
+adding two lines to a file, you _undo the change_ by removing
+those two lines from the file.
+
+Despite the set theory term *symmetric difference*, the display
+of the change is actually *antisymmetric*.  It has a distinct
+direction which is reversed when the order of the parameters is
+reversed.
+
+![diff two dots](images/noConflict07.svg)
+
+In the diagram above, the difference (with double dots) show us how to
+go **from master to B1**.  That means
+
+1. **undo** commit `C`,
+2. **apply** commit `X`,
+3. **apply** commit `Y`.
+
+```
+GitWorkshop/samples2$ git diff --compact-summary master..B1
+ hg17.txt | 4 ++--
+ hg21.txt | 2 --
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+GitWorkshop/samples2$ git diff --compact-summary B1..master
+ hg17.txt | 4 ++--
+ hg21.txt | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+```
+
+The opposite order means start at `Y`
+
+1. **undo** `Y`,
+2. **undo** `X`,
+3. **apply** `C`.
+
+Without the `--compact--summary` option, all the details of the
+changes are listed.
+
+
+## Merge - Without Conflicts
+
+It's time to merge the `B1` branch to `master`.
+
+------------------
+
+**Excercise 7 - Merge**
+
+branches since the split occurred; and that's fairly realistic.
+So we'll start with using the `git log` command technique to
+check what has occurred on each branch before starting the merge.
+
+1. Summarize commits on `master` since `B1` split from `master`.
+
+   ```console
+   GitWorkshop/samples2$ git log --oneline B1..master
+   4878aee (HEAD -> master) Forty-two miles.
+   ```
+
+   We can see the change from thirty-seven to forty-two miles.
+
+2. Summarize the commits on `B1` since `B1` split from `master`.
+
+   ```console
+   GitWorkshop/samples2$ git log --oneline master..B1
+   81d60de (B1) Songs to compositions.
+   c2e8b4e Pruned dead URL from Ch 21.
+   ```
+
+3. With or memory refreshed, we proceed with the merge task.
+   The `merge` command takes a single branch nme for the **source**
+   of the merge.
+   **The target is always the current branch.**
+   Since we want to merge into `master`, we must make `master`
+   the current branch.
+
+   ```console
+   GitWorkshop/samples2$ git checkout master
+   Already on 'master'
+   Your branch is ahead of 'origin/master' by 1 commit.
+   ```
+
+   As it happened, we were already on `master`.  But it didn't
+   hurt to check.  We've confirmed our status depicted in the
+   diagram below.
+
+   ![B1 Log](images/noConflict02.svg)
+
+4. The merge command itself is easy.  Run 
+
+   ```console
+   GitWorkshop/samples2$ git merge B1
+   Auto-merging hg17.txt
+   Merge made by the 'recursive' strategy.
+    hg17.txt | 2 +-
+    hg21.txt | 2 --
+    2 files changed, 1 insertion(+), 3 deletions(-)
+   ```
+
+   Git displays an editor window with the contents
+   pre-populated as shown below.
+
+   ```
+   Merge branch 'B1'
+   # Please enter a commit message to explain why this merge is necessary,
+   # especially if it merges an updated upstream into a topic branch.
+   #
+   # Lines starting with '#' will be ignored, and an empty message aborts
+   # the commit.
+   ```
+
+5. Replace the comment or accept it.  Then save and quit the editor.
+   This creates the merge commit.
 
 
 ------------------
 
-In the next exercise, we address the case where another commit
-had been merged to `master` **before** we attempted to merge
-`B1`.
+The merge commit is node `D` in the diagram below.
+Notice that commit `D` has two children: `C` and `Y`.
 
-![Non-trivial merge](images/workflow07.png)
+![Merge Commit](images/noConflict08.svg)
 
-The `git log` command supports a "double-dot" syntax that specifies
-set difference.
+However, this is not apparent with the Git log command we've been using.
 
-```
-$ git logdate master..B1
-* 32b8636 2017-04-07 [Paul Glezen] Fixed typos.
-* 4e9d53e 2017-04-07 [Paul Glezen] Added design section.
-```
-
-The expression `master..B1` means the following.
-
-1. Start with the commit at `B1`, follow the arrows all the way to
-   the end, and consider this the "B1 set".
-2. Start with the commit at `master`, follow the arrows all the way
-   to the end, and consider this the "master set".
-3. Perform set subtraction: remove all elements in `master` from `B1`.
-4. Print log entries for whatever elements are left.
-
-Looking up at the diagram, we see this amounts to precisely those commits
-that are part of the `B1` branch, but not the `master` branch.  These are
-the changes to be **merged from**.  We can see from the output there are
-two commits on `B1` since the branch from `master`.
-
-What about the **merged to**?  We just flip the arguments.
-
-```
-$ git logdate B1..master
-* f092565 2017-04-07 [Paul Glezen] Added Favorite to title.
+```console
+GitWorkshop/samples2$ git log --oneline
+6513089 (HEAD -> master) Merge branch 'B1'
+4878aee Forty-two miles.
+81d60de (B1) Songs to compositions.
+c2e8b4e Pruned dead URL from Ch 21.
+10f629d (origin/master, origin/HEAD) Added Python and fixed typos.
+b83eb9b Initial version.
 ```
 
-This is consistent with the diagram.  There has been one commit to `master`
-since `B1` branched off.  Because this set is **not empty**, there will be
-no possibility of a fast-forward merge.
+However, by adding the `--graph` option to the command, we can see
+the relationship of both children to the last commit.
 
-```
-isabmbp1:~/somewhere/workflow$ git merge B1
-Auto-merging readme.md
-Merge made by the 'recursive' strategy.
- readme.md | 4 ++++
- 1 file changed, 4 insertions(+)
-```
-
-This merged the changed lines in `B1` to the lines that changed
-in `master`.
-
-![merge done](images/workflow08.png)
-
-This was painless because the changed lines from `B1` were **different**
-from the changed lines in `master`.  If both branches had changed the
-same line, that would have introduced a *merge conflict*.  These have to
-be resolved manually.  But that's a topic for next week.
-
-The log command gives us the following picture.
-
-```
-isabmbp1:~/somewhere/workflow$ git logdate
-*   f77e769 2017-04-07 [Paul Glezen] Merge branch 'B1'
-|\  
-| * 32b8636 2017-04-07 [Paul Glezen] Fixed typos.
-| * 4e9d53e 2017-04-07 [Paul Glezen] Added design section.
-* | f092565 2017-04-07 [Paul Glezen] Added Favorite to title.
-|/  
-* 89e5100 2017-04-07 [Paul Glezen] Added introduction.
-* b668882 2017-04-07 [Paul Glezen] Initial version
+```console
+GitWorkshop/samples2$ git log --graph --oneline
+*   6513089 (HEAD -> master) Merge branch 'B1'
+|\
+| * 81d60de (B1) Songs to compositions.
+| * c2e8b4e Pruned dead URL from Ch 21.
+* | 4878aee Forty-two miles.
+|/
+* 10f629d (origin/master, origin/HEAD) Added Python and fixed typos.
+* b83eb9b Initial version.
 ```
 
-Not bad for the command line. From a coding perspective, we're done.
-But from a house cleaning perspective, we still have that `B1` pointer
-hanging around, even though we don't need it anymore.  Just remove it.
+Without the `--graph` option, the branches are flattened out.
+Of course, GUI tools take this visualization to another level.
 
-```
-isabmbp1:~/somewhere/workflow$ git branch
+![GUI History](images/noConflict09.jpg)
+
+Displaying histories is one of the better advantages to using a GUI
+tool.  Most IDEs have this capability built in or available as a
+free plugin.
+
+## Delete a Branch (Pointer)
+
+We're done with the `B1` branch; but the pointer is still hanging
+around.  If we wanted to continue working on the `B1` branch past
+this point, we probably want to pick contributions from the merge
+to `master`.  To this end, we wish to remove the `B1` pointer.
+
+![Delete branch](images/noConflict10.svg)
+
+```console
+GitWorkshop/samples2$ git branch
   B1
 * master
-isabmbp1:~/somewhere/workflow$ git branch -d B1
-Deleted branch B1 (was 32b8636).
-isabmbp1:~/somewhere/workflow$ git branch
+GitWorkshop/samples2$ git branch -d B1
+Deleted branch B1 (was 81d60de).
+GitWorkshop/samples2$ git branch
 * master
 ```
+
+Git makes the deletion of the `B1` branch point easy.
+It was pointing to node `Y` and there was already another
+element pointing to `Y` (namely node `D`).  So we can
+always reach node `Y` through `D` if we have to;
+we're not losing access to it by deleting the `B1` branch
+pointer.
+
+![Pointer Gone](images/noConflict11.svg)
 
 Deleting branches makes people nervous.  But we're not really
 deleting the branch; we're deleting the pointer that created
@@ -1539,51 +1636,34 @@ error: Cannot delete branch 'master' checked out.
 
 So it won't let me delete a branch that I've got checked out.
 That's good.
-But what if it was another branch on which I had worked but
-not merged and don't have checked out.
 
-```
-isabmbp1:~/somewhere/workflow$ git checkout -b B2
-Switched to a new branch 'B2'
-isabmbp1:~/somewhere/workflow$ vi readme.md
-isabmbp1:~/somewhere/workflow$ git add readme.md
-isabmbp1:~/somewhere/workflow$ git commit -m "Work done."
-[B2 c74fb9b] Work done.
- 1 file changed, 2 insertions(+)
-isabmbp1:~/somewhere/workflow$ git checkout master
-Switched to branch 'master'
-isabmbp1:~/somewhere/workflow$ git branch -v
-  B2     c74fb9b Work done.
-* master f77e769 Merge branch 'B1'
-```
 
-Now we have
 
-![Branch B2](images/workflow09.png)
+What if we had continued with another commit on branch `B1`
+and then tried to delete `B1`?
 
-We thought we merged `B2`; but we didn't (and didn't bother to
-to perform the easy check of `git log master..B2`).
+![Extra Commit](images/noConflict12.svg)
 
-```
-isabmbp1:~/somewhere/workflow$ git logdate master..B2
-* c74fb9b 2017-04-07 [Paul Glezen] Work done.
-isabmbp1:~/somewhere/workflow$ git branch -d B2
-error: The branch 'B2' is not fully merged.
-If you are sure you want to delete it, run 'git branch -D B2'.
+Then there would be no easy way to reach node `Z` through
+available pointers.  Git will recognize this and refuse the
+deletion with a warning that the branch is *not fully merged*.
+Sometimes you still want to delete such a branch (for example,
+you want to discard any changes you amde on the branch without
+a merge).  Then you use the same command with a capital `-D`
+option
+
+```console
+git branch -D B1
 ```
 
-There you have it.  Git will warn you that the branch is not
-fully merged.  If you still insist, you can use the `-D`
-delete option instead of just `-d`.  One reason to force a
-delete is because you accidentally committed a huge file to
-the repository and you don't want it to be part of the permanent
-commit history.  Avoid merging the commit and remove its branch
-pointer.  That will leave a dangling commit in the repository that
-still exists, but has no pointers.  Eventually Git will clean this
-up (delete unreferenced commits from disk).  It waits about 60 days
-in case you feel compelled to get it back
-(see [git reflog](https://git-scm.com/docs/git-reflog)).
+This will delete the branch pointer regardless of whether it had
+been merged.  After this, node `Z` is essentially unreachable since
+there is no path to it through available pointers.  Git will
+eventually delete it.
 
+![Commit Gone](images/noConflict13.svg)
+
+------------------
 
 ### Cautionary Note on Hierarchical Branch Names
 
