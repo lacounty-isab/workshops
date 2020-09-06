@@ -1,11 +1,11 @@
 # This file contains mappings.
 #
-aa - 20
-ab - 43
+a1 - 20
+a2 - 43
 
-ca - 39
-cb - 34
-cc - 44
+b1 - 39
+b2 - 34
+b3 - 44
 
-ea - 45
-eb - 19
+c1 - 45
+c2 - 19
