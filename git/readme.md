@@ -231,7 +231,7 @@ a version in the repository.  But they are expected to drift out of
 sync with the repository as we make changes.  When we *commit* these
 changes, they are written to the repository.
 
-![Init](images/scmDirectories.png)
+![Init](images/scmDirectories.svg)
 
 Let's examine some differences between a local Git repository on
 your workstation and that of a checked-out SVN project.
@@ -1987,6 +1987,41 @@ and `B3` changed lines, requires resolution.
     each line, which is not uncommon for some editors.  Simply
     delete lines 3 - 10 and line 15.  Then save the file and
     add it to the staging area.
+
+    `file2.py`
+    ```
+    1
+    2 def print_usage():
+    3    print("Usage: addAudit.py [-f] [-v] <filename ...>")
+    4    print("  -f - overwrite when duplicate key encountered")
+    5    print("  -v - verbose")
+    6    print("  <filename ..> the name of at least one audit file.")
+    7
+    8 print_usage()
+    ```
+
+20. With both file conflicts resolved and added to the Git staging
+    area, we can now creawte the merge commit.  It should be like
+    any other commit; the hard work is over.
+
+    ```
+    git commit -m "Merge branch B3"
+    ```
+
+21. Verify the branch activity using `git log`.
+
+    ```
+    GitWorkshop/samples3$ git log --oneline --graph
+    *   a8a9c39 (HEAD -> master) Merge branch 'B3'
+    |\
+    | * c76d480 (origin/HEAD, origin/B3, B3) B3 changes.
+    * | eaf393f (origin/B2, B2) B2 changes.
+    |/
+    * 4fff5a8 (origin/master) Initial version.
+    ```
+    
+    This shows the initial version with the source of the branch
+    and they come together at at commit `a8a9c39`.
 
 -----------------
 
