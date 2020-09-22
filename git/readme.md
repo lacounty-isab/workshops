@@ -810,14 +810,12 @@ output.
    aliased out-of-the-box.
 
    ```console
-   GitWorkshop/isabrepo$ git alias | grep log
-   l	 => log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
-   ll	 => log --stat --abbrev-commit
-   logdate	 => log --pretty=format:'%h %cd [%an] %s' --graph --date=short
-   lol	 => log --pretty=format:"%h %s" --graph
+   GitWorkshop/isabrepo$ git config --list | grep alias
+   alias.lol=log --pretty=format:"%h %s" --graph
+   alias.l=log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %ar%Creset'
    ```
-
-   Run `git alias` to see which commands you have available.
+   **Note**: If you don't have the `grep` utility installed, just list
+   all the aliases.
 
 5. Try one of these aliased commands.
 
@@ -831,11 +829,14 @@ output.
    * c551df5 Added workshop PDF for GPG 1. - Paul Glezen, 6 months ago
    ```
 
-6. Add an alias like `logdate` above (if you don't already have it),
+6. (Optional) If you don't have the `l` alias defined, define it for
+   yourself.
 
    ```console
-   GitWorkshop/isabrepo$ git config --global alias.logdate "log --pretty=format:'%h %cd [%an] %s' --graph --date=short"
+   git config --global alias.l "log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(white)- %an, %as%Creset'"
    ```
+
+   Note the mix of double and single quotes.
 
    Recall that adding `--global` to the `config` command makes it
    available to all your repositories.  You can run this alias as
