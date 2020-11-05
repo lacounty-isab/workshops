@@ -5,9 +5,10 @@ sidebar_label: Delete Branches
 ---
 
 We're done with the `B1` branch; but the pointer is still hanging
-around.  If we wanted to continue working on the `B1` branch past
-this point, we probably want to pick contributions from the merge
-to `master`.  To this end, we wish to remove the `B1` pointer.
+around.  If we want to continue working on the `B1` branch past
+this point, we probably want to start from the new merge point.
+To this end, we wish to remove the `B1` pointer and recreate it
+from commit `D`.
 
 ![Delete branch](/git/images/noConflict10.svg)
 
@@ -36,9 +37,7 @@ the branch.  We can still reach either branch from commit `D`.
 And we *do* have a pointer to commit `D`; namely `master`.
 If we removed the `master` pointer, we'd be in trouble.
 According to the diagram, there would be no way to find
-the end of the branch.  It would sure be unfortunate if that
-happened by accident because a Git presentation told you that
-it's OK to delete branches on a whim.  Let's see what happens.
+the end of the branch.  Let's see what happens.
 
 ```console
 git branch -d master
@@ -47,7 +46,6 @@ error: Cannot delete branch 'master' checked out.
 
 So it won't let me delete a branch that I've got checked out.
 That's good.
-
 
 
 What if we had continued with another commit on branch `B1`

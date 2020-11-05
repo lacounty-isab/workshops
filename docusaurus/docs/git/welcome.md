@@ -32,7 +32,7 @@ This document is an outline used to guide a pair of workshops.
 **Week 1**
 
 * [Installation](#installation)
-* [Setup](setup)
+* [Setup](/docs/git/setup)
 * [Basic Lifecycle](#basic-lifecycle)
 * [Log and Diff](#log-and-diff)
 * [Branches](#branches)

@@ -10,10 +10,13 @@ Effectly it wasn't much of a merge, just an extra series of
 commits.
 
 Next we'll simulate a case where a commit was added to the
-`master` branch **before** our merge operation.  To this end,
-let's go "back in time" by changing to our `GitWorkshop/samples2`
-directory.  We created this directory in Step 8 of the last
-exercise.
+`master` branch **before** our merge operation.
+
+### Master Commit
+
+To this end, let's go "back in time" by changing to our
+`GitWorkshop/samples2` directory.  We created this directory
+in Step 8 of the last exercise.
 
 ```console
 GitWorkshop/samples1$ cd ../samples2
@@ -48,8 +51,17 @@ b83eb9b Initial version.
 ```
 
 After all this, we're back-in-time before the `B1` merge.
-Edit `hg17.txt`.  Note the conversion of `songs` to `compositions`
-on line 17 is no longer there.  Edit line 10 to change
+
+Edit `hg17.txt`.
+
+:::note
+The conversion of `songs` to `compositions` on line 17 that
+we performed in the last exercise is no longer there.  That change
+is still in the repository.  But the `master` branch doesn't have
+that change.  Only the `B1` branch has that change.
+:::
+
+Edit line 10 to change
 `thirty-seven` to `forty-two` and save the file.
 Run the `diff` command to confirm your change.
 
@@ -102,7 +114,7 @@ Commits `X` and `Y` are not reachable from `C`.
 By default, the `git log` command only displays commits reachable from `HEAD`.
 
 
-### Displaying Branch Commits
+### Display Branch Commits
 
 By providing a branch name to the `log` command, we can see all log entries
 for commits reachable from that branch.  To see the commits reachable from

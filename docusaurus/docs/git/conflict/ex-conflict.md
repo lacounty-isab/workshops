@@ -1,6 +1,6 @@
 ---
 id: ex-conflict
-title: Excercise 8 - Merge Conflict
+title: Exercise 8 - Merge Conflict
 sidebar_label: Exercise 8
 ---
 

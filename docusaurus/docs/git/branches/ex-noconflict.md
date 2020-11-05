@@ -7,7 +7,7 @@ sidebar_label: Exercise 7
 It's time to merge the `B1` branch to `master`.
 It's hard to remember what's happened on either of these two
 branches since the split occurred; and that's fairly realistic.
-So we'll start with using the `git log` command technique to
+So we'll start using the `git log` command technique to
 check what has occurred on each branch before starting the merge.
 
 1. Summarize commits on `master` since `B1` split from `master`.
@@ -27,8 +27,8 @@ check what has occurred on each branch before starting the merge.
    c2e8b4e Pruned dead URL from Ch 21.
    ```
 
-3. With or memory refreshed, we proceed with the merge task.
-   The `merge` command takes a single branch nme for the **source**
+3. With our memory refreshed, we proceed with the merge task.
+   The `merge` command takes a single branch name for the **source**
    of the merge.
    **The target is always the current branch.**
    Since we want to merge into `master`, we must make `master`

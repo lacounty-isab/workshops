@@ -12,15 +12,15 @@ form of the `git log` command.
 
 ```console
 GitWorkshop/samples$ git log
-commit 10f629df8aab162c65f80112d2c2406095d8dfc6 (HEAD -> master)
-Author: Paul Glezen <bs193538@gmail.com>
-Date:   Mon Mar 30 21:02:13 2020 -0700
+commit d0d9eea64278b523f647d86c89bc2ced17e94eff (HEAD -> master)
+Author: Paul Glezen <pglezen@isab.lacounty.gov>
+Date:   Mon Oct 12 22:15:31 2020 -0700
 
     Added Python and fixed typos.
 
-commit b83eb9bed3deb85a32b12e7679a18d28765bb0de
-Author: Paul Glezen <bs193538@gmail.com>
-Date:   Sun Mar 29 13:15:14 2020 -0700
+commit 79647d700a60bc4549ac01c7c2e3a1065394d309
+Author: Paul Glezen <pglezen@isab.lacounty.gov>
+Date:   Mon Oct 12 21:18:20 2020 -0700
 
     Initial version.
 ```

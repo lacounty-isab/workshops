@@ -10,7 +10,7 @@ module.exports = {
   themeConfig: {
     announcementBar: {
       id: 'next_offering',
-      content: 'Git delivery is scheduled for mid-September 2020',
+      content: 'Git Part 2 delivery scheduled for February 2021',
       backgroundColor: '#edb879',
       textColor: '#042f66',
     },

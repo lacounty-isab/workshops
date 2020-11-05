@@ -4,7 +4,7 @@ title: Branch Names
 sidebar_label: Naming Branches
 ---
 
-Some times forward slashes are used
+Sometimes forward slashes are used
 to organize branches hierarchically (e.g. `da/issue23` or
 `pubdef/issue45`).  Using hierachical branch names works fine
 so long as you observe the following **cautionary note**.
@@ -31,7 +31,7 @@ a branch named `probation` to do all probation work.  That becomes
 a **file** named `.git/refs/heads/probation`.  Then later, they
 try to create a `probation/issue28`.  This attempts to create a
 **directory** named `probation` with a file named `issue28` inside
-it.  This results in an error because there is already a file
+it.  This results in an error because there is already a **file**
 named `probation`.
 
 As long as you keep this restriction in mind, hierarchical branch

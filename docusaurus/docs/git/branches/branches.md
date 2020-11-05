@@ -14,7 +14,7 @@ to understanding branches is to understand commit trees.
 A commit tree is a directed acyclic graph (DAG).
 An example of a DAG is shown below.
 
-![Directed Acyclic Graph](/git/images/dag1.png)
+![Directed Acyclic Graph](/git/images/dag1.svg)
 
 * It's a *graph* in that it has vertices and edges
   (or points and lines if you prefer).
@@ -56,7 +56,6 @@ $ cat .git/HEAD
 ref: refs/heads/master
 $ cat .git/refs/heads/master
 5567a3e7b3724d116a9d7344d412aaf7ff2aba4c
-isabmbp1:~/pix/cloverleaf/git/site$
 ```
 
 The file `HEAD` contains a reference to a branch, in this

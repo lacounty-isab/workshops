@@ -4,6 +4,8 @@ title: Exercise 6 - Fast Forward Merge
 sidebar_label: Exercise 6
 ---
 
+### Preparation
+
 1. To prepare for this exercise, which demonstrates
    the first two branch types described above,
    remove the `samples2` directory created during
@@ -21,6 +23,8 @@ sidebar_label: Exercise 6
    GitWorkshop$ cd samples1
    GitWorkshop/samples1$
    ```
+
+### Create Branch
 
 3. Create a new branch named `B1` and make it the 
    current branch.  Use the `git branch` command
@@ -55,7 +59,8 @@ sidebar_label: Exercise 6
 
    ![Checkout new branch](/git/images/ff03.png)
 
-   The `branch` and the `checkout` command is often
+   :::tip
+   The `branch` and the `checkout` commands are often
    combined into a single shortcut command
 
    ```console
@@ -64,7 +69,9 @@ sidebar_label: Exercise 6
 
    This will **create** the branch `B1` if it doesn't
    already exist, and then **make it the current branch**.
-   Whichever method you use, the output from
+   :::
+
+   Whichever command you use, the output from
    `git branch` should be consistent with the figure above.
 
    ```console
@@ -72,6 +79,8 @@ sidebar_label: Exercise 6
    * B1
      master
    ```
+
+### Edit and Commit on B1
 
 4. Edit `hg21.txt`.  Remove the first two lines that contain a dead
    URL and a blank line.  After editing this file, the first line
@@ -151,9 +160,11 @@ sidebar_label: Exercise 6
    b83eb9b Initial version.
    ```
 
+### Create New Clone
+
 8. At this point we've reached a fork in the road where I wish to
    demonstrate two different scenarios.  To this end let's clone
-   the current `sample1` repository to `sample2`.
+   the current `samples1` repository to `samples2`.
 
    Change to the parent directory and run the clone command.
    Then change to the `samples2` directory and fetch the state
@@ -194,11 +205,13 @@ sidebar_label: Exercise 6
    to continue this exercise with Step 9.  We'll return to
    `samples2` in the next exercise.
 
-   Now we're ready to merge our changes to the `master` branch.
-   The target for a Git merge operation is **always** the current
-   branch.  If we want to merge **B1** into **master**, we first
-   have to make **master** the current branch.  The source of the
-   merge will be referenced in the **merge** command.
+### Merge
+
+Now we're ready to merge our changes to the `master` branch.
+The target for a Git merge operation is **always** the current
+branch.  If we want to merge **B1** into **master**, we first
+have to make **master** the current branch.  The source of the
+merge will be referenced in the **merge** command.
 
 9. Change the current branch from `B1` to `master`.
 

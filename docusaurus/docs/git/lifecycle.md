@@ -41,14 +41,14 @@ browsing far more efficient.
 Once you have a local copy of the repository the basic lifecycle goes
 like this.
 
-1. checkout - change to a branch; often create a new one.
-2. edit - edit working copy.
-3. stage - add the changes to a staging area.
-4. commit - commit changes.
-5. repeat steps 2 - 4.
-6. push commits to a server copy of the repository.
+1. __checkout__ - change to a branch; often create a new one.
+2. __edit__ - edit working copy.
+3. __stage__ - add the changes to a staging area.
+4. __commit__ - commit changes.
+5. __repeat__ steps 2 - 4.
+6. __push__ commits to a server copy of the repository.
 
-Note that in the case of a local-only repository, step 6 never happens.
+Note that in the case of a local-only repository, Step 6 never happens.
 The commands used in the basic lifecycle are discussed in more detail below.
 
 Reference is often made to **HEAD**.  This is a pointer that refers to

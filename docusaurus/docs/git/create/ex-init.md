@@ -57,7 +57,7 @@ sidebar_label: Exercise 2
 
    The remark "nothing added to commit" is alluding to the **staging area**.
    In Git there are three states in which a version of a file can occupy:
-   the working copy, the staging area, and a commit.  
+   the working copy, the staging area, and a commit.
    These are shown in the illustration below.
    
    ![Init](/git/images/firstCommit1.png)
@@ -82,28 +82,26 @@ sidebar_label: Exercise 2
 
    Changes to be committed:
      (use "git rm --cached <file>..." to unstage)
-
-       new file:   file1.txt
-       new file:   hg17.txt
-       new file:   hg21.txt
+   	new file:   file1.txt
+   	new file:   hg17.txt
+   	new file:   hg21.txt
 
    Untracked files:
      (use "git add <file>..." to include in what will be committed)
-
-   	   file2.py
-   ```
+   	file2.py
+  ```
 
    Note the change in the status message.  The status of the files went
-   from "untracked" to "to be committed".  These are the files that will
-   be added to the repository 
+   from **untracked** to **to be committed**.  These are the files that will
+   be added to the repository if we run `git commit`.
 
    ![Init](/git/images/firstCommit2.png)
 
    We say these versions of the files are "added to the staging area."
 
 7. Now the `*.txt` files are in the staging area and ready to commit.
-   We have excluded the Python script by not staging it.  We are ready to
-   run the `git commit`.
+   We have excluded the Python script and Markdown file by not staging
+   them.  We are ready to run `git commit`.
 
    ```
    GitWorkshop/samples$ git commit -m "Initial version."
