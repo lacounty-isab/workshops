@@ -60,5 +60,12 @@ module.exports = {
              ],
       collapsed: false,
     },
+    {
+      type: "category",
+      label: "Remotes",
+      items: ['git/remotes/intro'
+             ],
+      collapsed: false,
+    },
   ],
 };

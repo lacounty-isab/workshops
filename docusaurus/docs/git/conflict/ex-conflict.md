@@ -11,30 +11,29 @@ below with line numbers added for reference.
 
 
 ```text title="file1.txt"
-   1 # This file contains mappings.
-   2 #
-   3 a1 - 20
-   4 a2 - 43
-   5
-   6 b1 - 39
-   7 b2 - 34
-   8 b3 - 44
-   9
-  10 c1 - 45
-  11 c2 - 19
+ 1 # This file contains mappings.
+ 2 #
+ 3 a1 - 20
+ 4 a2 - 43
+ 5
+ 6 b1 - 39
+ 7 b2 - 34
+ 8 b3 - 44
+ 9
+10 c1 - 45
+11 c2 - 19
 ```
 
-```text title="file2.py"
-   1
-   2 def print_usage():
-   3    usage = """"Usage: addAudit.py [-f] [-v] <filename ...>"
-   4     -f - overwrite when duplicate key encountered
-   5     -v - verbose
-   6     <filename ..> the name of at least one audit file."""
-   7
-   8    print(usage)
-   9
-  10 print_usage()
+```python title="file2.py"
+1 def print_usage():
+2    usage = """Usage: addAudit.py [-f] [-v] <filename ...>
+3     -f - overwrite when duplicate key encountered
+4     -v - verbose
+5     <filename ..> the name of at least one audit file."""
+6
+7    print(usage)
+8
+9 print_usage()
 ```
 
 
@@ -48,11 +47,11 @@ below with line numbers added for reference.
    ```
 
 2. Edit `file1.txt` in the following way.
-   a. __Line 6__: Add `,41` to the end of the line
-   b. __Line 7__: Change `35` to `36`
-   c. __Line 8__: Add a blank space after `44`
-   d. __Line 10__: Change `45` to `55`
-   e. __Line 11__: Change `19` to `29`
+   1. __Line 6__: Add `,41` to the end of the line
+   2. __Line 7__: Change `34` to `36`
+   3. __Line 8__: Add a blank space after `44`
+   4. __Line 10__: Change `45` to `55`
+   5. __Line 11__: Change `19` to `29`
 
 3. Edit `file2.py` by adding a blank space to each line
    of the `print_usage` function.  That is, add a space
@@ -90,10 +89,10 @@ below with line numbers added for reference.
    Now we're ready to make `B3` changes.
 
 8. Edit `file1.txt`.
-   a. __Line 3__: change `20` to `30`.
-   b. __Line 4__: change `43` to `53`.
-   c. __Line 6__: add `,40`.
-   d. __Line 7__: change `34` to `35`.
+   1. __Line 3__: change `20` to `30`.
+   2. __Line 4__: change `43` to `53`.
+   3. __Line 6__: add `,40`.
+   4. __Line 7__: change `34` to `35`.
 
    ![file1.txt](/git/images/mergeConflict05.jpg)
 
@@ -175,19 +174,42 @@ to resolve the conflicts.  We could
 * choose something completely different from either side based
   on some knowledge about the bigger picture.
 
-These decisons are carried out in the following three steps:
+These decisons are carried out in the following manner:
 
 
-a. __Edit the lines__ within the merge markers based on your decisons.
+(a). __Edit the lines__ within the merge markers based on your decisons.
 
-b. __Delete the merge marker__ lines and save the file.
+(b). __Delete the merge marker__ lines and save the file.
 
-c. __Add the file__ to the Git staging area.
+(c). __Add the file__ to the Git staging area.
 
 
-This last step is how Git know when we've complete the merge
-activity for the file.  We repeat steps a, b and c for each
-file in which a merge conflict occurred.
+This last step is how Git knows when we've complete the merge
+activity for the file.  We repeat steps (a), (b) and (c) for each
+file in which a merge conflict occurred.  For a list of files
+with merge conflicts, use `git status`.
+
+```
+GitWorkshop/samples3$ git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+	both modified:   file1.txt
+	both modified:   file2.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+:::note
+A file will stay in _unmerged state_, even after Step (b) above.
+Only the `git add` command moves it to a _merged state_.  Of
+course, if you add the file to a merged state with merge markers
+still inside it, those merge markers become part of the file.
+:::
 
 Looking at `file1.txt` above, things aren't that bad.
 The top (only changed on `B2`) and the bottom (only changed on
@@ -196,16 +218,16 @@ and `B3` changed lines, requires resolution.
 
 16. Edit the lines of `file1.txt`.
 
-    a. For entry `b1`, branch `B2` added `41` while branch `B3`
+    **a**. For entry `b1`, branch `B2` added `41` while branch `B3`
        added `40` to the value.  Let's make the decision to add
        both so that line 7 has `b1 - 39,40,41`.  Notice how we're
        implicitly making lines 7 - 9 our "definitive copy."
 
-    b. For entry `b2`, branch `B2` changed the value to `36`
-       which brnach `B3` changed to `35`.  Let's decide to keep
+    **b**. For entry `b2`, branch `B2` changed the value to `36`
+       which branch `B3` changed to `35`.  Let's decide to keep
        `36` so that line 8 remains unchanged.
  
-    c. Entry `b3` is tricky.  It looks the same in both lines 9
+    **c**. Entry `b3` is tricky.  It looks the same in both lines 9
        and 13.  Recall that branch `B2` eroneously added a space
        at the end of the line.  In this case, we wish to accept
        the `B3` line 13 which left the line unchanged.  Remove
@@ -229,23 +251,21 @@ and `B3` changed lines, requires resolution.
     This is a simpler case where we wish to only accept the `B3`
     version.  The `B2` version had simply added an extra space on
     each line, which is not uncommon for some editors.  Simply
-    delete lines 3 - 10 and line 15.  Then save the file and
+    delete lines 2 - 9 and line 14.  Then save the file and
     add it to the staging area.
 
     ```python title="file2.py"
-    1
-    2 def print_usage():
-    3    print("Usage: addAudit.py [-f] [-v] <filename ...>")
-    4    print("  -f - overwrite when duplicate key encountered")
-    5    print("  -v - verbose")
-    6    print("  <filename ..> the name of at least one audit file.")
-    7
-    8 print_usage()
-    9
+    1 def print_usage():
+    2    print("Usage: addAudit.py [-f] [-v] <filename ...>")
+    3    print("   -f - overwrite when duplicate key encountered")
+    4    print("   -v - verbose")
+    5    print("   <filename ..> the name of at least one audit file.")
+    6
+    7 print_usage()
     ```
 
 20. With both file conflicts resolved and added to the Git staging
-    area, we can now creawte the merge commit.  It should be like
+    area, we can now create the merge commit.  It should be like
     any other commit; the hard work is over.
 
     ```console
@@ -256,18 +276,25 @@ and `B3` changed lines, requires resolution.
 
     ```console
     GitWorkshop/samples3$ git log --oneline --graph
-    *   a8a9c39 (HEAD -> master) Merge branch 'B3'
+    *   55a29e6 (HEAD -> master) Merge branch B3
     |\
-    | * c76d480 (origin/HEAD, origin/B3, B3) B3 changes.
-    * | eaf393f (origin/B2, B2) B2 changes.
+    | * 17c3dc5 (B3) B3 changes.
+    * | fd4d195 (B2) B2 changes.
     |/
-    * 4fff5a8 (origin/master) Initial version.
+    * cce1b27 Initial version.
     ```
     
     This shows the initial version with the source of the branch
-    and they come together at at commit `a8a9c39`.
+    and they come together at at commit `55a29e6`.
 
     :::note
-    Your commit hash may be different.
+    Your commit hashes may be different.
     :::
 
+And that's all there is to it.  It's just a matter of recognizing
+the merge markers and resolving the merge in the proper way.
+
+:::caution
+This technique only applies to text files.  Binary files such as
+images, executables and compressed archives should not be changed
+concurrently.  They cannot be easily merged.
