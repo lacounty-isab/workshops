@@ -35,7 +35,7 @@ module.exports = {
         },
         {to: 'blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/lacounty-isab/workshops/blob/gitv2/git',
+          href: 'https://github.com/lacounty-isab/workshops',
           label: 'Source on GitHub',
           position: 'right',
         },

@@ -63,7 +63,8 @@ module.exports = {
     {
       type: "category",
       label: "Remotes",
-      items: ['git/remotes/intro'
+      items: ['git/remotes/intro',
+              'git/remotes/scenario',
              ],
       collapsed: false,
     },
