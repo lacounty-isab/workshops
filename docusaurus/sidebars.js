@@ -65,6 +65,7 @@ module.exports = {
       label: "Remotes",
       items: ['git/remotes/intro',
               'git/remotes/scenario',
+              'git/remotes/pull',
              ],
       collapsed: false,
     },

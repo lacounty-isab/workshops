@@ -133,7 +133,7 @@ remote tracking branch to make sure it is accurate.  Then push the update.
 
    ```console {1,4}
    GitWorkshop/sL17$ git fetch origin master
-   From /Users/pglezen/lac/sessions/GitWorkshop/sR
+   From GitWorkshop/sR
     * branch            master     -> FETCH_HEAD
    GitWorkshop/sL17$ git log --oneline
    8e5d42c (HEAD -> master) Songs to Compositions in hg17.txt
@@ -243,7 +243,7 @@ Meanwhile, `L21` will perform work on a new local branch named `i42`.
     ```console {1,5}
     GitWorkshop/sL21$ git push origin i42
     ...
-    To /Users/pglezen/lac/sessions/GitWorkshop/sR
+    To GitWorkshop/sR
      * [new branch]      i42 -> i42
     GitWorkshop/sL21$ git branch -a
     * i42
@@ -379,3 +379,152 @@ source of the merge.
     and enter it interactively.
 
 ![Local Merge](/git/images/workflow27.png)
+
+The DAG for `L17` is reflected in the `git log` command if we
+include the `--graph` option.
+Be sure you can identify the following in both the figure above
+and the log output below.
+
+```console {1}
+GitWorkshop/sL17$ git log --oneline --graph
+*   82b8b8f (HEAD -> master) Merged i42 to master.
+|\
+| * 02a6929 (origin/i42) Removed two lines.
+* | 01a19f8 37 to 42
+* | 8e5d42c (origin/master, origin/HEAD) Songs to Compositions in hg17.txt
+|/
+* d0d9eea Added Python and fixed typos.
+* 79647d7 Initial version.
+```
+
+The merge commit **F** (`82b8b8`) is the new `HEAD` of
+the master branch.
+The remote tracking branch for master is behind local
+for `L21`, but still accurately reflects the state of
+the remote `R`.  In fact, this local activity has resulted
+in no changes to any remote tracking branches.
+
+## Push Merge
+
+17. `L17` pushes the result of the merge to the shared
+    remote `R`.
+
+    ```console {1,3}
+    GitWorkshop/sL17$ git push origin master
+    . . . .
+    GitWorkshop/sL17$ git log --oneline --graph
+    *   82b8b8f (HEAD -> master, origin/master, origin/HEAD) Merged i42 to master.
+    |\
+    | * 02a6929 (origin/i42) Removed two lines.
+    * | 01a19f8 37 to 42
+    * | 8e5d42c Songs to Compositions in hg17.txt
+    |/
+    * d0d9eea Added Python and fixed typos.
+    * 79647d7 Initial version.
+    ```
+
+From the `L17` log, the `git push` is reflected only in
+the movement of the tracking branch pointer.
+
+![Local Merge](/git/images/workflow28.png)
+
+The remote `R` now has the two new commits from `L17`
+along with the fact that commit `F` is a merge of
+commits `D` and `E`.
+
+It is now the responsibility of `L17` to notify `L21`
+(and anyone else) of the availability of the merge.
+
+The `L21` developer's work has been merged into the
+`master` branch by the `L17` developer and pushed to
+the shared remote repository `R`.  But this is still
+not visible to the `L21` developer until refreshed
+from the remote `master`.
+
+18. Change to the L21 repository and fetch the updated
+    `master` branch from `R`.
+
+    ```console {1,2,6,11}
+    GitWorkshop/sL17$ cd ../sL21
+    GitWorkshop/sL21$ git log --oneline --graph
+    * 02a6929 (HEAD -> i42, origin/i42) Removed two lines.
+    * d0d9eea (origin/master, origin/HEAD, master) Added Python and fixed typos.
+    * 79647d7 Initial version.
+    GitWorkshop/sL21$ git fetch origin master
+    . . . . . .
+    From GitWorkshop/sR
+     * branch            master     -> FETCH_HEAD
+       d0d9eea..82b8b8f  master     -> origin/master
+    GitWorkshop/sL21$ git log --oneline --graph
+    * 02a6929 (HEAD -> i42, origin/i42) Removed two lines.
+    * d0d9eea (master) Added Python and fixed typos.
+    * 79647d7 Initial version.
+    ```
+
+Note once again that the `git fetch` did not disrupt any
+work `L21` might have been doing.  The logs before and
+after the fetch show the same entries.
+However, close inspection of the log outputs show that
+some branch pointers have moved around.  Let's compare
+the figures.  This is the situation after the fetch.
+
+![Local Merge](/git/images/workflow29.png)
+
+The `L21` situation looks a lot different in the figure.
+But it's consistent with the log output.  The current
+branch is still `i42` and `origin/master` is no longer
+reachable from `i42`; though local `master`
+(which is now 3 commits behind) is still reachable.
+Both log output shows **D** → **B** → **A**.
+
+The previous slide showed `L21` could fetch all the
+merge activity without disrupting local activity.
+But now it's time to refresh the merge to our local
+`master`.  As always with a merge, the first step is
+to change to the target branch.
+
+19. Change to local master branch.
+
+    ```console {1}
+    GitWorkshop/sL21$ git checkout master
+    Switched to branch 'master'
+    Your branch is behind 'origin/master' by 4 commits, and can be fast-forwarded.
+      (use "git pull" to update your local branch)
+    ```
+
+    It tells us `master` is behind by 4 commits.
+    But the good news is that it can be fast-forwarded;
+    otherwise we have to "merge the merge", which we
+    wouldn't do because we're not suppose to be
+    contributing commits directly to `master`.
+
+20. Merge from the remote tracking branch.
+
+    ```console {1}
+    GitWorkshop/sL21$ git merge origin/master
+    Updating d0d9eea..82b8b8f
+    Fast-forward
+    ```
+
+    All merges to `master` should be fast-forward for
+    developers who do not commit directly to `master`.
+
+21. Remove the local and remote `i42` branch pointer.
+
+    ```console {1,3}
+    GitWorkshop/sL21$ git branch -d i42
+    Deleted branch i42 (was 02a6929).
+    GitWorkshop/sL21$ git branch -d -r origin/i42
+    Deleted remote-tracking branch origin/i42 (was 02a6929).
+    ```
+
+    Note that deleting a remote branch requires the `-r`
+    flag.
+
+    ![L21 Summary](/git/images/workflow31.jpg)
+
+The diagram below shows the final state after the local
+merge by `L21`.
+
+![Local Merge](/git/images/workflow30.png)
+
