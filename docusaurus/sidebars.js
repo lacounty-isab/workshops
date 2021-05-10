@@ -70,4 +70,23 @@ module.exports = {
       collapsed: false,
     },
   ],
+  jwt: [
+    'jwt/welcome',
+    'jwt/tokens',
+    'jwt/jwtokens',
+    'jwt/specs',
+    'jwt/jwsigs',
+    'jwt/ex1',
+    'jwt/ex2',
+    'jwt/hmac',
+    'jwt/ex3',
+    'jwt/ex4',
+    'jwt/ex5',
+    'jwt/claims',
+    'jwt/scope',
+    'jwt/effscope',
+    'jwt/bearer',
+    'jwt/libs',
+    'jwt/keys',
+  ]
 };

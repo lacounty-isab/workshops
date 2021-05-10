@@ -5,12 +5,12 @@ module.exports = {
   baseUrl: '/',
   onBrokenLinks: 'warn',
   favicon: '/img/favicon.ico',
-  organizationName: 'lacounty-isab', // Usually your GitHub org/user name.
-  projectName: 'workshops', // Usually your repo name.
+  organizationName: 'lacounty-isab',
+  projectName: 'workshops',
   themeConfig: {
     announcementBar: {
       id: 'next_offering',
-      content: 'Git Part 2 delivery scheduled for February 2021',
+      content: 'JWT delivery scheduled for May 2021',
       backgroundColor: '#edb879',
       textColor: '#042f66',
     },
@@ -31,6 +31,12 @@ module.exports = {
           to: '/docs/git/part2intro',
           activeBasePath: 'docs',
           label: 'Git, Part 2',
+          position: 'left',
+        },
+        {
+          to: '/docs/jwt/welcome',
+          activeBasePath: 'docs',
+          label: 'JWT',
           position: 'left',
         },
         {to: 'blog', label: 'Blog', position: 'left'},
@@ -90,15 +96,15 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: 'blog',
+              label: 'Workshop Catalog',
+              to: 'catalog',
             },
             {
               label: 'Official ISAB Page',
               to: 'http://ccjcc.lacounty.gov/Subcommittees-Task-Forces/Information-Systems-Advisory-Board-ISAB',
             },
             {
-              label: 'CCJCC',
+              label: 'CCJCC Page',
               to: 'http://ccjcc.lacounty.gov/',
             },
           ],
