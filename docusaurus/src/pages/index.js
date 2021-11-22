@@ -23,7 +23,7 @@ const features = [
     imageUrl: 'img/jake-hills-23LET4Hxj_U-unsplash.jpg',
     description: (
       <>
-        The workshops were developed to fill skills gaps within our agencies.
+        The workshops were developed to fill skill-gaps within our agencies.
         But there is no sensitive information in them; they are available to all.
       </>
     ),
@@ -33,9 +33,9 @@ const features = [
     imageUrl: 'img/laika-notebooks-l24Db2ApdFM-unsplash.jpg',
     description: (
       <>
-        Each workshop is provided as a PDF, as a single web page
-        and on this site in a modular format.  Check the links
-        in the menu bar for available workshops.
+        Workshops are provided as PDF downloads or they can
+        followed directly on this site.  Check the links in
+        the menu bar for available workshops.
       </>
     ),
   },

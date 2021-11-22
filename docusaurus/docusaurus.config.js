@@ -1,7 +1,7 @@
 module.exports = {
   title: 'ISAB  Workshops',
   tagline: 'Countywide Skills Development',
-  url: 'https://github.com/lacounty-isab',
+  url: 'https://workshops.lacounty-isab.org',
   baseUrl: '/',
   onBrokenLinks: 'warn',
   favicon: '/img/favicon.ico',
@@ -10,7 +10,7 @@ module.exports = {
   themeConfig: {
     announcementBar: {
       id: 'next_offering',
-      content: 'JWT delivery scheduled for May 2021',
+      content: 'Postman delivery scheduled for 1Q 2022',
       backgroundColor: '#edb879',
       textColor: '#042f66',
     },
@@ -37,6 +37,12 @@ module.exports = {
           to: '/docs/jwt/welcome',
           activeBasePath: 'docs',
           label: 'JWT',
+          position: 'left',
+        },
+        {
+          to: '/docs/postman/welcome',
+          activeVasePath: 'docs',
+          label: 'Postman Teams',
           position: 'left',
         },
         {to: 'blog', label: 'Blog', position: 'left'},

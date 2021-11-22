@@ -88,5 +88,9 @@ module.exports = {
     'jwt/bearer',
     'jwt/libs',
     'jwt/keys',
-  ]
+  ],
+  postman: [
+    'postman/welcome',
+    'postman/app',
+  ],
 };
