@@ -92,5 +92,18 @@ module.exports = {
   postman: [
     'postman/welcome',
     'postman/app',
+    'postman/ex1-wksp',
+    'postman/ex2-env1',
+    'postman/ex3-env2',
+    'postman/concepts',
+    'postman/ex4-headers',
+    'postman/console',
+    'postman/ex5-docs',
+    'postman/ex6-post',
+    'postman/ex7-patch',
+    'postman/ex8-env3',
+    'postman/ex9-scripts',
+    'postman/ex10-vars',
+    'postman/apdx1-cert',
   ],
 };

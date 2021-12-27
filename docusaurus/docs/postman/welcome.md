@@ -14,13 +14,13 @@ This workshop provides guidance on using the
 [Postman](https://www.postman.com/) API testing tool in a
 *teams* context within API projects coordinated by
 [ISAB](http://ccjcc.lacounty.gov/Subcommittees-Task-Forces/Information-Systems-Advisory-Board-ISAB).
-It doesn't use team features directly, since that would require
+It does not incorporate team features directly, since that would require
 all participants be members of a Postman team, which is not likely
 to be the case initially.  Rather, it only assumes the user is working
-with the personal workspaces.  Since many team workspaces originate
+with personal workspaces.  Since many team workspaces originate
 as personal workspaces that are later shared, the organization and
 configuration concepts described in this workshop naturally carry
-over into the team setting.
+forward to a team setting.
 
 ## Agenda
 
@@ -34,7 +34,7 @@ over into the team setting.
 
 ## Assumptions
 
-This presentation assumes you are involved in API development
+This workshop assumes you are involved in API development
 in some capacity, hence the motivation for your participation.
 The intended audience roles are
 
@@ -46,3 +46,14 @@ Before starting this workshop, you should already
 
 * have a (free) [Postman](https://www.postman.com) account
 * have installed the Postman native application for your OS.
+
+
+## Credentials
+
+The workshop exercises use two API keys and a sample
+API user account.
+These can't be made public without compromising
+a publicly exposed API.  These credentials are generally
+disabled except during the delivery of a workshop.  Their
+values may be retrieved from the MS Teams channel for this
+workshop.

@@ -15,7 +15,7 @@ The Postman application is available in two forms.
   application avoids an installation step, but is prone to
 
   - getting lost among browser tabs
-  - accidentally navigating away from app (e.g. hitting 
+  - accidentally navigating away from the app (e.g. hitting 
     the **Back** button)
   - accidentally closing the tab or even the whole browser.
 
@@ -32,5 +32,5 @@ least from changes in its configuration.
 The recommended practice is to use the native application when
 possible.  But if networking issues are encountered, fall back
 to the web application.  Because Postman synchronizes your work
-with your account, you can alternative back and forth without
-losing saved work.
+with your account, you can alternative between the native and
+the web application without losing saved work.

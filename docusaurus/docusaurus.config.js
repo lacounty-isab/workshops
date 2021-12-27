@@ -42,7 +42,7 @@ module.exports = {
         {
           to: '/docs/postman/welcome',
           activeVasePath: 'docs',
-          label: 'Postman Teams',
+          label: 'Postman',
           position: 'left',
         },
         {to: 'blog', label: 'Blog', position: 'left'},
