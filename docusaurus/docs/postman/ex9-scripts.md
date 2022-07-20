@@ -31,7 +31,7 @@ copy-n-paste task.
    }
    ```
 
-   Save the request.
+   **Save** the request.
    If the authentication returns a valid token, the above
    script will set a Postman variable named `authHeader`
    in the `environment` scope.
@@ -39,6 +39,12 @@ copy-n-paste task.
 3. Select the PATCH request and then the **Authorization**
    tab.  Replace the **Token** value with `{{authHeader}}`
    and save the request.
+
+   :::info Ignore Warning
+   Postman will warn that the `{{authHeader}}` does not
+   exist.  That's true.  I won't be created until we invoke
+   the Login request.
+   :::
    
 4. Run the Authenticate request.
 

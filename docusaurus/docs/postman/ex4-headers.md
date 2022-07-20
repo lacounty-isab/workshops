@@ -15,7 +15,7 @@ through a header configuration instead of an authorization.
 
 3. From the environment dropdown, select **Test**.
 
-4. Go back to the *Get charge 826* request and click
+4. Go back to the *Charge 826* request and click
    **Send** to verify that our API key is no longer sent.
 
 5. Select the **Headers** tab of the request definition.

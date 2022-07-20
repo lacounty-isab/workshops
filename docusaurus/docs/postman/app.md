@@ -17,7 +17,8 @@ The Postman application is available in two forms.
   - getting lost among browser tabs
   - accidentally navigating away from the app (e.g. hitting 
     the **Back** button)
-  - accidentally closing the tab or even the whole browser.
+  - accidentally closing the tab or even the whole browser
+  - requires a (free) Postman account.
 
 ![Web App Screenshot](/postman/appBrowser.png)
 

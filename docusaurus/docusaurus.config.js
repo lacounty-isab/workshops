@@ -10,7 +10,7 @@ module.exports = {
   themeConfig: {
     announcementBar: {
       id: 'next_offering',
-      content: 'Postman delivery scheduled for 1Q 2022',
+      content: 'Next Postman delivery expected in September 2022',
       backgroundColor: '#edb879',
       textColor: '#042f66',
     },

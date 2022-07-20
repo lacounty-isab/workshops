@@ -4,7 +4,7 @@ sidebar_label: "Ex 2: Changing Environments"
 ---
 
 This exercise continues where the previous exercise ended –
-with the *Get charge 826* request.
+with the *Charge 826* request.
 
 1. Change the URL field of the request to invoke the TEST API
    instead of PROD by changing `api.codes` to `api-test.codes`
@@ -27,7 +27,8 @@ with the *Get charge 826* request.
 4. Select the parent folder, **CJIS Tables**, and the
    **Authorization** tab within it.  Notice that it, too,
    is configured to *Inherit auth from parent*.  But since
-   this authorization doesn't apply to other siblings, we'll
+   this authorization doesn't apply to other folders, like
+   the `Postman` folder, we'll
    configure the authorization here.
 
 5. From the dropdown box, select **API Key**.
@@ -37,9 +38,9 @@ with the *Get charge 826* request.
 7. For the **Value** field, enter the TEST API key listed in
    the MS Teams channel for this workshop.
 
-8. Save the folder settings.
+8. **Save** the folder settings.
 
-9. Return to the *Get charge 826* request tab and send the
+9. Return to the *Charge 826* request tab and send the
    request.  It should be successful.
 
 10. Change the URL back to the PROD URL, i.e. change

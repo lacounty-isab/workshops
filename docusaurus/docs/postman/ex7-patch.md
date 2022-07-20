@@ -8,7 +8,7 @@ In this request we'll use the token from the previous exercise
 to update the short description of a record in the TEST environment.
 
 1. Create a new request in the **CJIS Tables** collection.   
-   a. Name: `Change short description`   
+   a. Name: `Short description`   
    b. Method: **PATCH**   
    c. URL: `https://api-test.codes.lacounty-isab.org/api/ChargeCode`   
    
@@ -17,7 +17,7 @@ to update the short description of a record in the TEST environment.
 2. Select the **Authorization** tab of the request.
 
    :::note
-   Notice it's set to inherit its configuration from its parent
+   The auhtorization is set to inherit its configuration from its parent
    (the collection level).  By configuring the authorization at
    the collection level, the authorization would be available to
    all requests.  For this small example, we'll configure at the

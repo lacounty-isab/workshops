@@ -5,8 +5,10 @@ sidebar_label: "Ex 3: Managing Environments"
 
 In the previous exercise, we saw that switching between
 environments grows cumbersome as the number of
-environment dependencies grows.  This exercise will
+environment dependencies grow.  This exercise will
 demonstrate how **Postman environments** address this.
+
+## Test Environment
 
 1. Select **Environments** from the left navbar.  So far,
    we should have no environments defined in our workspace.
@@ -41,11 +43,19 @@ demonstrate how **Postman environments** address this.
    You can see that each Postman environment variable contains
    two values
 
-   * __Initial Value__ – visible to all members of the workspace
+   * __Initial Value__ – visible to **all members** of the workspace
    * __Current Value__ – used by **your** workspace
    :::
 
-   ![Environments](/postman/env1.svg)
+   ![Environments](/postman/env1.png)
+
+   :::tip Type Column
+   The **Type** column allows you to make a row "secret" by obscuring
+   its values with `********` strings.
+   :::
+
+
+## Production Environment
 
 7. Create another environment with the &#x2795; button.
 
@@ -70,12 +80,13 @@ demonstrate how **Postman environments** address this.
 
     ![Current Environment](/postman/env2.png)
 
-13. From the environment list in the upper-right corner, select
-    **Test**.  At this point, the `{{apikey}}` value you provided
+13. In the figure above, select the dropdown list for the environment
+    near the upper-right corner and select the **Test** option.
+    At this point, the `{{apikey}}` value you provided
     in the last step should turn from red to orange.  This indicates
     this value can be read from the current environment.
 
-14. Save the folder tab and select the *Get charge 826* tab.
+14. Save the folder tab and select the *Charge 826* tab.
 
 15. Change the URL field to contain the `{{baseUrl}}` variable.
 
@@ -88,6 +99,8 @@ demonstrate how **Postman environments** address this.
 
 18. Send another request to verify it fails due to the fact we
     didn't set the API key for this environment.
+
+## Quick Fix
 
 19. Verify the environment values by clicking the "eye" icon
     next to the environment dropdown list.  This displays the
@@ -109,9 +122,9 @@ demonstrate how **Postman environments** address this.
     b. **Initial Value**: `Your PROD API key`    
     c. **Current Value**: the actual PROD API key   
 
-22. Save the environment.
+22. **Save** the environment.
 
-23. Return to the *Get charge 826* tab and send the request.
+23. Return to the *Charge 826* tab and send the request.
     This should return the production result since the
     **Production** environment should still be selected.
 
@@ -119,12 +132,13 @@ demonstrate how **Postman environments** address this.
     It should still succeed.
 
 25. Select **No Environment** and re-run.
-    This should fail and is a good symptom to recognize.
+    This should fail with an `ENOTFOUND` message and is a
+    good symptom to recognize.
 
 
 --------------------------------------
 
-Postman environments are very important for
+Postman environments are important for
 
 * keeping your workspace organized by reducing the need to
   duplicate requests for different envirnments,

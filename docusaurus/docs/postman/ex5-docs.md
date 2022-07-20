@@ -14,7 +14,8 @@ We'll add some comments of our own to the Echo sample.
 
 2. Click the **Documentation** button.
 
-3. Click the pencil icon to active the markdown edit box.
+3. Click the pencil icon under the address bar to active
+   the markdown edit box.
 
 4. Type
 
@@ -26,7 +27,7 @@ We'll add some comments of our own to the Echo sample.
 
 5. Click the **Comments** button.
 
-6. Click **Add Comment** and type
+6. Type
 
    ```
    That's nice; but how about invoking an API of your own.
@@ -37,5 +38,5 @@ We'll add some comments of our own to the Echo sample.
 
 The value of documentation and comments will become more
 apparent in a **team workspace** setting.  It keeps the
-conversation about the request local to the request;
+conversation about the request local to the request,
 rather than dispersed across several email threads.
