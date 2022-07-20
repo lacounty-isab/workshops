@@ -1,7 +1,7 @@
 # IDSC Workshops
 
 This repository holds artifacts used in learning workshops coordinated
-by the ISAB Data Science Committee.  Since there is no sensitive
+by the ISAB Data Science Committee (IDSC).  Since there is no sensitive
 or proprietary content, the materials are made available publicly.
 Certain workshops may be repeated from time to time.  So there is an
 interest in incorporating feedback to improve these materials.
@@ -9,12 +9,13 @@ If you have an idea for improvement, feel free to open an issue.
 
 | Directory | Workshop Description                               |
 |-----------|----------------------------------------------------|
-| [regex](regex/)| Introduction to regular expressions and their use in APIs |
+| [Postman](postman/)| Postman API testing |
 | [git](git/)| Introduction to Git and GitHub |
-| [distributions](distributions/)| Gaining familiarity with Python and/or R via a review of elementary probability distributions|
+| [Crypto Fundamentals](crypto) | Introduction to Cryptographic Concepts and SSH |
+| [regex](regex/)| Introduction to regular expressions and their use in APIs |
 | [R Programming](ds/r/)| Statistics and Programming with R |
 | [Python Programming](ds/python/)| Python and Data Analysis |
-| [Crypto Fundamentals](crypto) | Introduction to Cryptographic Concepts and SSH |
+| [distributions](distributions/)| Gaining familiarity with Python and/or R via a review of elementary probability distributions|
 
 ## Jupyter Rendering and Firewalls
 
@@ -45,10 +46,10 @@ ISAB (Information Systems Advisory Body) is a sub-committee of the
 As described on the
 [official ISAB site](http://ccjcc.lacounty.gov/Subcommittees-Task-Forces/Information-Systems-Advisory-Board-ISAB),
 ISAB is a multi-jurisdictional organization serving the justice communities
-within the county.  The ISAB Data Science Committee (IDSC) addresses
+within the County of Los Angeles.  The ISAB Data Science Committee (IDSC) addresses
 data science issues faced by the community.  This repository addresses
 the issues of skills development.  It is not intended as an endorsement
-of any one product or technology.
+of any product or technology.
 
 ## Workshops
 
