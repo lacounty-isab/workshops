@@ -24,7 +24,14 @@ a *workspace* and a *collection*.
 3. Underneath the summary, click your mouse in the
    **Description** area.  When empty, it contains placeholder
    text.
-   Add the following description and click <button>Save</button>.
+
+   :::tip Markdown Editor
+   At the bottom of the editor will be a selection that defaults
+   to **Postman editor BETA**.  Select **Markdown editor** instead
+   for this exercise to better see how markdown renders.
+   :::
+
+   Add the following description 
 
    ```markdown title="Description Area"
    Used for *private* workshop experimentation.  Will likely
@@ -37,6 +44,8 @@ a *workspace* and a *collection*.
 
    and other basic formatting.
    ```
+
+   and click <button>Save</button>.
 
    :::tip Markdown
    Markdown has become the de facto formatting syntax for
